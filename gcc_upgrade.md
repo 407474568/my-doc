@@ -1,3 +1,7 @@
+出处:
+
+[https://www.vpser.net/manage/centos-6-upgrade-gcc.html](https://www.vpser.net/manage/centos-6-upgrade-gcc.html)
+
 #### 升级到gcc 7.3：
 ```
 yum -y install centos-release-scl
