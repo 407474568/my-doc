@@ -1,7 +1,7 @@
 # Summary
 
 * [目录](README.md)
-* [Linux](category.md)
+* [Linux](category_Linux.md)
     * [Linux上的杂集](linux_hotchpotch.md)
     * [高可用汇总](high_avaliability.md)
     * [bond配置](bond_config.md)
