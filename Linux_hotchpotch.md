@@ -27,14 +27,14 @@ modprobe -r brd
 #### 查找sar -d 里面显示设备名称与熟知的设备名称的对应关系
 [文章链接](https://itindex.net/detail/48792-lvm-%E7%A3%81%E7%9B%98-%E6%98%A0%E5%B0%84)
 
-![](http://a2.qpic.cn/psb?/V10yjxp819ouKn/VmLlDWjnJxv5b3v9vYe.6IqjsbZZRKPKAnbzh0vR06A!/b/dFEBAAAAAAAA&ek=1&kp=1&pt=0&bo=BATAAAQEwAADEDU!&tl=1&su=0169903057&tm=1599793200&sce=0-12-12&rf=2-9)
+![](https://wx3.sinaimg.cn/large/b6be90b3gy1gj2w0mf10cj20sk05cq2x.jpg)
 
 两个命令用来查找对应关系  
 ```
 cat /proc/partitions
 dmsetup ls
 ```
-![](http://a1.qpic.cn/psb?/V10yjxp819ouKn/V.b6KqbPG.ZiriWNXxHqJYzPC9FhkXLmuPlqbkcdGUw!/b/dFQBAAAAAAAA&ek=1&kp=1&pt=0&bo=1wFHAdcBRwEDEDU!&tl=1&su=0172184049&tm=1599793200&sce=0-12-12&rf=2-9)
+![](https://wx1.sinaimg.cn/large/b6be90b3gy1gj2w1xhe2xj20d30933yi.jpg)
   
   
 #### 不能本地console / 远程ssh登录的检查项
@@ -111,10 +111,11 @@ Entering emergence mode......
 #### /etc/fstab 文件详解
 [文章链接](https://www.jianshu.com/p/87bef8c24c15)  
 
-![](http://a3.qpic.cn/psb?/V10yjxp819ouKn/sUM7kEkgcW.O1F7tg3rVGim3Zcp8p189rD9k2IGPO5o!/b/dLYAAAAAAAAA&ek=1&kp=1&pt=0&bo=owK.AKMCvgADEDU!&tl=1&su=0137746097&tm=1599793200&sce=0-12-12&rf=2-9)  
-```
+![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w3zz332j20ir05a74p.jpg)  
+
 其实 /etc/fstab (filesystem table) 就是将我们利用 mount 命令进行挂载时， 将所有的选项与参数写入到这个文件中就是了。除此之外， /etc/fstab 还加入了 dump 这个备份用命令的支持！ 与启动时是否进行文件系统检验 fsck 等命令有关。
 
+```
 <file systems> 挂载设备 : 不是我们通常理解的文件系统，而是指设备（硬盘及其分区，DVD光驱等）。它告知我们设备（分区）的名字，这是你在命令行中挂载（mount）、卸载（umount）设备时要用到的。
 <mountpoint> 挂载点：告诉我们设备挂载到哪里。
 <type> 文件系统类型：Linux支持许多文件系统。 要得到一个完整的支持名单查找mount man-page。典型 的名字包括这些：ext2, ext3, reiserfs, xfs, jfs,iso9660, vfat, ntfs, swap和auto, 'auto' 不是一个文件系统，而是让mount命令自动判断文件类型，特别对于可移动设备，软盘，DVD驱动器，这样做是很有必要的，因为可能每次挂载的文件类型不一致。
@@ -252,7 +253,7 @@ Subsystem
 Subsystem 是说 ssh 的子模块 这里启用的即为 sftp 模块，我们使用系统自带的 internal-sftp 来提供此服务，其实配置到这你即可以使用帐号 ssh 登录，也可以使用 ftp 客户端 sftp 登录。
 
 #### EOF块中使变量不被引用方法
-![](http://a2.qpic.cn/psb?/V10yjxp819ouKn/PEfqtNkPo*EKxkFXKoE9asnFiWwtCZiGxLq5j9bnBVQ!/b/dCUAAAAAAAAA&ek=1&kp=1&pt=0&bo=5AJCAeQCQgEDEDU!&tl=1&su=0225948753&tm=1599811200&sce=0-12-12&rf=2-9)
+![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w5jsuo5j20kk08y0tc.jpg)
 
 
 #### /etc/fstab中带空格的路径问题
@@ -262,7 +263,8 @@ Subsystem 是说 ssh 的子模块 这里启用的即为 sftp 模块，我们使�
 [mntent]: line 10 in /etc/fstab is bad 
 ```
 而正解是,空格用\040代替
-![](http://a2.qpic.cn/psb?/V10yjxp819ouKn/CwXe2EPEZRiHG4lopmE8TddoMSsrnvJMyRE3pHzYkkg!/b/dCUAAAAAAAAA&ek=1&kp=1&pt=0&bo=1AQ9AdQEPQEDEDU!&tl=1&su=0216445377&tm=1599811200&sce=0-12-12&rf=2-9)
+
+![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj2w73meosj20yc08tdfy.jpg)
 
 
 #### wget下载目录
@@ -338,18 +340,18 @@ sdx表示要删除的磁盘，比如sdb
 输入screen，进入screen的会话窗口，但与shell基本相同（用户配置文件没有加载）  
 此时执行需要执行的程序  
 按ctrl+A之后再按D键，出现[detached]  
-![](http://a2.qpic.cn/psb?/V10yjxp819ouKn/i69jHW*bnYck8f2Qrv8up42g5K.B5M4Fo9zw4JslzFs!/b/dHEBAAAAAAAA&ek=1&kp=1&pt=0&bo=UAEvAFABLwADACU!&tl=1&su=080654657&tm=1600063200&sce=0-12-12&rf=2-9)    
+![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w90zen2j209c01b0sh.jpg)    
 
 
 此时可以断开SSH连接，screen仍在运行。
 重连SSH，输入screen -r将恢复screen中的内容。
 退出screen，输入exit，将显示[screen is terminating]  
-![](http://a4.qpic.cn/psb?/V10yjxp819ouKn/YARaav3.EZVo3MKPlolt4wpVUJV.E2ZqJLxKxUc3Amo!/b/dG8BAAAAAAAA&ek=1&kp=1&pt=0&bo=mgFIAJoBSAADACU!&tl=1&su=076613121&tm=1600063200&sce=0-12-12&rf=2-9)  
+![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj2w93wyjsj20be020a9t.jpg)  
 
 
 #### 命令置于前台后台
 用&将执行的命令置于后台后，重新唤回前台的方法，fg或是%  
-![](http://a1.qpic.cn/psb?/V10yjxp819ouKn/64HzZevQ1sSz06o3yR9HMqaqxT6zvHTQ*MyQmUBtZkQ!/b/dHABAAAAAAAA&ek=1&kp=1&pt=0&bo=jwGfAY8BnwEDACU!&tl=1&su=0266690001&tm=1600063200&sce=0-12-12&rf=2-9)   
+![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w96ob6hj20b30bjjr7.jpg)   
 
 
 #### 查询与终止当前用户会话
@@ -374,7 +376,8 @@ pkill -9 -t pts/4
 并且实际产生的压缩包会将绝对路径转化为相对路径。  
 
 比如：  
-![](http://a1.qpic.cn/psb?/V10yjxp819ouKn/156QD9WgXR.47Pg4hCvqi3Gta1nFhEefbGsxLCioJ60!/b/dHwBAAAAAAAA&ek=1&kp=1&pt=0&bo=MwMmATMDJgEDACU!&tl=1&su=0167431281&tm=1600063200&sce=0-12-12&rf=2-9)
+![](https://wx3.sinaimg.cn/large/b6be90b3gy1gj2wark9rcj20mr086gln.jpg)
+
 这样的一个压缩包，如果我们再去解开，就会当前目录（也即此例中的“~”）下再新建出“./home/robin/” 两级目录。对于这样的压缩包，解压方法是使用参数 “-C”指解压的目录为根目录（“/”）：  
 ```tar -xzvf robin.tar.gz -C /```  
   
