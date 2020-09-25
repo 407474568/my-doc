@@ -4,9 +4,13 @@ http://blog.ihipop.info/2011/01/2053.html
 
 简单概括为
 1) 修改/etc/security/limits.conf 里的值
+
 2) sshd的配置文件(例: /etc/ssh/sshd_config)应有以下两条
+
 UsePAM yes
+
 UseLogin yes
+
 3) 检查以下三个文件(通常 /etc/pam.d/sshd就应有效)
 
 /etc/pam.d/login
