@@ -1,6 +1,8 @@
 #### Red Hat 目前主推的nmcli 命令行方式  
 [文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bonding)
 
+[使用 NETWORKMANAGER 命令行工具 NMCLI](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/sec-using_the_networkmanager_command_line_tool_nmcli)
+
 #### nmcli 命令方式配置bond 与 team模式的bond
 [文章链接](https://blog.51cto.com/13438667/2090710)  
 [文章链接](https://blog.51cto.com/mengzhaofu/1851644)  
