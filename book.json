@@ -17,7 +17,7 @@
     ],
     "pluginsConfig": {
         "insert-logo": {
-            "url": "https://file.smallzhiyun.com/%E4%B9%A6.png",
+            "url": "https://wx3.sinaimg.cn/large/b6be90b3gy1gj59zvfyhyj206o06ot9q.jpg",
             "style": "background: none; max-height: 30px; min-height: 30px"
         },
         "favicon": "./icon/book.ico",
