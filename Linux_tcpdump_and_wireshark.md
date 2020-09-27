@@ -59,15 +59,15 @@ https://4hou.win/wordpress/?p=14421
 Wireshark更改时间显示格式
 将显示时间更改为"年-月-日 时:分:秒.微秒"---absoulute date ,它称之为绝对时间. 另外还可以选择UTC标准时间
 
-![](http://a1.qpic.cn/psb?/V10yjxp819ouKn/10LJiW9A7KtxlPXM1f*pbJNuN4t69f3Ib*Mw3cLnx1E!/b/dLgAAAAAAAAA&ek=1&kp=1&pt=0&bo=GwUrAxsFKwMDEDU!&tl=1&su=031688785&tm=1600066800&sce=0-12-12&rf=2-9)
+![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj527oy4wmj210b0mjtb2.jpg)
 
-![](http://a4.qpic.cn/psb?/V10yjxp819ouKn/Z87XlT9HCv4avt2UQ30O1KFHIh0OV0Jvet*yyEs6EOE!/b/dL8AAAAAAAAA&ek=1&kp=1&pt=0&bo=XwRCAV8EQgEDEDU!&tl=1&su=0111373873&tm=1600066800&sce=0-12-12&rf=2-9)
+![](https://wx1.sinaimg.cn/large/b6be90b3gy1gj527rzy96j20v308ywhm.jpg)
 
 将显示时间更改为相对时间, 时间值是从第1个被捕获的包算起的间隔时间
 
-![](http://a4.qpic.cn/psb?/V10yjxp819ouKn/rSGWkruzu7vbH*ESLPEuaVP2rFkwQjtXHlTtN0xaZZo!/b/dFMBAAAAAAAA&ek=1&kp=1&pt=0&bo=GwUrAxsFKwMDEDU!&tl=1&su=0185081329&tm=1600066800&sce=0-12-12&rf=2-9)
+![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj527ximhmj210b0mjwgc.jpg)
 
-![](http://a3.qpic.cn/psb?/V10yjxp819ouKn/fwO.*7f1hqfYVtvEuWF4DUP0Xo6loT4kf0lvdkVcgqM!/b/dL4AAAAAAAAA&ek=1&kp=1&pt=0&bo=GARSARgEUgERECc!&tl=3&su=014452369&tm=1600066800&sce=0-12-12&rf=2-9)
+![](https://wx3.sinaimg.cn/large/b6be90b3gy1gj52806u52j20t409e40h.jpg)
 
 #### 过滤显示
 https://blog.csdn.net/lixiangminghate/article/details/81663628 
@@ -75,4 +75,4 @@ https://blog.csdn.net/lixiangminghate/article/details/81663628
 与在tcpdump中等价的过滤 源 /目标 主机地址和端口的使用  
 同样使用 与 / 或 / 非 运算符  
 以下示例包含 非 运算符的使用---成对小括号  
-![](http://a3.qpic.cn/psb?/V10yjxp819ouKn/Iv45MzSa19NHn063TWScVSNsg.SvwXUtCiCsu5QW.u0!/b/dL4AAAAAAAAA&ek=1&kp=1&pt=0&bo=ZwXeAGcF3gARECc!&tl=3&su=0267567505&tm=1600066800&sce=0-12-12&rf=2-9)
+![](https://wx1.sinaimg.cn/large/b6be90b3gy1gj52832u1uj212g0660ua.jpg)
