@@ -8,6 +8,7 @@ if %errorlevel% == 0 (goto upload) else (goto build)
 
 :upload
 echo 开始上传markdown文档
+del /q _book\自动发布book.cmd
 git add .
 git commit -m %title%
 git push git master
