@@ -1,4 +1,4 @@
-# 字体加颜色
+#### 字体加颜色
 
 CSS样式解决
 
@@ -23,7 +23,7 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 ```
 
 ```
-浅红色文字：<font color="#dd0000">浅红色文字：</font><br /> 
+浅红色文字：<font color="#dd0000">浅红色文字</font><br /> 
 深红色文字：<font color="#660000">深红色文字</font><br /> 
 浅绿色文字：<font color="#00dd00">浅绿色文字</font><br /> 
 深绿色文字：<font color="#006600">深绿色文字</font><br /> 
@@ -54,3 +54,5 @@ https://www.zhihu.com/question/20134106
 
 <br/>
 ```
+
+[锚点](#字体加颜色)
