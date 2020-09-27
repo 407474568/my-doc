@@ -16,10 +16,6 @@
         "sharing-plus"
     ],
     "pluginsConfig": {
-        "insert-logo": {
-            "url": "https://wx3.sinaimg.cn/large/b6be90b3gy1gj59zvfyhyj206o06ot9q.jpg",
-            "style": "background: none; max-height: 30px; min-height: 30px"
-        },
         "favicon": "./icon/book.ico",
         "tbfed-pagefooter": {
             "copyright": "Copyright & copy tanhuang1985@gmail.com",
