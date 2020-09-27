@@ -26,6 +26,9 @@
             "modify_label": "该文章修订时间：",
             "modify_format": "YYYY-MM-DD HH:mm:ss"
         },
+        "hide-element": {
+            "elements": [".gitbook-link"]
+        },
         "sharing": {
             "douban": true,
             "facebook": true,
