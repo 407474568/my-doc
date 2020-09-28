@@ -30,13 +30,13 @@ https://www.zhihu.com/question/41707455
 
 windows操作系统的虚拟机 ,用到vmware tools的命令
  "C:\Program Files\VMware\VMware Tools\VMwareToolboxCmd.exe" disk shrink c:\
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj56hagyemj20n30770st.jpg)
+![](/images/b6be90b3gy1gj56hagyemj20n30770st.jpg)
  
 * guestOS是Linux的操作方法
 
 中途可能ssh会中断
 vmware-toolbox-cmd disk shrink /
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj56he0frrj20ky02pt8y.jpg)
+![](/images/b6be90b3gy1gj56he0frrj20ky02pt8y.jpg)
 
 #### VMware workstation虚拟机性能设置
 

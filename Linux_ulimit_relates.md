@@ -45,7 +45,7 @@ type      代表限制的资源类型，可以是：
 hard      --硬限制，受限用户不可自己通过ulimit动态修改此项的值
 soft       --软限制，用户自己可以自己使用ulimit加资源对应的参数动态修改此项的值（但其范围要在hard限制范围以内不然无效）
 -            --代表软硬两种限制
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj2wlf3jl9j20u00ufn2y.jpg)
+![](/images/b6be90b3gy1gj2wlf3jl9j20u00ufn2y.jpg)
 
 
 #### 关于修改了/etc/security/limits.conf, 从会话可见新设置的值,但程序仍可能会引起问题的情况
@@ -105,15 +105,15 @@ nproc, 即ulimit命令看到的max user processes的值,对应的是该用户的
 4) 此时统计该用户的线程总数, ps -u test -L | wc -l,  值为1025. 与生产环境所见结果相同.  
 
 python代码截图  
-![](https://wx3.sinaimg.cn/large/b6be90b3gy1gj52jn0gjbj20g508gmxv.jpg)
+![](/images/b6be90b3gy1gj52jn0gjbj20g508gmxv.jpg)
 
 执行过程抛异常截图
 
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj52jpvp4sj20le07caan.jpg)
+![](/images/b6be90b3gy1gj52jpvp4sj20le07caan.jpg)
 
 此时统计”test”用户的线程数截图
 
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj52js994sj20ec04iwem.jpg)
+![](/images/b6be90b3gy1gj52js994sj20ec04iwem.jpg)
 
 - 结论3:
 
@@ -129,16 +129,16 @@ python代码截图
 
 “* -nproc”项, 但值不同,一个2048,一个65535
 
-![](https://wx3.sinaimg.cn/large/b6be90b3gy1gj52juo05zj20ov09lgmp.jpg)
+![](/images/b6be90b3gy1gj52juo05zj20ov09lgmp.jpg)
 
 此时重新su 到 test用户,会话可见值为2048
 
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj52jxktv8j20h50frtao.jpg)
+![](/images/b6be90b3gy1gj52jxktv8j20h50frtao.jpg)
 
 python代码实测,创建线程数为2500---为超过2048
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj52yum6v0j20gr0b2mxs.jpg)
+![](/images/b6be90b3gy1gj52yum6v0j20gr0b2mxs.jpg)
 
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj52yxzh4ij20ed0370sq.jpg)
+![](/images/b6be90b3gy1gj52yxzh4ij20ed0370sq.jpg)
 
 2) 说法: 但是如果90-nproc.conf用的是*没有指定用户而limits.conf指定用户, 那么90-nproc的限制不生效
 
@@ -155,19 +155,19 @@ python代码实测,创建线程数为2500---为超过2048
 test -nproc 10240
 ```
 
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj52z2shsej20pb0aqwfo.jpg)
+![](/images/b6be90b3gy1gj52z2shsej20pb0aqwfo.jpg)
 
 此时,su到test用户,可见值为10240
 
-![](https://wx1.sinaimg.cn/large/b6be90b3gy1gj52z5nsxbj20h40ffjtb.jpg)
+![](/images/b6be90b3gy1gj52z5nsxbj20h40ffjtb.jpg)
 
 python代码实测,线程数13000---为超过10240
 
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj52z9lcv0j20lw0h3ta3.jpg)
+![](/images/b6be90b3gy1gj52z9lcv0j20lw0h3ta3.jpg)
 
 此时test用户的线程总数10241
 
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj532ej44wj20e803bt8p.jpg)
+![](/images/b6be90b3gy1gj532ej44wj20e803bt8p.jpg)
 
 综上:
 

@@ -106,11 +106,12 @@ https://www.jianshu.com/p/cd80f5f9ec1b
 因为支持正则,所以可以实现网站应用动静分离等场景.  
 关于ACL的配置语句
 
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj51hbdn4qj20lt0dz74f.jpg)
+![](/images/b6be90b3gy1gj51hbdn4qj20lt0dz74f.jpg)
 
 这一示例是其中一种语法,语法有多种
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj51kj5f94j20wq0dudht.jpg)
-![](https://wx1.sinaimg.cn/large/b6be90b3gy1gj51knmmkzj20wu0ltdl1.jpg)
+
+![](/images/b6be90b3gy1gj51kj5f94j20wq0dudht.jpg)
+![](/images/b6be90b3gy1gj51knmmkzj20wu0ltdl1.jpg)
 
 **HAproxy的健康检查方式**  
 https://www.cnblogs.com/breezey/p/4680418.html  
@@ -132,10 +133,10 @@ https://serverfault.com/questions/889424/haproxy-external-check-with-arguments
 **HAproxy的当前工作状态**  
 HAproxy内置一个stats的功能,通过web页面可以展示当前HAproxy的一些统计信息.
 如下图:
-![](https://wx1.sinaimg.cn/large/b6be90b3gy1gj51kqzoytj218o0m70yk.jpg)
+![](/images/b6be90b3gy1gj51kqzoytj218o0m70yk.jpg)
 
 在配置文件的frontend中配置--backend亦可,除配置在gloabl段启动会报错以外,实际也可以配置在listen段.也即可以分离一个虚拟服务一个监控页面
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj51kumjwbj20mv0kq0t2.jpg)
+![](/images/b6be90b3gy1gj51kumjwbj20mv0kq0t2.jpg)
 
 **HAproxy自身的高可用**  
 HAproxy有不少使用keepalived来做防止单点故障的文章,需要明确的是,无论是keepalived还是heartbeat都是主备模型,并不存在双主一说,如VIP等资源始终都是其中一台持有.  

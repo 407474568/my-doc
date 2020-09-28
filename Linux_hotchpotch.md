@@ -27,14 +27,14 @@ modprobe -r brd
 #### 查找sar -d 里面显示设备名称与熟知的设备名称的对应关系
 [文章链接](https://itindex.net/detail/48792-lvm-%E7%A3%81%E7%9B%98-%E6%98%A0%E5%B0%84)
 
-![](https://wx3.sinaimg.cn/large/b6be90b3gy1gj2w0mf10cj20sk05cq2x.jpg)
+![](/images/b6be90b3gy1gj2w0mf10cj20sk05cq2x.jpg)
 
 两个命令用来查找对应关系  
 ```
 cat /proc/partitions
 dmsetup ls
 ```
-![](https://wx1.sinaimg.cn/large/b6be90b3gy1gj2w1xhe2xj20d30933yi.jpg)
+![](/images/b6be90b3gy1gj2w1xhe2xj20d30933yi.jpg)
   
   
 #### 不能本地console / 远程ssh登录的检查项
@@ -111,7 +111,7 @@ Entering emergence mode......
 #### /etc/fstab 文件详解
 [文章链接](https://www.jianshu.com/p/87bef8c24c15)  
 
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w3zz332j20ir05a74p.jpg)  
+![](/images)  
 
 其实 /etc/fstab (filesystem table) 就是将我们利用 mount 命令进行挂载时， 将所有的选项与参数写入到这个文件中就是了。除此之外， /etc/fstab 还加入了 dump 这个备份用命令的支持！ 与启动时是否进行文件系统检验 fsck 等命令有关。
 
@@ -253,7 +253,7 @@ Subsystem
 Subsystem 是说 ssh 的子模块 这里启用的即为 sftp 模块，我们使用系统自带的 internal-sftp 来提供此服务，其实配置到这你即可以使用帐号 ssh 登录，也可以使用 ftp 客户端 sftp 登录。
 
 #### EOF块中使变量不被引用方法
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w5jsuo5j20kk08y0tc.jpg)
+![](/images/b6be90b3gy1gj2w5jsuo5j20kk08y0tc.jpg)
 
 
 #### /etc/fstab中带空格的路径问题
@@ -264,7 +264,7 @@ Subsystem 是说 ssh 的子模块 这里启用的即为 sftp 模块，我们使�
 ```
 而正解是,空格用\040代替
 
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj2w73meosj20yc08tdfy.jpg)
+![](/images/b6be90b3gy1gj2w73meosj20yc08tdfy.jpg)
 
 
 #### wget下载目录
@@ -340,18 +340,18 @@ sdx表示要删除的磁盘，比如sdb
 输入screen，进入screen的会话窗口，但与shell基本相同（用户配置文件没有加载）  
 此时执行需要执行的程序  
 按ctrl+A之后再按D键，出现[detached]  
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w90zen2j209c01b0sh.jpg)    
+![](/images/b6be90b3gy1gj2w90zen2j209c01b0sh.jpg)    
 
 
 此时可以断开SSH连接，screen仍在运行。
 重连SSH，输入screen -r将恢复screen中的内容。
 退出screen，输入exit，将显示[screen is terminating]  
-![](https://wx4.sinaimg.cn/large/b6be90b3gy1gj2w93wyjsj20be020a9t.jpg)  
+![](/images/b6be90b3gy1gj2w93wyjsj20be020a9t.jpg)  
 
 
 #### 命令置于前台后台
 用&将执行的命令置于后台后，重新唤回前台的方法，fg或是%  
-![](https://wx2.sinaimg.cn/large/b6be90b3gy1gj2w96ob6hj20b30bjjr7.jpg)   
+![](/images/b6be90b3gy1gj2w96ob6hj20b30bjjr7.jpg)   
 
 
 #### 查询与终止当前用户会话
@@ -376,7 +376,7 @@ pkill -9 -t pts/4
 并且实际产生的压缩包会将绝对路径转化为相对路径。  
 
 比如：  
-![](https://wx3.sinaimg.cn/large/b6be90b3gy1gj2wark9rcj20mr086gln.jpg)
+![](/images/b6be90b3gy1gj2wark9rcj20mr086gln.jpg)
 
 这样的一个压缩包，如果我们再去解开，就会当前目录（也即此例中的“~”）下再新建出“./home/robin/” 两级目录。对于这样的压缩包，解压方法是使用参数 “-C”指解压的目录为根目录（“/”）：  
 ```tar -xzvf robin.tar.gz -C /```  
