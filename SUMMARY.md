@@ -12,6 +12,7 @@
     * [vsftpd和sftp的chroot设置 ](Linux_sftp_and_vsftp_config_chroot.md)
     * [gcc的升级操作](Linux_gcc_upgrade.md)
 * [容器](category_3_Container.md)
+    * [kubernetes 之 etcd](Container_etcd.md)
 * [数据库](category_4_Database.md)
 * [虚拟化](category_5_Virtualization.md)
     * [VMware Workstation汇总](Virtualization_vmware_workstation_summary.md)
