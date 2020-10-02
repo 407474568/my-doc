@@ -51,33 +51,33 @@ powershell -File "D:\临时存储\vCenter批量克隆\批量克隆 - 修改.ps1"
 常用的有以下:
 
 ```
-get-vicommand– 显示所有命令列表
+get-vicommand    显示所有命令列表
 
-Connect-VIServer– 连接虚拟化平台
+Connect-VIServer    连接虚拟化平台
 
-get-vmhost – 显示ESXi主机列表
+get-vmhost    显示ESXi主机列表
 
-get-cluster –显示群集列表
+get-cluster    显示群集列表
 
-get-datastore– 显示存储列表
+get-datastore    显示存储列表
 
-get-resourcepool– 显示资源池
+get-resourcepool    显示资源池
 
-get-vm – 显示虚拟机列表
+get-vm    显示虚拟机列表
 
-get-virtualswitch– 显示虚拟交换机列表
+get-virtualswitch    显示虚拟交换机列表
 
-start-vm\stop -vm – 启动或关闭虚拟机
+start-vm\stop -vm    启动或关闭虚拟机
 
-new -vm – 创建虚拟机
+new -vm    创建虚拟机
 
-get-template– 显示模板列表
+get-template    显示模板列表
 
-get-oscustomizationspec– 显示自定义规范列表
+get-oscustomizationspec    显示自定义规范列表
 
-get-vapp – 显示vapp 应用列表
+get-vapp    显示vapp 应用列表
 
-get-folder – 显示文件夹列表
+get-folder    显示文件夹列表
 
 ```
 

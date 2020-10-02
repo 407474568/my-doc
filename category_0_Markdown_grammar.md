@@ -85,3 +85,9 @@ https://www.zhihu.com/question/20134106
 ```
 [显示文字](#标题)
 ```
+
+#### 添加附件
+
+https://www.cnblogs.com/yanh0606/p/10488356.html
+
+<a href="files/test.txt" target="_blank">附件1</a>
