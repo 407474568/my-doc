@@ -90,4 +90,10 @@ https://www.zhihu.com/question/20134106
 
 https://www.cnblogs.com/yanh0606/p/10488356.html
 
+```
+<a href="files/test.txt" target="_blank">附件1</a>
+```
+
+效果如下:
+
 <a href="files/test.txt" target="_blank">附件1</a>
