@@ -76,7 +76,7 @@ https://www.cnblogs.com/wjoyxt/p/9946680.html
 https://blog.51cto.com/phospherus/2445742  
 https://blog.csdn.net/weixin_42350212/article/details/84930255  
 
-- 第一步, CA自签名中心初始化
+- 第一步, CA自签名中心初始化, 签发自身的证书
 - 第二步, 创建证书, 证书分3种类型:  
     client certificate： 用于服务端认证客户端,例如etcdctl、etcd proxy、fleetctl、docker客户端  
     server certificate:  服务端使用，客户端以此验证服务端身份,例如docker服务端、kube-apiserver  
