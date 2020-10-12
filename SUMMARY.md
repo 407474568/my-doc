@@ -5,6 +5,7 @@
 * [编程](category_1_Coding.md)
 * [Linux](category_2_Linux.md)
     * [Linux上的杂集](Linux_hotchpotch.md)
+    * [ansible](Linux_ansible.md)
     * [高可用汇总](Linux_high_avaliability.md)
     * [bond配置](Linux_bond_config.md)
     * [关于ulimit设置](Linux_ulimit_relates.md)
