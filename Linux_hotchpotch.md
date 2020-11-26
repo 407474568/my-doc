@@ -136,7 +136,7 @@ nosuid Blocks the operation of suid, and sgid bits.
 [文章链接](http://www.debugrun.com/a/OI9oeBu.html)  
 说是运行时间长(一年半载)的进程可能会遇到这种现象
 在常规手段都找不到的情况下,还有可能是内核线程,所以没有PID
-查看方式
+查看方式  
 rpcinfo -p localhost
 
 #### NFS服务对应的端口及iptables配置
