@@ -90,20 +90,6 @@ Entering emergence mode......
 ~#
 ~#
 ```  
-此时无论reboot多次都不能将问题克服，最终从网上查找资料及终端提示，明白centos的文件系统xfs中的dm-0被破坏了，导致启动不起，此时需要作的就是修复dm-0
-
-为了方便起见，可以直接一个命令解决上述问题，如下：
-xfs_repair  -L  /dev/dm-0
-命令一处，再重启一下，就好了。
-)
-错误大概显示如下：
-```
-xfs metadata I/O error(dm-0) blocked ox....
-...
-Entering emergence mode......
-~#
-~#
-```  
 此时需要作的就是修复dm-0, 如下：  
 ```xfs_repair  -L  /dev/dm-0```  
 
