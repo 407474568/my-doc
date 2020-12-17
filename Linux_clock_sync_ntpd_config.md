@@ -90,7 +90,7 @@ Normally, the time is slewed if the offset is less than the step threshold, whic
 
 ![](/images/EvFZq5d9XYtP16m50yED9s83lMO4VwcS.png)
 
-<font color="#660000">只有对于跳跃式的校正时间，系统日志才会记录。</font><br />  
+<font color=red>只有对于跳跃式的校正时间，系统日志才会记录。</font>  
 
 
 #### 同步系统时间同时同步硬件时钟
