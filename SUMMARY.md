@@ -3,7 +3,7 @@
 * [简介](README.md)
 * [Markdown语法](category_0_Markdown_grammar.md)
 * [编程](category_1_Coding.md)
-    * [Python_语法糖_动态生成变量](Python_dynamic_create_variable.md)
+    * [Python-语法糖-动态生成变量](Python_dynamic_create_variable.md)
 * [Linux](category_2_Linux.md)
     * [Linux上的杂集](Linux_hotchpotch.md)
     * [ansible](Linux_ansible.md)
