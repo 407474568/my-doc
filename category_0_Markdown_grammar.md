@@ -47,13 +47,13 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 
 https://www.zhihu.com/question/20134106
 
-以下两个都有效
-
+~~以下两个都有效~~
 ```
 &nbsp;
 
 <br/>
 ```
+<font color=red>近期验证只有</font>   ```<br/>``` <font color=red>有效</font>  
 
 #### 添加多个空格
 
@@ -64,6 +64,8 @@ https://www.zhihu.com/question/20134106
 
 &#8194
 ```
+<font color=red>近期验证只有</font>   ```&ensp;``` <font color=red>有效</font>  
+
 
 两个空格的大小表示
 
@@ -85,6 +87,14 @@ https://www.zhihu.com/question/20134106
 ```
 [显示文字](#标题)
 ```
+
+#### 添加删除线
+文字前后都加2个 ~ 号
+```
+~~删除线示例~~
+```
+~~删除线示例~~
+
 
 #### 添加附件
 
