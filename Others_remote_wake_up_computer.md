@@ -1,17 +1,17 @@
 分为对局域网内计算机进行唤醒和通过互联网唤醒计算机  
 通过互联网唤醒计算机, 实际上就是多一步在互联网出口设备上要做端口映射,以及交换机/路由器上可能会需要进行IP与MAC的绑定问题.  
-&nbsp;
+<br/>
 分别需要对BIOS，操作系统，以及路由器进行设置。
-&nbsp;
+<br/>
 微星BIOS设置（近几年各大厂商都普及了图形化界面，以微星Z77A-G41为例），不同厂商界面不同，但基本大同小异。  
 关于BIOS和操作系统的设定，youtube的这哥们给出了答案  
 https://www.youtube.com/watch?v=2CGFvLgye3g  
 BIOS方面，只要有wake on PCI-E都是可以的，按早年间的一些文章介绍，还以为一定要wake on lan  
 实际上只需要wake on  PCI-E及禁用EuP 2013，如下图
 ![](/images/uA7hrF2GedyqQgnb79CsTdfUim0kEvGA.jpg)
-&nbsp;
+<br/>
 ![](/images/uA7hrF2Ged3loFhTwjMaXHi29CekObKP.jpg)
-&nbsp;
+<br/>
 接下来对操作系统进行设定  
 在设备管理器中找到<font color=red>接路由器的物理网卡</font>，先设置电源管理  
 ![](/images/uA7hrF2GedCb6YWhJIdeA4GREgBFf9jO.jpg)
@@ -19,13 +19,13 @@ BIOS方面，只要有wake on PCI-E都是可以的，按早年间的一些文章
 接下来设置“高级”选项卡，有四项需要确认  
 “魔术封包唤醒”   ====>  需确认处于打开状态  
 “关机 网络唤醒”  ====>  需确认处于打开状态  
-&nbsp;
+<br/>
 “环保节能”       ====>  需确认处于关闭状态  
 “节能乙太网路”   ====>  需确认处于关闭状态  
 youtube哥们用的英文操作系统  
 ![](/images/uA7hrF2GedpFetMrgZjovYkEGxiH3IQX.jpg)
 对操作系统的设定是为了避免关闭Windows时，彻底关闭了网卡，导致无法接受唤醒信号。  
-&nbsp;
+<br/>
 最后对路由器进行设定——此时短时间已能进行唤醒，几分钟后会失效  
 原因这两个帖子说到了  
 http://www.gebi1.com/forum.php?mod=viewthread&action=printable&tid=240599  
