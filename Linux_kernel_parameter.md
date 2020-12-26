@@ -1,3 +1,6 @@
+默认的配置文件位置
+/etc/sysctl.conf
+
 ### 【本机性能类】  
 <br/>
 https://www.ibm.com/support/knowledgecenter/zh/SSEPGG_10.5.0/com.ibm.db2.luw.qb.server.doc/doc/t0008238.html  
