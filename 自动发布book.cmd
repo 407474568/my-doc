@@ -17,9 +17,10 @@ git push git master
 echo 开始上传静态网站
 cd _book
 git init
-git remote add git https://github.com/407474568/my-doc.git
+REM git remote add git https://github.com/407474568/my-doc.git
+git remote add git git@github.com:407474568/my-doc.git
 git config credential.helper store
-git config http.postBuffer 524288000
 git add .
 git commit -m %title%
 git push -f git master:gh-pages
+
