@@ -84,11 +84,10 @@ net.core.rmem_max = 3492800
 <br/>
 <br/>
 <br/>
-### 【网络协议工作机制类--不可独自拍脑袋决定】  
+### 【网络协议工作机制类】
 <br/>
 决定检查过期多久邻居条目  
-内核维护的arp表过于庞大, 发生抖动, 因此导致了这种情况,几个内核ARP参数
-=================================  
+内核维护的arp表过于庞大, 发生抖动, 因此导致了这种情况,几个内核ARP参数  
 gc_stale_time  
 决定检查一次相邻层记录的有效性的周期。当相邻层记录失效时，将在给它发送数据前，再解析一次。缺省值是60秒。  
 gc_thresh1  
@@ -97,11 +96,12 @@ gc_thresh2
 保存在 ARP 高速缓存中的最多的记录软限制。垃圾收集器在开始收集前，允许记录数超过这个数字 5 秒。缺省值是 512。  
 gc_thresh3  
 保存在 ARP 高速缓存中的最多记录的硬限制，一旦高速缓存中的数目高于此，垃圾收集器将马上运行。缺省值是1024。  
-=================================  
-比如arp -an|wc -l的结果是300左右, 那么应当调高gc_thresh各项数值,防止抖动的发生
-echo "net.ipv4.neigh.default.gc_thresh1 = 512" >> sysctl.conf  
-echo "net.ipv4.neigh.default.gc_thresh2 = 2048" >> sysctl.conf  
-echo "net.ipv4.neigh.default.gc_thresh3 = 4096" >> sysctl.conf  
+比如arp -an|wc -l的结果是300左右, 那么应当调高gc_thresh各项数值,防止抖动的发生  
+```
+echo "net.ipv4.neigh.default.gc_thresh1 = 512" >> sysctl.conf
+echo "net.ipv4.neigh.default.gc_thresh2 = 2048" >> sysctl.conf
+echo "net.ipv4.neigh.default.gc_thresh3 = 4096" >> sysctl.conf
+```
 net.ipv4.neigh.default.gc_stale_time=120  
 <br/>
 <br/>
@@ -298,7 +298,6 @@ net.ipv4.tcp_mem = 94500000 915000000 927000000
 <br/>
 <br/>
 ### 【路由类】  
-<br/>
 <br/>
 开启路由转发--取决于是否充当路由器的功能需求  
 net.ipv4.ip_forward = 1  
