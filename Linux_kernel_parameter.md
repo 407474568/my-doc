@@ -28,13 +28,13 @@ fs.file-max = 819200
 <br/>
 <br/>
 /proc/sys/net/core/netdev_max_backlog  
-进入包的最大设备队列.默认是1000,对重负载服务器而言,该值太低,可调整到16384/32768/65535  
+进入包的最大设备队列.默认是1000,对重负载服务器而言,该值太低,可调整到16384 / 32768 / 65535  
 该文件表示在每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目。  
 进入包的最大设备队列.默认是1000,对重负载服务器而言,该值太低,可调整到16384.  
 net.core.netdev_max_backlog = 32768  
 <br/>
 <br/>
-listen()的默认参数,挂起请求的最大数量.默认是128.对繁忙的服务器,增加该值有助于网络性能.可调整到8192/16384/32768  
+listen()的默认参数,挂起请求的最大数量.默认是128.对繁忙的服务器,增加该值有助于网络性能.可调整到8192 / 16384 / 32768  
 net.core.somaxconn = 16384  
 <br/>
 <br/>
@@ -44,7 +44,7 @@ net.core.optmem_max = 10240
 <br/>
 <br/>
 /proc/sys/net/ipv4/tcp_wmem  
-TCP写buffer,可参考的优化值:873200/1746400/3492800/6985600  
+TCP写buffer,可参考的优化值:873200 / 1746400 / 3492800 / 6985600  
 该文件包含3个整数值，分别是：min，default，max  
 Min：为TCP socket预留用于发送缓冲的内存最小值。每个TCP socket都可以使用它。  
 Default：为TCP socket预留用于发送缓冲的内存数量，默认情况下该值会影响其它协议使用的net.core.wmem中default的 值，一般要低于net.core.wmem中default的值。  
@@ -55,7 +55,7 @@ net.ipv4.tcp_wmem = 873200 1746400 3492800
 <br/>
 <br/>
 /proc/sys/net/ipv4/tcp_rmem  
-TCP读buffer,可参考的优化值:873200/1746400/3492800/6985600  
+TCP读buffer,可参考的优化值:873200 / 1746400 / 3492800 / 6985600  
 该文件包含3个整数值，分别是：min，default，max  
 Min：为TCP socket预留用于接收缓冲的内存数量，即使在内存出现紧张情况下TCP socket都至少会有这么多数量的内存用于接收缓冲。  
 Default：为TCP socket预留用于接收缓冲的内存数量，默认情况下该值影响其它协议使用的 net.core.wmem中default的 值。该值决定了在tcp_adv_win_scale、tcp_app_win和tcp_app_win的默认值情况下，TCP 窗口大小为65535。  
@@ -70,13 +70,13 @@ tcp 的内存是基于系统的内存自动计算的
 该文件指定了发送套接字缓冲区大小的缺省值（以字节为单位）。缺省设置：110592  
 /proc/sys/net/core/wmem_max  
 该文件指定了发送套接字缓冲区大小的最大值（以字节为单位）。缺省设置：131071  
-缺省socket写buffer,可参考的优化值:873200/1746400/3492800  
+缺省socket写buffer,可参考的优化值:873200 / 1746400 / 3492800  
 net.core.wmem_default = 1746400  
-最大socket写buffer,可参考的优化值:1746400/3492800/6985600  
+最大socket写buffer,可参考的优化值:1746400 / 3492800 / 6985600  
 net.core.wmem_max = 3492800  
-缺省socket读buffer,可参考的优化值:873200/1746400/3492800  
+缺省socket读buffer,可参考的优化值:873200 / 1746400 / 3492800  
 net.core.rmem_default = 1746400  
-最大socket读buffer,可参考的优化值:1746400/3492800/6985600  
+最大socket读buffer,可参考的优化值:1746400 / 3492800 / 6985600  
 net.core.rmem_max = 3492800  
 <br/>
 <br/>
@@ -165,7 +165,7 @@ Enable fast recycling of TIME-WAIT sockets. Enabling this option is not recommen
 启用TIME-WAIT状态sockets的快速回收，这个选项不推荐启用。在NAT(Network Address Translation)网络下，会导致大量的TCP连接建立错误。  
 net.ipv4.tcp_tw_reuse = 1  
 与其功能相似的参数net.ipv4.tcp_tw_reuse，手册里稍微有点描述，如下：  
-tcp_tw_reuse (Boolean; default: disabled; since Linux 2.4.19/2.6)  
+tcp_tw_reuse (Boolean; default: disabled; since Linux 2.4.19 / 2.6)  
 Allow to reuse TIME-WAIT sockets for new connections when it is safe from protocol viewpoint. It should not be changed without advice/request of technical experts.  
 从协议设计上来看，对于TIME-WAIT状态的sockets重用到新的TCP连接上来说，是安全的。（用于客户端时的配置）表示开启重用,允许将TIME-WAIT sockets重新用于新的TCP连接,默认为0,表示关闭  
 <br/>
@@ -387,7 +387,7 @@ net.ipv4.conf.default.accept_source_route = 0
 <br/>
 3) /proc/sys/vm/dirty_expire_centisecs  
 该文件表示如果脏数据在内存中驻留时间超过该值，pdflush进程在下一次将把这些数据写回磁盘。  
-缺省设置：3000（1/100秒）  
+缺省设置：3000（1 / 100秒）  
 <br/>
 4) /proc/sys/vm/dirty_ratio  
 该文件表示如果进程产生的脏数据到达系统整体内存的百分比，此时进程自行把脏数据写回磁盘。  
@@ -395,7 +395,7 @@ net.ipv4.conf.default.accept_source_route = 0
 <br/>
 5) /proc/sys/vm/dirty_writeback_centisecs  
 该文件表示pdflush进程周期性间隔多久把脏数据写回磁盘。  
-缺省设置：500（1/100秒）  
+缺省设置：500（1 / 100秒）  
 <br/>
 6) /proc/sys/vm/vfs_cache_pressure  
 该文件表示内核回收用于directory和inode cache内存的倾向；缺省值100表示内核将根据pagecache和swapcache，把directory和inode cache保持在一个合理的百分比；降低该值低于100，将导致内核倾向于保留directory和inode cache；增加该值超过100，将导致内核倾向于回收directory和inode cache。  
@@ -461,7 +461,7 @@ net.ipv4.conf.default.accept_source_route = 0
 <br/>
 该目录下的配置文件主要用来控制内核和网络层之间的交互行为。  
 1） /proc/sys/net/core/message_burst  
-写新的警告消息所需的时间（以 1/10 秒为单位）；在这个时间内系统接收到的其它警告消息会被丢弃。这用于防止某些企图用消息“淹没”系统的人所使用的拒绝服务（Denial of Service）攻击。  
+写新的警告消息所需的时间（以 1 / 10 秒为单位）；在这个时间内系统接收到的其它警告消息会被丢弃。这用于防止某些企图用消息“淹没”系统的人所使用的拒绝服务（Denial of Service）攻击。  
 缺省设置：50（5秒）  
 <br/>
 2） /proc/sys/net/core/message_cost  
