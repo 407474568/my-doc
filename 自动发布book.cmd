@@ -19,6 +19,7 @@ cd _book
 git init
 git remote add git https://github.com/407474568/my-doc.git
 git config credential.helper store
+git config http.postBuffer 524288000
 git add .
 git commit -m %title%
 git push -f git master:gh-pages
