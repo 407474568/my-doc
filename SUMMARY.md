@@ -6,7 +6,7 @@
     * [Python-语法糖-动态生成变量](Python_dynamic_create_variable.md)
 * [Linux](category_2_Linux.md)
     * [Linux上的杂集](Linux_hotchpotch.md)
-    * [内核参数](Linux_high_avaliability.md)
+    * [内核参数](Linux_kernel_parameter.md)
     * [高可用汇总](Linux_high_avaliability.md)
     * [ansible](Linux_ansible.md)
     * [bond配置](Linux_bond_config.md)
