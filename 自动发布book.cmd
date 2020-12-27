@@ -18,10 +18,12 @@ git push local master
 
 echo 开始上传静态网站
 cd _book
+if %computername% == TANHUANG-PC (set fastcopy_command=C:\Users\Administrator\FastCopy\FastCopy.exe)
+if %computername% == TANHUANG-NOTE (set fastcopy_command="C:\Program Files\FastCopy\FastCopy.exe")
+%fastcopy_command% /cmd=sync /force_close /estimate /bufsize=256 /acl /log=FALSE D:\Code\my-doc\images\ /to=D:\Code\my-doc\_book\images
 git init
-REM git remote add git https://github.com/407474568/my-doc.git
 git remote add git git@github.com:407474568/my-doc.git
-git config credential.helper store
+REM git config credential.helper store
 git add .
 git commit -m %title%
 git push -f git master:gh-pages
