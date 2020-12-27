@@ -43,41 +43,38 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 <span style="color:red;"> 红色 </span>
 ```
 
+#### 加粗和斜体
+```
+**加粗**
+```
+**加粗**
+
+```
+*斜体*
+```
+*斜体*
+
 #### 添加换行符
 
 https://www.zhihu.com/question/20134106
 
-~~以下两个都有效~~
+以下两个都有效  
+<font color=red>注意上下要空行, 否则会影响下一行内容的格式</font>
 ```
 &nbsp;
 
 <br/>
 ```
-<font color=red>近期验证只有</font>  
-
-```
-<br/>
-```
-
-<font color=red>有效</font>  
 
 #### 添加多个空格
 
+<font color=red>注意上下要空行, 否则会影响下一行内容的格式</font>  
 一个空格大小的表示
-
 ```
 &ensp;
 
 &#8194
 ```
-<font color=red>近期验证只有</font>  
-
-```
-&ensp;
-```
-
-<font color=red>有效</font>  
-
 
 两个空格的大小表示
 

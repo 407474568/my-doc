@@ -12,6 +12,8 @@ del /q _book\自动发布book.cmd
 git add .
 git commit -m %title%
 git push git master
+git push gitee master
+git push local master
 
 
 echo 开始上传静态网站
