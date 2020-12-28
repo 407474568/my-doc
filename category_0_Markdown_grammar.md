@@ -59,7 +59,9 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 https://www.zhihu.com/question/20134106
 
 以下两个都有效  
+
 <font color=red>注意上下要空行, 否则会影响下一行内容的格式</font>
+
 ```
 &nbsp;
 
@@ -68,8 +70,10 @@ https://www.zhihu.com/question/20134106
 
 #### 添加多个空格
 
-<font color=red>注意上下要空行, 否则会影响下一行内容的格式</font>  
+<font color=red>注意上下要空行, 否则会影响下一行内容的格式</font>
+
 一个空格大小的表示
+
 ```
 &ensp;
 
@@ -109,7 +113,6 @@ https://www.jianshu.com/p/2df05f279331
 https://www.runoob.com/markdown/md-table.html  
 语法格式如下:  
 ```
-
 | 一个普通标题 | 一个普通标题 | 一个普通标题 |
 | ------ | ------ | ------ |
 | 短文本 | 中等文本 | 稍微长一点的文本 |
@@ -122,16 +125,17 @@ https://www.runoob.com/markdown/md-table.html
 | 短文本 | 中等文本 | 稍微长一点的文本 |
 | 稍微长一点的文本 | 短文本 | 中等文本 |
 
+
 <font color=red>需要注意的是表头的上一行要有空格, 否则表格样式不生效</font>  
 
 对齐方式
 ```
-
 | 左对齐标题 | 右对齐标题 | 居中对齐标题 |
 | :------| ------: | :------: |
 | 短文本 | 中等文本 | 稍微长一点的文本 |
 | 稍微长一点的文本 | 短文本 | 中等文本 |
 ```
+
 效果:
 
 | 左对齐标题 | 右对齐标题 | 居中对齐标题 |

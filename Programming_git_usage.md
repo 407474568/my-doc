@@ -36,8 +36,8 @@ Linux上的位置
 
 #### 使用ssh的方式连接
 
-使用http和https的连接方式  
-下面这个是在push过程中出, 但通常并不影响操作结果.
+使用http和https的连接方式,会有以下两种情况  
+下面这个是在push过程中出现, 但通常并不影响操作结果.
 ```
 fatal: NotSupportedException encountered.
    ServicePointManager 不支持具有 socks5 方案的代理。
