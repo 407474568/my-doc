@@ -124,9 +124,9 @@ Chrony 会根据实际时间计算修正值，并将补偿参数记录在该指�
 
 可以参考 ntpd.conf 里的stratum的概念
 
-&nbsp;
-
 以上是作为客户端的常用参数
+
+&nbsp;
 
 #### 用作server端
 
