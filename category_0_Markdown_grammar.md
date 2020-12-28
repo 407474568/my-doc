@@ -128,6 +128,8 @@ https://www.runoob.com/markdown/md-table.html
 
 <font color=red>需要注意的是表头的上一行要有空格, 否则表格样式不生效</font>  
 
+&nbsp;
+
 对齐方式
 ```
 | 左对齐标题 | 右对齐标题 | 居中对齐标题 |
@@ -143,6 +145,7 @@ https://www.runoob.com/markdown/md-table.html
 | 短文本 | 中等文本 | 稍微长一点的文本 |
 | 稍微长一点的文本 | 短文本 | 中等文本 |
 
+&nbsp;
 
 #### 添加附件
 
