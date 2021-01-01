@@ -22,6 +22,7 @@ https://blog.csdn.net/davion_zhang/article/details/48268319
 ps auxS
 ps efS
 ```
+![](images/OTjFq6h0iYs4p6ATyRD3hLzW5emvQc1H.png)
 
 - 只显示僵尸状态的进程
 
