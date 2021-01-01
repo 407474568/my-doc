@@ -249,3 +249,5 @@ $ chronyc sourcestats -v
 #### chrony在超大时间偏差下停止工作的问题
 https://serverfault.com/questions/819467/chrony-time-synchronization-on-huge-time-diff
 
+#### chrony一次性修正时间的日志记录
+![](images/chrony猛烈调整时间的日志.png)
