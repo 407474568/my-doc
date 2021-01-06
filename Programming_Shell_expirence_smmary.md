@@ -4,6 +4,8 @@
 [Shell比较运算符](#Shell比较运算符)  
 [Shell输出的格式控制](#Shell输出的格式控制)  
 
+[TOC]
+
 ### Shell正则
 [回到页首](#导航)  
 <font color=red>关于正则表达式分组及后向引用</font>  
