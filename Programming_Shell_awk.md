@@ -1,62 +1,62 @@
-#### awk É¸Ñ¡Êý¾ÝÊä³ö
-Õë¶ÔÊý¾ÝÎÄ¼þ£¬ÀûÓÃawk ÅÐ¶Ï·ûºÏÌõ¼þµÄÊý¾Ý£¬²¢É¸Ñ¡³ö½á¹ûÊý¾Ý£¬ÊäÈëµ½¶ÔÓ¦µÄÎÄ¼þÖÐ¡£
+#### awk ç­›é€‰æ•°æ®è¾“å‡º
+é’ˆå¯¹æ•°æ®æ–‡ä»¶ï¼Œåˆ©ç”¨awk åˆ¤æ–­ç¬¦åˆæ¡ä»¶çš„æ•°æ®ï¼Œå¹¶ç­›é€‰å‡ºç»“æžœæ•°æ®ï¼Œè¾“å…¥åˆ°å¯¹åº”çš„æ–‡ä»¶ä¸­ã€‚
 ```
-awk '{if ($7>5) print}' A|less            ###É¸Ñ¡AÎÄ¼þÖÐµÚÆßÁÐ´óÓÚ5µÄÊý¾Ý£¬ÏÔÊ¾ËùÓÐ·ûºÏµÄ½á¹û
-awk '{if ($6>5 && $7>5) print}' A|less   ###É¸Ñ¡AÎÄ¼þÖÐµÚÁùÁÐºÍÆßÁÐ¶¼´óÓÚ5µÄÊý¾Ý£¬ÏÔÊ¾ËùÓÐ·ûºÏµÄ½á¹û
-awk '{if ($6>5 || $7>5) print}' A|less   ###É¸Ñ¡AÎÄ¼þÖÐµÚÁùÁÐ»òÆßÁÐ¶¼´óÓÚ5µÄÊý¾Ý£¬ÏÔÊ¾ËùÓÐ·ûºÏµÄ½á¹û
-awk '{if ($7>5) print}' A|less>B          ###É¸Ñ¡AÎÄ¼þÖÐµÚÆßÁÐ´óÓÚ5µÄÊý¾Ý£¬²¢½«·ûºÏµÄ½á¹ûÊäÈëµ½BÎÄ¼þÖÐ
+awk '{if ($7>5) print}' A|less            ###ç­›é€‰Aæ–‡ä»¶ä¸­ç¬¬ä¸ƒåˆ—å¤§äºŽ5çš„æ•°æ®ï¼Œæ˜¾ç¤ºæ‰€æœ‰ç¬¦åˆçš„ç»“æžœ
+awk '{if ($6>5 && $7>5) print}' A|less   ###ç­›é€‰Aæ–‡ä»¶ä¸­ç¬¬å…­åˆ—å’Œä¸ƒåˆ—éƒ½å¤§äºŽ5çš„æ•°æ®ï¼Œæ˜¾ç¤ºæ‰€æœ‰ç¬¦åˆçš„ç»“æžœ
+awk '{if ($6>5 || $7>5) print}' A|less   ###ç­›é€‰Aæ–‡ä»¶ä¸­ç¬¬å…­åˆ—æˆ–ä¸ƒåˆ—éƒ½å¤§äºŽ5çš„æ•°æ®ï¼Œæ˜¾ç¤ºæ‰€æœ‰ç¬¦åˆçš„ç»“æžœ
+awk '{if ($7>5) print}' A|less>B          ###ç­›é€‰Aæ–‡ä»¶ä¸­ç¬¬ä¸ƒåˆ—å¤§äºŽ5çš„æ•°æ®ï¼Œå¹¶å°†ç¬¦åˆçš„ç»“æžœè¾“å…¥åˆ°Bæ–‡ä»¶ä¸­
 ```
 
-#### awk½øÐÐÐ¡Êý¼ÆËã
+#### awkè¿›è¡Œå°æ•°è®¡ç®—
 https://blog.51cto.com/radish/1736900
-µäÐÍÊ¾Àý:
+å…¸åž‹ç¤ºä¾‹:
 ```
 echo "$A $B $C $D" | awk '{printf ("%.2f\n",$1*$2/$3-$4)}'
 ``` 
-awkÒÔ´«²ÎÐÎÊ½½ÓÊÕ, µÈÍ¬shellµÄº¯Êýµ÷ÓÃ,¸ñÊ½¿ØÖÆÓÉprinft À´Íê³É
-Ò²Ö§³Ö¿ÆÑ§¼ÆÊý·¨µÄÐÎÊ½
+awkä»¥ä¼ å‚å½¢å¼æŽ¥æ”¶, ç­‰åŒshellçš„å‡½æ•°è°ƒç”¨,æ ¼å¼æŽ§åˆ¶ç”±prinft æ¥å®Œæˆ
+ä¹Ÿæ”¯æŒç§‘å­¦è®¡æ•°æ³•çš„å½¢å¼
 ```
 [wangdong@centos715-node1 uncomp]$ echo "6.8923e+08" | awk '{printf ("%.0f\n",$1)}'
 689230000
 ```
 
-#### awkÖÐRS,ORS,FS,OFS µÄ×÷ÓÃ
+#### awkä¸­RS,ORS,FS,OFS çš„ä½œç”¨
 http://blog.51yip.com/shell/1151.html  
-Ò»£¬RSÓëORS  
-1£¬RSÊÇ¼ÇÂ¼·Ö¸ô·û£¬Ä¬ÈÏµÄ·Ö¸ô·ûÊÇ\n£¬¾ßÌåÓÃ·¨¿´ÏÂ
+ä¸€ï¼ŒRSä¸ŽORS  
+1ï¼ŒRSæ˜¯è®°å½•åˆ†éš”ç¬¦ï¼Œé»˜è®¤çš„åˆ†éš”ç¬¦æ˜¯\nï¼Œå…·ä½“ç”¨æ³•çœ‹ä¸‹
 ```
-[root@krlcgcms01 mytest]# cat test1     //²âÊÔÎÄ¼þ  
+[root@krlcgcms01 mytest]# cat test1     //æµ‹è¯•æ–‡ä»¶  
  111 222  
  333 444  
  555 666  
 ```
-2£¬RSÄ¬ÈÏ·Ö¸î·ûÊÇ \n
+2ï¼ŒRSé»˜è®¤åˆ†å‰²ç¬¦æ˜¯ \n
 ```
-[root@krlcgcms01 mytest]# awk '{print $0}' test1  //awk 'BEGIN{RS="\n"}{print $0}' test1 Õâ¶þ¸öÊÇÒ»ÑùµÄ  
+[root@krlcgcms01 mytest]# awk '{print $0}' test1  //awk 'BEGIN{RS="\n"}{print $0}' test1 è¿™äºŒä¸ªæ˜¯ä¸€æ ·çš„  
 111 222  
 333 444  
 555 666  
 ```
-ÆäÊµÄã¿ÉÒÔ°ÑÉÏÃætest1ÎÄ¼þÀïµÄÄÚÈÝÀí½âÎª£¬111 222\n333 444\n555 6666£¬ÀûÓÃ\n½øÐÐ·Ö¸î¡£¿´ÏÂÒ»¸öÀý×Ó  
-3£¬×Ô¶¨ÒåRS·Ö¸î·û
+å…¶å®žä½ å¯ä»¥æŠŠä¸Šé¢test1æ–‡ä»¶é‡Œçš„å†…å®¹ç†è§£ä¸ºï¼Œ111 222\n333 444\n555 6666ï¼Œåˆ©ç”¨\nè¿›è¡Œåˆ†å‰²ã€‚çœ‹ä¸‹ä¸€ä¸ªä¾‹å­  
+3ï¼Œè‡ªå®šä¹‰RSåˆ†å‰²ç¬¦
 ```
 [zhangy@localhost test]$ echo "111 222|333 444|555 666"|awk 'BEGIN{RS="|"}{print $0,RT}'  
  111 222 |  
  333 444 |  
  555 666
 ```  
-½áºÏÉÏÃæÒ»¸öÀý×Ó£¬¾ÍºÜÈÝÒ×Àí½âRSµÄÓÃ·¨ÁË¡£
+ç»“åˆä¸Šé¢ä¸€ä¸ªä¾‹å­ï¼Œå°±å¾ˆå®¹æ˜“ç†è§£RSçš„ç”¨æ³•äº†ã€‚
 
-4£¬RSÒ²¿ÉÄÜÊÇÕýÔò±í´ïÊ½
+4ï¼ŒRSä¹Ÿå¯èƒ½æ˜¯æ­£åˆ™è¡¨è¾¾å¼
 ```
 [zhangy@localhost test]$ echo "111 222a333 444b555 666"|awk 'BEGIN{RS="[a-z]+"}{print $1,RS,RT}'  
  111 [a-z]+ a  
  333 [a-z]+ b  
  555 [a-z]+
 ```  
-´ÓÀý3ºÍÀý4£¬ÎÒÃÇ¿ÉÒÔ·¢ÏÖÒ»µã£¬µ±RTÊÇÀûÓÃRSÆ¥Åä³öÀ´µÄÄÚÈÝ¡£Èç¹ûRSÊÇÄ³¸ö¹Ì¶¨µÄÖµÊ±£¬RT¾ÍÊÇRSµÄÄÚÈÝ¡£
+ä»Žä¾‹3å’Œä¾‹4ï¼Œæˆ‘ä»¬å¯ä»¥å‘çŽ°ä¸€ç‚¹ï¼Œå½“RTæ˜¯åˆ©ç”¨RSåŒ¹é…å‡ºæ¥çš„å†…å®¹ã€‚å¦‚æžœRSæ˜¯æŸä¸ªå›ºå®šçš„å€¼æ—¶ï¼ŒRTå°±æ˜¯RSçš„å†…å®¹ã€‚
 
-5£¬RSÎª¿ÕÊ±
+5ï¼ŒRSä¸ºç©ºæ—¶
 ```
 [zhangy@localhost test]$ cat -n test2  
  1  111 222  
@@ -73,47 +73,47 @@ http://blog.51yip.com/shell/1151.html
 333 444  
 555 666  
 
-[zhangy@localhost test]$ awk 'BEGIN{RS="";}{print "<",$0,">"}' test2  //Õâ¸öÀý×Ó¿´×Å±È½ÏÃ÷ÏÔ  
+[zhangy@localhost test]$ awk 'BEGIN{RS="";}{print "<",$0,">"}' test2  //è¿™ä¸ªä¾‹å­çœ‹ç€æ¯”è¾ƒæ˜Žæ˜¾  
 < 111 222 >  
-< 333 444     //ÕâÒ»ÐÐºÍÏÂÃæÒ»ÐÐ£¬ÊÇÒ»ÐÐ  
+< 333 444     //è¿™ä¸€è¡Œå’Œä¸‹é¢ä¸€è¡Œï¼Œæ˜¯ä¸€è¡Œ  
 333 444 >  
 < 555 666 >
 ```  
-´ÓÕâ¸öÀý×Ó£¬¿ÉÒÔ¿´³öµ±RSÎª¿ÕÊ±£¬awk»á×Ô¶¯ÒÔ¶àÐÐÀ´×öÎª·Ö¸î·û¡£
+ä»Žè¿™ä¸ªä¾‹å­ï¼Œå¯ä»¥çœ‹å‡ºå½“RSä¸ºç©ºæ—¶ï¼Œawkä¼šè‡ªåŠ¨ä»¥å¤šè¡Œæ¥åšä¸ºåˆ†å‰²ç¬¦ã€‚
 
-6£¬ORS¼ÇÂ¼Êä³ö·Ö·û·û£¬Ä¬ÈÏÖµÊÇ\n
+6ï¼ŒORSè®°å½•è¾“å‡ºåˆ†ç¬¦ç¬¦ï¼Œé»˜è®¤å€¼æ˜¯\n
 
-°ÑORSÀí½â³ÉRS·´¹ý³Ì£¬ÕâÑù¸üÈÝÒ×¼ÇÒäºÍÀí½â£¬¿´ÏÂÃæµÄÀý×Ó¡£
+æŠŠORSç†è§£æˆRSåè¿‡ç¨‹ï¼Œè¿™æ ·æ›´å®¹æ˜“è®°å¿†å’Œç†è§£ï¼Œçœ‹ä¸‹é¢çš„ä¾‹å­ã€‚
 ```
-[zhangy@localhost test]$ awk 'BEGIN{ORS="\n"}{print $0}' test1  //awk '{print $0}' test1¶þÕßÊÇÒ»ÑùµÄ  
+[zhangy@localhost test]$ awk 'BEGIN{ORS="\n"}{print $0}' test1  //awk '{print $0}' test1äºŒè€…æ˜¯ä¸€æ ·çš„  
 111 222  
 333 444  
 555 666  
 [zhangy@localhost test]$ awk 'BEGIN{ORS="|"}{print $0}' test1  
 111 222|333 444|555 666|  
 ```
-¶þ£¬FSÓëOFS
+äºŒï¼ŒFSä¸ŽOFS
 
-1£¬FSÖ¸¶¨ÁÐ·Ö¸î·û
+1ï¼ŒFSæŒ‡å®šåˆ—åˆ†å‰²ç¬¦
 ```
 [zhangy@localhost test]$ echo "111|222|333"|awk '{print $1}'  
  111|222|333  
 [zhangy@localhost test]$ echo "111|222|333"|awk 'BEGIN{FS="|"}{print $1}'  
  111  
  ```
-2£¬FSÒ²¿ÉÒÔÓÃÕýÔò
+2ï¼ŒFSä¹Ÿå¯ä»¥ç”¨æ­£åˆ™
 ```
 [zhangy@localhost test]$ echo "111||222|333"|awk 'BEGIN{FS="[|]+"}{print $1}'  
 111  
 ```
-3£¬FSÎª¿ÕµÄÊ±ºò
+3ï¼ŒFSä¸ºç©ºçš„æ—¶å€™
 ```
 [zhangy@localhost test]$ echo "111|222|333"|awk 'BEGIN{FS=""}{NF++;print $0}'  
 1 1 1 | 2 2 2 | 3 3 3  
 ```
-µ±FSÎª¿ÕµÄÊ±ºò£¬awk»á°ÑÒ»ÐÐÖÐµÄÃ¿¸ö×Ö·û£¬µ±³ÉÒ»ÁÐÀ´´¦Àí¡£
+å½“FSä¸ºç©ºçš„æ—¶å€™ï¼Œawkä¼šæŠŠä¸€è¡Œä¸­çš„æ¯ä¸ªå­—ç¬¦ï¼Œå½“æˆä¸€åˆ—æ¥å¤„ç†ã€‚
 
-4£¬RS±»Éè¶¨³É·Ç\nÊ±£¬\n»á³ÉFS·Ö¸î·ûÖÐµÄÒ»¸ö
+4ï¼ŒRSè¢«è®¾å®šæˆéž\næ—¶ï¼Œ\nä¼šæˆFSåˆ†å‰²ç¬¦ä¸­çš„ä¸€ä¸ª
 
 ```
 [zhangy@localhost test]$ cat test1  
@@ -124,9 +124,9 @@ http://blog.51yip.com/shell/1151.html
  222 333  
  666  
  ```
-222ºÍ333Ö®¼äÊÇÓÐÒ»¸ö\nµÄ£¬µ±RSÉè¶¨³É444ºó£¬222ºÍ333±»ÈÏ¶¨³ÉÍ¬Ò»ÐÐµÄ¶þÁÐÁË£¬ÆäÊµ°´³£¹æË¼ÏëÊÇ¶þÐÐµÄÒ»ÁÐ²Å¶Ô¡£
+222å’Œ333ä¹‹é—´æ˜¯æœ‰ä¸€ä¸ª\nçš„ï¼Œå½“RSè®¾å®šæˆ444åŽï¼Œ222å’Œ333è¢«è®¤å®šæˆåŒä¸€è¡Œçš„äºŒåˆ—äº†ï¼Œå…¶å®žæŒ‰å¸¸è§„æ€æƒ³æ˜¯äºŒè¡Œçš„ä¸€åˆ—æ‰å¯¹ã€‚
 
-5£¬OFSÁÐÊä³ö·Ö¸ô·û
+5ï¼ŒOFSåˆ—è¾“å‡ºåˆ†éš”ç¬¦
 
 ```
 [zhangy@localhost test]$ awk 'BEGIN{OFS="|";}{print $1,$2}' test1  
@@ -138,7 +138,7 @@ http://blog.51yip.com/shell/1151.html
  333|444  
  555|666  
  ```
-test1Ö»ÓÐ¶þÁÐ£¬Èç¹û100ÁÐ£¬¶¼Ð´³öÀ´Ì«Âé·³ÁË°É¡£
+test1åªæœ‰äºŒåˆ—ï¼Œå¦‚æžœ100åˆ—ï¼Œéƒ½å†™å‡ºæ¥å¤ªéº»çƒ¦äº†å§ã€‚
 
 ```
 [zhangy@localhost test]$ awk 'BEGIN{OFS="|";}{print $0}' test1  
@@ -150,48 +150,48 @@ test1Ö»ÓÐ¶þÁÐ£¬Èç¹û100ÁÐ£¬¶¼Ð´³öÀ´Ì«Âé·³ÁË°É¡£
  333|444  
  555|666 
  ``` 
-ÎªÊ²Ã´µÚ¶þÖÖ·½·¨ÖÐµÄOFSÉúÐ§ÄØ£¿¸öÈË¾õµÃ£¬awk¾õ²éµ½ÁÐÓÐËù±ä»¯Ê±£¬¾Í»áÈÃOFSÉúÐ§£¬Ã»±ä»¯Ö±½ÓÊä³öÁË¡£
+ä¸ºä»€ä¹ˆç¬¬äºŒç§æ–¹æ³•ä¸­çš„OFSç”Ÿæ•ˆå‘¢ï¼Ÿä¸ªäººè§‰å¾—ï¼Œawkè§‰æŸ¥åˆ°åˆ—æœ‰æ‰€å˜åŒ–æ—¶ï¼Œå°±ä¼šè®©OFSç”Ÿæ•ˆï¼Œæ²¡å˜åŒ–ç›´æŽ¥è¾“å‡ºäº†ã€‚
 
-#### AWK £º8¸öÇ¿´óµÄÄÚÖÃ±äÁ¿
+#### AWK ï¼š8ä¸ªå¼ºå¤§çš„å†…ç½®å˜é‡
 http://blog.chinaunix.net/uid-28903506-id-5211480.html
 
-AWKµÄÄÚÖÃ±äÁ¿ÓÐÁ½ÖÖÀàÐÍ£º  
-£¨1£©. Ò»ÖÖÊÇÖµ¿ÉÒÔ±»ÐÞ¸ÄµÄ±äÁ¿£¬ÀýÈçÓò·Ö¸ô·û¡¢¼ÇÂ¼·Ö¸ô·ûµÈ¡£  
-£¨2£©.  ÁíÒ»ÖÖÊÇ±»ÓÃÔÚ´¦ÀíÎÄ±¾µÄ¹ý³ÌÖÐ£¨¼ÇÂ¼´¦ÀíµÄ×´Ì¬£©»òÊÇÓÃÓÚÍ³¼Æ£¬ÀýÈç¼ÇÂ¼Êý¡¢ÓòµÄ¸öÊýµÈ¡£
+AWKçš„å†…ç½®å˜é‡æœ‰ä¸¤ç§ç±»åž‹ï¼š  
+ï¼ˆ1ï¼‰. ä¸€ç§æ˜¯å€¼å¯ä»¥è¢«ä¿®æ”¹çš„å˜é‡ï¼Œä¾‹å¦‚åŸŸåˆ†éš”ç¬¦ã€è®°å½•åˆ†éš”ç¬¦ç­‰ã€‚  
+ï¼ˆ2ï¼‰.  å¦ä¸€ç§æ˜¯è¢«ç”¨åœ¨å¤„ç†æ–‡æœ¬çš„è¿‡ç¨‹ä¸­ï¼ˆè®°å½•å¤„ç†çš„çŠ¶æ€ï¼‰æˆ–æ˜¯ç”¨äºŽç»Ÿè®¡ï¼Œä¾‹å¦‚è®°å½•æ•°ã€åŸŸçš„ä¸ªæ•°ç­‰ã€‚
 
-FS ÊäÈëÓò·Ö¸ô·û±äÁ¿  
-awk ´ÓÊäÈëÖÐ¶ÁÈ¡ºÍ´¦ÀíÃ¿Ò»ÐÐ£¬Ä¬ÈÏÊÇÒÔ¿Õ¸ñ×÷Îª·Ö¸ô·û£¬Í¬Ê±ÉèÖÃ±äÁ¿$1¡¢$2µÈµÈ¡£FS ±äÁ¿µÄ×÷ÓÃÊÇ×÷ÎªÃ¿Ò»¸ö¼ÇÂ¼ÖÐµÄÓò·Ö¸ô·û¡£  
-FS µÄÉèÖÃÓÐÁ½ÖÖ·½Ê½£º  
-£¨1£©Í¨¹ý -F ÃüÁîÐÐÑ¡Ïî  
+FS è¾“å…¥åŸŸåˆ†éš”ç¬¦å˜é‡  
+awk ä»Žè¾“å…¥ä¸­è¯»å–å’Œå¤„ç†æ¯ä¸€è¡Œï¼Œé»˜è®¤æ˜¯ä»¥ç©ºæ ¼ä½œä¸ºåˆ†éš”ç¬¦ï¼ŒåŒæ—¶è®¾ç½®å˜é‡$1ã€$2ç­‰ç­‰ã€‚FS å˜é‡çš„ä½œç”¨æ˜¯ä½œä¸ºæ¯ä¸€ä¸ªè®°å½•ä¸­çš„åŸŸåˆ†éš”ç¬¦ã€‚  
+FS çš„è®¾ç½®æœ‰ä¸¤ç§æ–¹å¼ï¼š  
+ï¼ˆ1ï¼‰é€šè¿‡ -F å‘½ä»¤è¡Œé€‰é¡¹  
 ```
 $ awk -F 'FS' 'commands' inputfilename
 ```
-£¨2£©Ö±½Ó°´ÕÕÆÕÍ¨±äÁ¿µÄ¸³Öµ·½Ê½
+ï¼ˆ2ï¼‰ç›´æŽ¥æŒ‰ç…§æ™®é€šå˜é‡çš„èµ‹å€¼æ–¹å¼
 ```
 $ awk 'BEGIN{FS="FS";}'
 ```
-×¢Òâ£º
-£¨1£©FS ¿ÉÒÔ±»ÉèÖÃÎªÈÎÒâµÄµ¥¸ö×Ö·û»òÕýÔò±í´ïÊ½¡£  
-£¨2£©FS ¿ÉÒÔ±ä¸üÈÎÒâ´Î£¬Ëû»áÒ»Ö±±£³ÖÖµ£¬Ö±µ½±»ÏÔÊ½µÄÐÞ¸Ä¡£Èç¹ûÄãÐèÒªÐÞ¸ÄÓò·Ö¸ô·û£¬×îºÃÔÚ¶ÁÈ¡Ò»ÐÐÖ®Ç°£¬ÕâÑù±ä¸ü¾ÍÄÜ×÷ÓÃÓÚ¶ÁÈ¡µÄÐÐ¡£
+æ³¨æ„ï¼š
+ï¼ˆ1ï¼‰FS å¯ä»¥è¢«è®¾ç½®ä¸ºä»»æ„çš„å•ä¸ªå­—ç¬¦æˆ–æ­£åˆ™è¡¨è¾¾å¼ã€‚  
+ï¼ˆ2ï¼‰FS å¯ä»¥å˜æ›´ä»»æ„æ¬¡ï¼Œä»–ä¼šä¸€ç›´ä¿æŒå€¼ï¼Œç›´åˆ°è¢«æ˜¾å¼çš„ä¿®æ”¹ã€‚å¦‚æžœä½ éœ€è¦ä¿®æ”¹åŸŸåˆ†éš”ç¬¦ï¼Œæœ€å¥½åœ¨è¯»å–ä¸€è¡Œä¹‹å‰ï¼Œè¿™æ ·å˜æ›´å°±èƒ½ä½œç”¨äºŽè¯»å–çš„è¡Œã€‚
 
-OFS ÊäÈëÓò·Ö¸ô·û±äÁ¿  
-OFS ×÷ÓÃÀàËÆÓÚFS£¬²»¹ýËû×÷ÓÃÓÚÊä³öÎÄ±¾£¬Ä¬ÈÏÖµÊÇµ¥¸ö¿Õ¸ñ×Ö·û¡£
+OFS è¾“å…¥åŸŸåˆ†éš”ç¬¦å˜é‡  
+OFS ä½œç”¨ç±»ä¼¼äºŽFSï¼Œä¸è¿‡ä»–ä½œç”¨äºŽè¾“å‡ºæ–‡æœ¬ï¼Œé»˜è®¤å€¼æ˜¯å•ä¸ªç©ºæ ¼å­—ç¬¦ã€‚
 ```
 $ awk -F':' '{print $3,$4;}' /etc/passwd
 41 41
 100 101
 ```
 
-print Óï¾äÖÐµÄÁ¬½Ó·û¡°,¡±ÓÃÓÚÊ¹ÓÃOFSÖµÀ´Á¬½ÓÁ½¸ö²ÎÊý£¬Èç¹û±ä¸üOFSÉèÖÃ£º
+print è¯­å¥ä¸­çš„è¿žæŽ¥ç¬¦â€œ,â€ç”¨äºŽä½¿ç”¨OFSå€¼æ¥è¿žæŽ¥ä¸¤ä¸ªå‚æ•°ï¼Œå¦‚æžœå˜æ›´OFSè®¾ç½®ï¼š
 ```
 $ awk -F':' 'BEGIN{OFS="=";} {print $3,$4;}' /etc/passwd
 41=41
 100=101
 ```
 
-RS ÊäÈë¼ÇÂ¼·Ö¸ô·û±äÁ¿  
-RSÓÃÓÚ¶¨ÒåÒ»ÐÐ£¬¶øAWKÄ¬ÈÏ¼´ÊÇÒ»ÐÐ½ÓÒ»ÐÐ¶ÁÈ¡µÄ¡£  
-À´¿´Ò»¸ö´æ´¢Ñ§Éú·ÖÊýµÄÎÄ¼þ£¨¼ÇÂ¼¼äÒÔÁ½¸ö»»ÐÐ·û·Ö¸ô£¬¶øÃ¿Ò»¸öÓòÍ¨¹ýÒ»¸ö»»ÐÐ·û·Ö¸ô£©£º
+RS è¾“å…¥è®°å½•åˆ†éš”ç¬¦å˜é‡  
+RSç”¨äºŽå®šä¹‰ä¸€è¡Œï¼Œè€ŒAWKé»˜è®¤å³æ˜¯ä¸€è¡ŒæŽ¥ä¸€è¡Œè¯»å–çš„ã€‚  
+æ¥çœ‹ä¸€ä¸ªå­˜å‚¨å­¦ç”Ÿåˆ†æ•°çš„æ–‡ä»¶ï¼ˆè®°å½•é—´ä»¥ä¸¤ä¸ªæ¢è¡Œç¬¦åˆ†éš”ï¼Œè€Œæ¯ä¸€ä¸ªåŸŸé€šè¿‡ä¸€ä¸ªæ¢è¡Œç¬¦åˆ†éš”ï¼‰ï¼š
 ```
 $cat student.txt
 Jones
@@ -215,7 +215,7 @@ RinRao
 65
 ```
 
-Èç¹ûÒª»ñÈ¡Ñ§ÉúÐÕÃûºÍµÚÒ»¸ö·ÖÊýÖµ£¬¿ÉÒÔÊ¹ÓÃÒÔÏÂawk½Å±¾£º
+å¦‚æžœè¦èŽ·å–å­¦ç”Ÿå§“åå’Œç¬¬ä¸€ä¸ªåˆ†æ•°å€¼ï¼Œå¯ä»¥ä½¿ç”¨ä»¥ä¸‹awkè„šæœ¬ï¼š
 ```
 $cat student.awk
 BEGIN {
@@ -230,18 +230,18 @@ Gondrol 2321
 RinRao 2122
 ```
 
-ÔÚÒÔÉÏ½Å±¾ÖÐ£¬ÒòÎªRS±äÁ¿±»ÉèÖÃÎªÁ½¸ö»»ÐÐ·û£¬ËùÒÔawk¶ÁÈ¡Ã¿Ò»¸öÑ§ÉúµÄÏêÏ¸ÐÅÏ¢×÷ÎªÒ»¸ö¼ÇÂ¼¡£FS ÖµÎª»»ÐÐ·û£¬ËùÒÔ¼ÇÂ¼ÖÐµÄÃ¿Ò»ÐÐÊÇÒ»¸öÓò¡£
+åœ¨ä»¥ä¸Šè„šæœ¬ä¸­ï¼Œå› ä¸ºRSå˜é‡è¢«è®¾ç½®ä¸ºä¸¤ä¸ªæ¢è¡Œç¬¦ï¼Œæ‰€ä»¥awkè¯»å–æ¯ä¸€ä¸ªå­¦ç”Ÿçš„è¯¦ç»†ä¿¡æ¯ä½œä¸ºä¸€ä¸ªè®°å½•ã€‚FS å€¼ä¸ºæ¢è¡Œç¬¦ï¼Œæ‰€ä»¥è®°å½•ä¸­çš„æ¯ä¸€è¡Œæ˜¯ä¸€ä¸ªåŸŸã€‚
 
-ORS Êä³ö¼ÇÂ¼·Ö¸ô·û±äÁ¿
-ORSÀàËÆRS£¬Ëû×÷ÓÃÓÚÊä³ö¡£Êä³öÊ±´òÓ¡Ã¿Ò»Ìõ¼ÇÂ¼µÄÍ¬Ê±»á´òÓ¡Õâ¸ö¶¨½ç·û¡£
+ORS è¾“å‡ºè®°å½•åˆ†éš”ç¬¦å˜é‡
+ORSç±»ä¼¼RSï¼Œä»–ä½œç”¨äºŽè¾“å‡ºã€‚è¾“å‡ºæ—¶æ‰“å°æ¯ä¸€æ¡è®°å½•çš„åŒæ—¶ä¼šæ‰“å°è¿™ä¸ªå®šç•Œç¬¦ã€‚
 ```
 $  awk 'BEGIN{ORS="=";} {print;}' student-marks
 Jones 2143 78 84 77=Gondrol 2321 56 58 45=RinRao 2122 38 37 65=
 ```
 
-NR ¼ÇÂ¼¸öÊý±äÁ¿  
-NR ¸ø³öÒÑ´¦ÀíµÄ¼ÇÂ¼Êý»òÐÐºÅ¡£  
-ÏÂÃæÕâ¸öÀý×ÓÖÐ£¬NR±äÁ¿±£´æÐÐºÅ£¬ÔÚawk½Å±¾µÄEND²¿·Ö£¬NR±äÁ¿¿ÉÒÔ¸æËßÄãÒ»¸öÎÄ¼þÖÐµÄ¼ÇÂ¼×ÜÊý¡£
+NR è®°å½•ä¸ªæ•°å˜é‡  
+NR ç»™å‡ºå·²å¤„ç†çš„è®°å½•æ•°æˆ–è¡Œå·ã€‚  
+ä¸‹é¢è¿™ä¸ªä¾‹å­ä¸­ï¼ŒNRå˜é‡ä¿å­˜è¡Œå·ï¼Œåœ¨awkè„šæœ¬çš„ENDéƒ¨åˆ†ï¼ŒNRå˜é‡å¯ä»¥å‘Šè¯‰ä½ ä¸€ä¸ªæ–‡ä»¶ä¸­çš„è®°å½•æ€»æ•°ã€‚
 ```
 $ awk '{print "Processing Record - ",NR;}END {print NR, "Students Records are processed";}' student-marks
 Processing Record -  1
@@ -250,13 +250,13 @@ Processing Record -  3
 3 Students Records are processed
 ```
 
-£¨×¢£º£©ÔÚ´¦Àí¶à¸öÎÄ¼þÊ±£¬Çé¿öÓÐËù²»Í¬£¬NRÖµ»áÀÛ¼Ó£¬ÀýÈçµÚÒ»¸öÎÄ¼þÓÐ10¸ö¼ÇÂ¼£¬µ±´¦Àíµ½µÚ¶þ¸öÎÄ¼þµÄµÚ2¸ö¼ÇÂ¼Ê±£¬NRÖµÎª12
+ï¼ˆæ³¨ï¼šï¼‰åœ¨å¤„ç†å¤šä¸ªæ–‡ä»¶æ—¶ï¼Œæƒ…å†µæœ‰æ‰€ä¸åŒï¼ŒNRå€¼ä¼šç´¯åŠ ï¼Œä¾‹å¦‚ç¬¬ä¸€ä¸ªæ–‡ä»¶æœ‰10ä¸ªè®°å½•ï¼Œå½“å¤„ç†åˆ°ç¬¬äºŒä¸ªæ–‡ä»¶çš„ç¬¬2ä¸ªè®°å½•æ—¶ï¼ŒNRå€¼ä¸º12
 
-NF Óò¸öÊý±äÁ¿  
-NF¸ø³öÒ»¸ö¼ÇÂ¼ÖÐÓòµÄ×ÜÊý¡£  
-NFÔÚÅÐ¶ÏÒ»¸ö¼ÇÂ¼ÖÐÊÇ·ñËùÓÐµÄÓò¾ù´æÔÚÊ±·Ç³£ÓÐÓÃ¡£
+NF åŸŸä¸ªæ•°å˜é‡  
+NFç»™å‡ºä¸€ä¸ªè®°å½•ä¸­åŸŸçš„æ€»æ•°ã€‚  
+NFåœ¨åˆ¤æ–­ä¸€ä¸ªè®°å½•ä¸­æ˜¯å¦æ‰€æœ‰çš„åŸŸå‡å­˜åœ¨æ—¶éžå¸¸æœ‰ç”¨ã€‚
 
-ÐÞ¸ÄÏÂÉÏÃæµÄÑ§ÉúÐÅÏ¢ÎÄ¼þ£¨µÚÈý¸ö¼ÇÂ¼µÄµÚÈý¸ö·ÖÊýÃ»ÓÐÁË£©£º
+ä¿®æ”¹ä¸‹ä¸Šé¢çš„å­¦ç”Ÿä¿¡æ¯æ–‡ä»¶ï¼ˆç¬¬ä¸‰ä¸ªè®°å½•çš„ç¬¬ä¸‰ä¸ªåˆ†æ•°æ²¡æœ‰äº†ï¼‰ï¼š
 ```
 $cat student-marks
 Jones 2143 78 84 77
@@ -264,7 +264,7 @@ Gondrol 2321 56 58 45
 RinRao 2122 38 37
 ```
 
-¿´ÏÂÃæ½Å±¾µÄÊä³ö£º
+çœ‹ä¸‹é¢è„šæœ¬çš„è¾“å‡ºï¼š
 ```
 $ awk '{print NR,"->",NF}' student-marks
 1 -> 5
@@ -272,19 +272,19 @@ $ awk '{print NR,"->",NF}' student-marks
 3 -> 4
 ```
 
-FILENAME µ±Ç°ÊäÈëÎÄ¼þÃû±äÁ¿  
-FILENAME ±äÁ¿¸ø³öÕýÔÚ±»¶ÁÈ¡µÄÎÄ¼þÃû¡£  
-awkÊÇ¿ÉÒÔ½ÓÊÜ¶à¸öÊäÈëÎÄ¼þÀ´´¦ÀíµÄ¡£
+FILENAME å½“å‰è¾“å…¥æ–‡ä»¶åå˜é‡  
+FILENAME å˜é‡ç»™å‡ºæ­£åœ¨è¢«è¯»å–çš„æ–‡ä»¶åã€‚  
+awkæ˜¯å¯ä»¥æŽ¥å—å¤šä¸ªè¾“å…¥æ–‡ä»¶æ¥å¤„ç†çš„ã€‚
 ```
 $ awk '{print FILENAME}' student-marks
 student-marks
 student-marks
 student-marks
 ```
-ÔÚÉÏÃæµÄÊµÀýÖÐ£¬ÔÚ´¦ÀíÎÄ¼þµÄÃ¿Ò»Ìõ¼ÇÂ¼Ê±£¬¶¼´òÓ¡FILENAME£¬Ò²¾ÍÊÇ student-marks¡£
+åœ¨ä¸Šé¢çš„å®žä¾‹ä¸­ï¼Œåœ¨å¤„ç†æ–‡ä»¶çš„æ¯ä¸€æ¡è®°å½•æ—¶ï¼Œéƒ½æ‰“å°FILENAMEï¼Œä¹Ÿå°±æ˜¯ student-marksã€‚
 
-FNR µ±Ç°ÊäÈëÎÄ¼þ¼ÇÂ¼¸öÊý±äÁ¿
-µ±awk´Ó¶à¸öÎÄ¼þ¶ÁÈ¡Ê±£¬NR±äÁ¿½«¸ø³öËùÓÐÏà¹ØÎÄ¼þµÄ¼ÇÂ¼×ÜÊý£¬¶ø FNR ¸ø³öµÄÊÇÃ¿¸öÊäÈëÎÄ¼þµÄ¼ÇÂ¼Êý¡£
+FNR å½“å‰è¾“å…¥æ–‡ä»¶è®°å½•ä¸ªæ•°å˜é‡
+å½“awkä»Žå¤šä¸ªæ–‡ä»¶è¯»å–æ—¶ï¼ŒNRå˜é‡å°†ç»™å‡ºæ‰€æœ‰ç›¸å…³æ–‡ä»¶çš„è®°å½•æ€»æ•°ï¼Œè€Œ FNR ç»™å‡ºçš„æ˜¯æ¯ä¸ªè¾“å…¥æ–‡ä»¶çš„è®°å½•æ•°ã€‚
 ```
 $awk '{print FILENAME, NR, FNR;}' student-marks bookdetails
 student-marks 1 1
