@@ -1,13 +1,11 @@
-# 导航
-[Shell正则](#Shell正则)  
-[Shell里的细节](#Shell里的细节)  
-[Shell比较运算符](#Shell比较运算符)  
-[Shell输出的格式控制](#Shell输出的格式控制)  
+* 导航
+    * [Shell正则](#01)  
+    * [Shell里的细节](#02)  
+    * [Shell比较运算符](#Shell比较运算符)  
+    * [Shell输出的格式控制](#Shell输出的格式控制)  
 
-[TOC]
-
-# Shell正则
 [回到页首](#导航)  
+<h4 id="01">Shell正则<h4>
 <font color=red>关于正则表达式分组及后向引用</font>  
 http://wiki.jikexueyuan.com/project/unix/regular-expressions.html  
 http://www.cnblogs.com/jcli/p/4088514.html  
@@ -127,7 +125,7 @@ x{m},x{m,},x{m,n}:作用同x\{m\},x\{m,\},x\{m,n\}
 
 [回到页首](#导航)  
 
-# Shell里的细节
+<h4 id="02">Shell里的细节</h4>
 
 http://blog.csdn.net/yorkingalan/article/details/7055518  
 http://mprc.pku.edu.cn/mentors/training/TrainingCourses/material/ShellProgramming.HTM  
@@ -193,7 +191,7 @@ http://wuyelan.blog.51cto.com/6118147/1530277
 ```
 #!/bin/bash
 if [ $1 =="memory" -o $1 == "Memory" ]; then
-# 这里不再使用模式匹配了，而采用-o或关系来进行组合条件判断
+#### 这里不再使用模式匹配了，而采用-o或关系来进行组合条件判断
     free -m
 else
     cat /proc/uptime
@@ -279,14 +277,14 @@ echo $((RANDOM%50+1))
 
 例：
 ```
-# cat a.txt
+#### cat a.txt
 nihao 
 nihaooo
 hello
 
-#  if  grep -q hello a.txt ; then echo yes;else echo no; fi 
+####  if  grep -q hello a.txt ; then echo yes;else echo no; fi 
 yes
-# if grep -q word a.txt; then echo yes; else echo no; fi
+#### if grep -q word a.txt; then echo yes; else echo no; fi
 no 
 ```
 
@@ -312,8 +310,8 @@ echo $time1
 
 将增加时间变成秒
 ```
-[root@localhost ~]# time2=$((1*60*60+20*60))
-[root@localhost ~]# echo $time2
+[root@localhost ~]#### time2=$((1*60*60+20*60))
+[root@localhost ~]#### echo $time2
 4800
 ```
 
@@ -371,11 +369,11 @@ if [ "$test"x = "test"x ]; then
 3 注意到"$test"x最后的x，这是特意安排的，因为当$test为空的时候，上面的表达式就变成了x = testx，显然是不相等的。而如果没有这个x，表达式就会报错：[: =: unary operator expected
 
 注意:==的功能在[[]]和[]中的行为是不同的,如下:   
-[[ $a == z* ]]   # 如果$a以"z"开头(模式匹配)那么将为true  
-[[ $a == "z*" ]] # 如果$a等于z*(字符匹配),那么结果为true  
+[[ $a == z* ]]   #### 如果$a以"z"开头(模式匹配)那么将为true  
+[[ $a == "z*" ]] #### 如果$a等于z*(字符匹配),那么结果为true  
   
-[ $a == z* ]     # File globbing 和word splitting将会发生   
-[ "$a" == "z*" ] # 如果$a等于z*(字符匹配),那么结果为true   
+[ $a == z* ]     #### File globbing 和word splitting将会发生   
+[ "$a" == "z*" ] #### 如果$a等于z*(字符匹配),那么结果为true   
 
 <font color=red>获取字符串变量的一部分</font>  
 echo ${variable:x:y}  
@@ -478,7 +476,7 @@ https://segmentfault.com/q/1010000002416121
 
 [回到页首](#导航)  
 
-# Shell比较运算符
+#### Shell比较运算符
 https://blog.csdn.net/ithomer/article/details/6836382
 
 常用的运算符
@@ -510,11 +508,11 @@ https://blog.csdn.net/ithomer/article/details/6836382
 
 [回到页首](#导航)  
 
-# Shell输出的格式控制
+#### Shell输出的格式控制
 颜色、闪烁等
 ```
 #!/bin/bash  
-#  
+####  
 #下面是字体输出颜色及终端格式控制  
 #字体色30-37  
 echo -e "\033[30m黑色字\033[0m"  
@@ -547,7 +545,7 @@ echo -e "\033[4;31m下划线红字\033[0m"
 echo -e "\033[5;34m红字在闪烁\033[0m"  
 #反影  
 echo -e "\033[8m消隐\033[0m "  
-#  
+####  
   
   
   
@@ -574,7 +572,7 @@ echo -e "\033[?25h显示光标\033[0m"
   
 #下面的这个例子是字体不停的闪烁。  
 #!/bin/bash  
-#  
+####  
 a=30  
 b=41  
 while true  
