@@ -5,6 +5,7 @@
 * [编程](category_1_Programming.md)
     * [Git的使用](Programming_git_usage.md)
     * [Shell经验汇总](Programming_Shell_expirence_smmary.md) 
+    * [Shell的awk](Programming_Shell_awk.md) 
     * [Python-语法糖-动态生成变量](Programming_Python_dynamic_create_variable.md)
 * [Linux](category_2_Linux.md)
     * [Linux上的杂集](Linux_hotchpotch.md)

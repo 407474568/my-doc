@@ -4,7 +4,7 @@
 [Shell比较运算符](#Shell比较运算符)  
 [Shell输出的格式控制](#Shell输出的格式控制)  
 
-#### Shell正则
+### Shell正则
 [回到页首](#导航)  
 <font color=red>关于正则表达式分组及后向引用</font>  
 http://wiki.jikexueyuan.com/project/unix/regular-expressions.html  
@@ -125,7 +125,7 @@ x{m},x{m,},x{m,n}:作用同x\{m\},x\{m,\},x\{m,n\}
 
 [回到页首](#导航)  
 
-#### Shell里的细节
+### Shell里的细节
 
 http://blog.csdn.net/yorkingalan/article/details/7055518  
 http://mprc.pku.edu.cn/mentors/training/TrainingCourses/material/ShellProgramming.HTM  
@@ -470,13 +470,13 @@ http://bbs.chinaunix.net/thread-3745188-1-1.html
 https://segmentfault.com/q/1010000002416121
 
 总结目前一个可行的流程
-1) tr命令 对\n做无脑替换,需注意tr是1对1替换,举例 tr 'abc' '123' ,那么它执行的是a变1,b变2,c变3
-2) sed 去找标志位,在标志位后加一些原文本绝不会出现的词组----是为第3步作准备
-3) awk 利用它的输入 / 输出 行 / 列符重定义的功能,将第2步加的词组作为行结束标志,替换回\n,因为是额外添加的,则这些是可以牺牲的,在awk作行分割时被替换掉也不会影响原文.
+1) tr命令 对\n做无脑替换,需注意tr是1对1替换,举例 tr 'abc' '123' ,那么它执行的是a变1,b变2,c变3  
+2) sed 去找标志位,在标志位后加一些原文本绝不会出现的词组----是为第3步作准备  
+3) awk 利用它的输入 / 输出 行 / 列符重定义的功能,将第2步加的词组作为行结束标志,替换回\n,因为是额外添加的,则这些是可以牺牲的,在awk作行分割时被替换掉也不会影响原文.  
 
 [回到页首](#导航)  
 
-#### Shell比较运算符
+### Shell比较运算符
 https://blog.csdn.net/ithomer/article/details/6836382
 
 常用的运算符
@@ -508,7 +508,7 @@ https://blog.csdn.net/ithomer/article/details/6836382
 
 [回到页首](#导航)  
 
-#### Shell输出的格式控制
+### Shell输出的格式控制
 颜色、闪烁等
 ```
 #!/bin/bash  
