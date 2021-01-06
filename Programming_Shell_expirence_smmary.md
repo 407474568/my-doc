@@ -1,4 +1,4 @@
-### 导航
+# 导航
 [Shell正则](#Shell正则)  
 [Shell里的细节](#Shell里的细节)  
 [Shell比较运算符](#Shell比较运算符)  
@@ -6,7 +6,7 @@
 
 [TOC]
 
-### Shell正则
+# Shell正则
 [回到页首](#导航)  
 <font color=red>关于正则表达式分组及后向引用</font>  
 http://wiki.jikexueyuan.com/project/unix/regular-expressions.html  
@@ -127,7 +127,7 @@ x{m},x{m,},x{m,n}:作用同x\{m\},x\{m,\},x\{m,n\}
 
 [回到页首](#导航)  
 
-### Shell里的细节
+# Shell里的细节
 
 http://blog.csdn.net/yorkingalan/article/details/7055518  
 http://mprc.pku.edu.cn/mentors/training/TrainingCourses/material/ShellProgramming.HTM  
@@ -478,7 +478,7 @@ https://segmentfault.com/q/1010000002416121
 
 [回到页首](#导航)  
 
-### Shell比较运算符
+# Shell比较运算符
 https://blog.csdn.net/ithomer/article/details/6836382
 
 常用的运算符
@@ -510,7 +510,7 @@ https://blog.csdn.net/ithomer/article/details/6836382
 
 [回到页首](#导航)  
 
-### Shell输出的格式控制
+# Shell输出的格式控制
 颜色、闪烁等
 ```
 #!/bin/bash  
