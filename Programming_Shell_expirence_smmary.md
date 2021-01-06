@@ -6,10 +6,13 @@
 
 [回到页首](#导航)  
 <h4 id="01">Shell正则</h4>
-<font color=red>关于正则表达式分组及后向引用</font>  
+
+<font color=red>关于正则表达式分组及后向引用</font>
+
 http://wiki.jikexueyuan.com/project/unix/regular-expressions.html  
 http://www.cnblogs.com/jcli/p/4088514.html  
 http://kodango.com/sed-and-awk-notes-part-3  
+
 
 | 字符 | 描述 |  
 | ---- | ---- |  
@@ -86,9 +89,9 @@ $echo "{1234567}"|sed 's/{\([0-9]*\)}/\1/g'
 
 在做为特别字符时候+必须转义为  
 \+  
-1
+1  
 才有效，  
-而*则不需要。
+而*则不需要。  
 
 举个例子：
 ```
@@ -122,6 +125,7 @@ x{m},x{m,},x{m,n}:作用同x\{m\},x\{m,\},x\{m,n\}
 | [:space:] | 所有空白字符（新行，空格，制表符）  |  
 | [:upper:] | 大写字符  |  
 | [:xdigit:] | 十六进制数字（0-9，a-f，A-F）  |
+
 
 [回到页首](#导航)  
 
