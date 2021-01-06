@@ -1,11 +1,11 @@
 * 导航
     * [Shell正则](#01)  
     * [Shell里的细节](#02)  
-    * [Shell比较运算符](#Shell比较运算符)  
-    * [Shell输出的格式控制](#Shell输出的格式控制)  
+    * [Shell比较运算符](#03)  
+    * [Shell输出的格式控制](#04)  
 
 [回到页首](#导航)  
-<h4 id="01">Shell正则<h4>
+<h4 id="01">Shell正则</h4>
 <font color=red>关于正则表达式分组及后向引用</font>  
 http://wiki.jikexueyuan.com/project/unix/regular-expressions.html  
 http://www.cnblogs.com/jcli/p/4088514.html  
@@ -476,7 +476,7 @@ https://segmentfault.com/q/1010000002416121
 
 [回到页首](#导航)  
 
-#### Shell比较运算符
+<h4 id="03">Shell比较运算符</h4>
 https://blog.csdn.net/ithomer/article/details/6836382
 
 常用的运算符
@@ -508,7 +508,7 @@ https://blog.csdn.net/ithomer/article/details/6836382
 
 [回到页首](#导航)  
 
-#### Shell输出的格式控制
+<h4 id="04">Shell输出的格式控制</h4>
 颜色、闪烁等
 ```
 #!/bin/bash  
