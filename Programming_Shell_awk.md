@@ -7,8 +7,8 @@ awk '{if ($6>5 || $7>5) print}' A|less   ###筛选A文件中第六列或七列�
 awk '{if ($7>5) print}' A|less>B         ###筛选A文件中第七列大于5的数据，并将符合的结果输入到B文件中
 ```
 
-#### awk进行小数计算
-https://blog.51cto.com/radish/1736900
+#### awk进行浮点计算
+https://blog.51cto.com/radish/1736900  
 典型示例:
 ```
 echo "$A $B $C $D" | awk '{printf ("%.2f\n",$1*$2/$3-$4)}'
@@ -18,6 +18,21 @@ awk以传参形式接收, 等同shell的函数调用,格式控制由prinft 来�
 ```
 [wangdong@centos715-node1 uncomp]$ echo "6.8923e+08" | awk '{printf ("%.0f\n",$1)}'
 689230000
+```
+
+传参变量的用法
+
+```
+[wangdong@centos715-node1 ~]$ A=5
+[wangdong@centos715-node1 ~]$ B=16
+[wangdong@centos715-node1 ~]$ C=29
+[wangdong@centos715-node1 ~]$ D=6
+[wangdong@centos715-node1 ~]$ echo "$A $B $C $D" | awk '{printf ("%.2f\n",$1*$2/$3-$4)}'
+-3.24
+[wangdong@centos715-node1 ~]$ echo "$A $B $C $D" | awk '{printf ("%.2f\n",$1/$4)}'      
+0.83
+[wangdong@centos715-node1 ~]$ echo "$A $B $C $D" | awk '{printf ("%.3f\n",$1/$4)}'
+0.833
 ```
 
 #### awk中RS,ORS,FS,OFS 的作用
