@@ -20,7 +20,7 @@ echo 开始上传静态网站
 cd _book
 if %computername% == TANHUANG-PC (set fastcopy_command=C:\Users\Administrator\FastCopy\FastCopy.exe)
 if %computername% == TANHUANG-NOTE (set fastcopy_command="C:\Program Files\FastCopy\FastCopy.exe")
-%fastcopy_command% /cmd=sync /force_close /estimate /bufsize=256 /acl /log=FALSE D:\Code\my-doc\images\ /to=D:\Code\my-doc\_book\images
+%fastcopy_command% /cmd=sync /force_close /estimate /bufsize=256 /acl /log=FALSE /balloon=FALSE D:\Code\my-doc\images\ /to=D:\Code\my-doc\_book\images
 git init
 git remote add git git@github.com:407474568/my-doc.git
 REM git config credential.helper store
