@@ -145,6 +145,22 @@ bash -x 脚本名
 find . -name "*" | xargs -i cp {}  /home/users/
 ```
 
+<font color=red>在shell脚本中导入外部函数</font>  
+https://blog.csdn.net/xiemeikj/article/details/5521067  
+```
+. scripts_name
+source scripts_name
+```
+以上两种方式都能调用在其他脚本中定义的函数
+
+<font color=red>shell脚本获取自身所在路径和名字</font>  
+https://xvcat.com/post/1096  
+https://aimuke.github.io/linux/2019/04/29/how-to-get-abusolute-path/
+```
+$(cd `dirname $0`; pwd)/$0
+```
+
+
 <font color=red>命令执行结果赋值给变量</font>  
 形如：  
 ```
@@ -209,6 +225,7 @@ fi
 ||：或  
 !: 非  
 ![](images/HJd9Qgp130K5ntsp638xNlbLUjPzScfe.png)
+
 
 <font color=red>重定向1>/dev/null 2>&1 含义</font>  
 http://blog.csdn.net/ithomer/article/details/9288353
