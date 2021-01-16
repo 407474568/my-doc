@@ -29,7 +29,7 @@ git config --global --unset https.proxy
 Windows上的位置  
 %userprofile%\.gitconfig
 
-Linux上的位置
+Linux上的位置  
 ~/.gitconfig
 
 <br/>

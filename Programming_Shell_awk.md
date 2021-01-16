@@ -7,6 +7,24 @@ awk '{if ($6>5 || $7>5) print}' A|less   ###筛选A文件中第六列或七列�
 awk '{if ($7>5) print}' A|less>B         ###筛选A文件中第七列大于5的数据，并将符合的结果输入到B文件中
 ```
 
+排除筛选的例子  
+https://www.cnblogs.com/chenwenyan/p/8580654.html  
+https://segmentfault.com/q/1010000006687483  
+以下两种方式都能实现排除以"NAME"为关键字, 且限定在行首或者第一列
+```
+[root@storage ~]# zpool list
+NAME             SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+SAS-4T-group01  40.0T  18.2T  21.8T        -         -     0%    45%  1.00x  DEGRADED  -
+my-pool         21.8T  8.32T  13.5T        -         -     0%    38%  1.00x    ONLINE  -
+[root@storage ~]# zpool list | awk '!/^NAME/{print $1}'
+SAS-4T-group01
+my-pool
+[root@storage ~]# zpool list | awk '{if($1!="NAME"){print $1}}'
+SAS-4T-group01
+my-pool
+[root@storage ~]# 
+```
+
 #### awk进行浮点计算
 https://blog.51cto.com/radish/1736900  
 典型示例:
