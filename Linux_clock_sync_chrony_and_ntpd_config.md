@@ -314,7 +314,7 @@ restrict -6 ::1
 
 #### NTP版本升级
 编译安装, 下载地址  
-http://www.ntp.org/downloads.html
+http://www.ntp.org/downloads.html  
 ntp的软件包编译安装本身不涉及太多判断要处理, 只是编译参数的选择, 以及原有配置文件的备份工作可能需要涉及
 
 我自己所使用的编译参数
