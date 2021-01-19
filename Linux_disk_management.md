@@ -1,8 +1,8 @@
 #### 导航
 * 目录
     * [文件系统层次结构标准](#文件系统层次结构标准)
-    * [通过UUID挂载分区](#通过UUID挂载分区)
-    * [LVM逻辑磁盘卷管理](#LVM逻辑磁盘卷管理)
+    * [通过UUID挂载分区](#01)
+    * [LVM逻辑磁盘卷管理](#02)
     * [parted命令](#parted命令)
     * [fdisk命令](#fdisk的详解)
 
@@ -61,7 +61,7 @@ https://www.bookstack.cn/read/linux-command-1.6.0/command-partprobe.md
 ```
 
 
-#### 通过UUID挂载分区
+<h4 id="01"> 通过UUID挂载分区</h4>>
 https://my.oschina.net/leejun2005/blog/290073  
 UUID 全称是 Universally Unique Identifier，也就是说，每个分区有一个唯一的 UUID 值，这样就不会发生分区识别混乱的问题了。  
 在 fstab 中用 UUID 挂载分区，看起来向这样：  
@@ -100,7 +100,7 @@ ID_FS_LABEL_SAFE=SWAP
 ```
 ![](images/8HZbFlmwRKmo9sue5CaLVprgvkqt1KNM.png)
 
-#### LVM逻辑磁盘卷管理
+<h4 id="02"> LVM逻辑磁盘卷管理</h4>
 关于LVM的概念：  
 http://molinux.blog.51cto.com/2536040/518441  
 http://wqmsl.blog.51cto.com/847418/471784   
