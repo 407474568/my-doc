@@ -139,6 +139,23 @@ resize2fs最后重新生成大小----设备完整路径,如 /dev/mapper/rootvg
 解释得更为详细  
 http://h2olyu.blog.51cto.com/1490267/1181547  
 
+<font color=red>xfs文件系统LVM扩容</font>  
+https://my.oschina.net/Jalo/blog/804412
+1. df -hP
+2. fdisk -l
+3. vgdisplay
+4. pvcreate /dev/sdc
+5. gextend centos /dev/sdc
+6. vgdisplay
+7. lvextend -l +5G /dev/centos/var
+8. xfs_growps /dev/centos/var
+9. df -hP
+
+以上是有新磁盘的时候扩容到已有的逻辑卷上的9个步骤  
+如果逻辑卷还有剩余空间可以使用  
+vgs 查看剩余了多少  
+然后使用1、7、8、9这4个命令
+
 <font color=red>LVM的缩减</font>  
 标准步骤  
 1.umount filesystem  
@@ -147,6 +164,22 @@ http://h2olyu.blog.51cto.com/1490267/1181547
 4.lvredure  
 http://blog.itpub.net/32980/viewspace-1123851/  
 http://bbs.chinaunix.net/thread-1925323-1-1.html  
+
+<font color=red>LVM从VG中删除PV及删除未知PV</font>  
+比如： 先创建了PV，加入了VG，再mkfs.ext4去格式化掉这个PV，就出现了以下情况  
+![](images/8HZbFlmwRKFybWokud2wf7grSY6zKMIA.jpg)
+
+VG中去除PV unknown device：
+```
+[root@bogon ~]# vgreduce --removemissing  VolGroup
+  Couldn't find device with uuid OBTOlS-4Gol-YOEY-ybJ1-8HSh-dA2E-yNtZWx.
+  Wrote out consistent volume group VolGroup
+```
+
+从VG中去除特定PV：
+```
+vgreduce VolGroup00  /dev/xvdb1
+```
 
 #### parted命令
 http://www.cnblogs.com/zhangpengme/archive/2011/12/29/2305963.html   
