@@ -204,6 +204,112 @@ https://blog.hqcodeshop.fi/archives/273-GNU-Parted-Solving-the-dreaded-The-resul
 也就是该磁盘第一个分区, 起始点设为0%
 
 
+GPT分区表分区个数不受限
+```
+[root@localhost ~]# parted -s /dev/sdb print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 4398GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start  End    Size   File system  Name     Flags
+ 2      100GB  200GB  100GB               primary
+ 3      200GB  300GB  100GB               primary
+ 4      300GB  400GB  100GB               primary
+ 5      400GB  500GB  100GB               primary
+ 6      500GB  600GB  100GB               primary
+```
+
+在MBR分区表上, 逻辑分区是建立在扩展分区之上的
+```
+[root@localhost ~]# parted -s /dev/sdb mklabel msdos
+[root@localhost ~]# parted -s /dev/sdb print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 4398GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start  End  Size  Type  File system  Flags
+
+[root@localhost ~]# parted -s /dev/sdb mkpart extend 100G 2000G
+[root@localhost ~]# parted -s /dev/sdb print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 4398GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  100GB   100GB   primary
+ 2      100GB   2000GB  1900GB  extended               lba
+
+[root@localhost ~]# parted -s /dev/sdb mkpart logic 100G 200G
+[root@localhost ~]# parted -s /dev/sdb print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 4398GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  100GB   100GB   primary
+ 2      100GB   2000GB  1900GB  extended               lba
+ 5      100GB   200GB   100GB   logical
+```
+
+而在GPT分区表上, 先划扩展分区, 再在扩展分区之上创建逻辑分区, 这一流程, 是<font color=red>错误</font>的
+```
+[root@localhost ~]# parted -s /dev/sdb mkpart extend 100G 100%
+[root@localhost ~]# parted -s /dev/sdb print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 4398GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  100GB   100GB                primary
+ 2      100GB   4398GB  4298GB               extend
+
+[root@localhost ~]# parted -s /dev/sdb mkpart logic 100G 50%
+Error: You requested a partition from 100GB to 2199GB (sectors 195312500..4294967295).
+The closest location we can manage is 4398GB to 4398GB (sectors 8589932544..8589932544).
+```
+
+GPT分区表依旧可以建立扩展分区和逻辑分区, 但与主分区已不存在任何不同之处
+https://www.eassos.cn/jiao-cheng/ying-pan/mbr-gpt-fenqubiao.php
+```
+[root@localhost ~]# parted -s /dev/sdb print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 4398GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start  End  Size  File system  Name  Flags
+
+[root@localhost ~]# parted -s /dev/sdb mkpart primary 0% 100G
+[root@localhost ~]# parted -s /dev/sdb mkpart extend 100G 200G
+[root@localhost ~]# parted -s /dev/sdb mkpart logic 100G 200G
+Error: You requested a partition from 100GB to 200GB (sectors 195312500..390625000).
+The closest location we can manage is 200GB to 200GB (sectors 390625280..390625280).
+[root@localhost ~]# parted -s /dev/sdb mkpart logic 200G 300G
+[root@localhost ~]# parted -s /dev/sdb print
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sdb: 4398GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start   End    Size   File system  Name     Flags
+ 1      1049kB  100GB  100GB               primary
+ 2      100GB   200GB  100GB               extend
+ 3      200GB   300GB  100GB               logic
+
+```
+
 #### fdisk的详解
 http://linux008.blog.51cto.com/2837805/548711  
 在fdisk里的操作，在没有使用wq保存更改操作以前，不会生效，但相应的操作指令会被缓存。
