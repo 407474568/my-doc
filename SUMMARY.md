@@ -8,6 +8,7 @@
     * [Shell经验汇总](Programming_Shell_expirence_smmary.md) 
     * [Shell的awk](Programming_Shell_awk.md) 
     * [Python-语法糖-动态生成变量](Programming_Python_dynamic_create_variable.md)
+    * [Python-反射与自省](Programming_Python_reflection_and_introspection.md)
 * [Linux](category_2_Linux.md)
     * [Linux上的杂集](Linux_hotchpotch.md)
     * [内核参数](Linux_kernel_parameter.md)
