@@ -7,6 +7,7 @@
     * [Shell输出的格式控制](#04)  
 
 <h4 id="05">杂项</h4>
+
 <font color=red>动态变量</font>  
 
 https://www.cnblogs.com/bugutian/p/12030428.html  
