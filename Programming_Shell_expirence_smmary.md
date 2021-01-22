@@ -1,11 +1,30 @@
 #### 导航
 * 目录
+    * [杂项](#05) 
     * [Shell正则](#01)  
     * [Shell里的细节](#02)  
     * [Shell比较运算符](#03)  
     * [Shell输出的格式控制](#04)  
 
-[回到页首](#导航)  
+<h4 id="05">杂项</h4>
+<font color=red>动态变量</font>  
+https://www.cnblogs.com/bugutian/p/12030428.html  
+https://blog.csdn.net/qinyushuang/article/details/44115531  
+用到eval, 来将变量获得的字符串(变量名称), 作为运算对象  
+实例
+```
+for item_name in Manufacturer Product_Name Version Serial_Number UUID SKU_Number Family
+do
+    tmp=$(eval echo '$'${item_name})
+    printf "| %-14s | %-60s |\n" "$item_name" "${tmp}"
+done
+printf " %s \n" "${table_header}"
+
+```
+tmp变量 的取值是 "Manufacturer Product_Name ..."中的一个  
+那么```echo '$'${item_name}```的输出就是形如```$Manufacturer```  
+再通过eval 命令将其当作运算对象执行, 就可以得到相应变量存储的值  
+需要注意的是, eval 这种命令也有存在SQL注入漏洞的不当使用的风险, 需要限制其的运行条件
 
 <h4 id="01">Shell正则</h4>
 
