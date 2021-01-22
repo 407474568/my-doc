@@ -8,6 +8,7 @@
 
 <h4 id="05">杂项</h4>
 <font color=red>动态变量</font>  
+
 https://www.cnblogs.com/bugutian/p/12030428.html  
 https://blog.csdn.net/qinyushuang/article/details/44115531  
 用到eval, 来将变量获得的字符串(变量名称), 作为运算对象  
