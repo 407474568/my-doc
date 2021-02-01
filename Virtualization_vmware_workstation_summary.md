@@ -54,8 +54,8 @@ ethernet[0-9]+.virtualDev = "vmxnet3"
 
 <font color=red>禁用vmem</font>
 
-1.虚拟机的配置中 Options 中，Advanced项，启用"Disable memory page trimming"，也就是禁止内存剪裁。
-2.虚拟机的配置文件 即 .vmx 文件中，加入 mainMem.useNamedFile = "FALSE"
+1. 虚拟机的配置中 Options 中，Advanced项，启用"Disable memory page trimming"，也就是禁止内存剪裁。
+2. 虚拟机的配置文件 即 .vmx 文件中，加入 mainMem.useNamedFile = "FALSE"
 
 http://jyhshin1.blogspot.com/2013/04/vmware-on-windows-7.html 
 
