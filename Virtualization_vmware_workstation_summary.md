@@ -2,14 +2,15 @@
 
 [https://www.howtoforge.com/how-to-shrink-vmware-virtual-disk-files-vmdk](https://www.howtoforge.com/how-to-shrink-vmware-virtual-disk-files-vmdk)
 
-解决的问题:vmdk文件增长得很大, 但在guestOS中查看, 并未实际占有相应多的空间
+解决的问题:  
+vmdk文件增长得很大, 但在guestOS中查看, 并未实际占有相应多的空间
 
 * 在Windows宿主机上的操作方法
 
-先对系统垃圾文件进行清理
-Before we try to shrink the virtual disk files, we should try to remove any unneeded files from the virtual machine to free space. For example, on Debian-based VMs, you can run
-apt-get clean
-to clear out the local repository of retrieved package files.
+先对系统垃圾文件进行清理  
+Before we try to shrink the virtual disk files, we should try to remove any unneeded files from the virtual machine 
+to free space.   
+For example, on Debian-based VMs, you can run apt-get clean to clear out the local repository of retrieved package files.
 
 用/dev/zero填0，将虚拟机的磁盘空间全部占满，然后删除
 Next, run
@@ -18,7 +19,7 @@ cat /dev/zero > zero.fill;sync;sleep 1;sync;rm -f zero.fill
 to fill the unused space with zeros.
 ```
 
-最后关闭虚拟机，再在宿主机上用vmware-vdiskmanager.exe命令行工具来收缩
+最后关闭虚拟机，再在宿主机上用vmware-vdiskmanager.exe命令行工具来收缩  
 Then power down the VM and open the command window on the Windows host:
 ```
 VMware workstation安装路径\vmware-vdiskmanager.exe -k 虚拟机文件路径\xxxx.vmdk
@@ -28,15 +29,19 @@ VMware workstation安装路径\vmware-vdiskmanager.exe -k 虚拟机文件路径\
 
 https://www.zhihu.com/question/41707455
 
-windows操作系统的虚拟机 ,用到vmware tools的命令
+windows操作系统的虚拟机 ,用到vmware tools的命令  
+```
  "C:\Program Files\VMware\VMware Tools\VMwareToolboxCmd.exe" disk shrink c:\
-![](/images/b6be90b3gy1gj56hagyemj20n30770st.jpg)
+```
+![](images/b6be90b3gy1gj56hagyemj20n30770st.jpg)
  
 * guestOS是Linux的操作方法
 
-中途可能ssh会中断
+中途可能ssh会中断  
+```
 vmware-toolbox-cmd disk shrink /
-![](/images/b6be90b3gy1gj56he0frrj20ky02pt8y.jpg)
+```
+![](images/b6be90b3gy1gj56he0frrj20ky02pt8y.jpg)
 
 #### VMware workstation虚拟机性能设置
 
