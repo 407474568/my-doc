@@ -56,9 +56,11 @@ def parse_ymd(s):
 并且不管datetime还是time下strptime函数, 性能并没有太明显的区别
 
 
-<font color=red>time模块下的函数作用</font>  
+<font color=red>time模块下的函数作用</font>
+
 - strptime()函数将时间转换成时间数组  
 - mktime()函数将时间数组转换成时间戳  
+
 ```
 #coding:UTF-8
 import time
@@ -74,6 +76,7 @@ print timestamp
 ```
 
 <font color=red>字符串转时间戳</font>
+
 ```
 #设a为字符串
 import time
@@ -93,7 +96,9 @@ time.strftime('%Y-%m-%d %H:%M:%S',x)
 >>2011-09-27 10:50:00
 ```
 
+
 <font color=red>数字型的时间戳转为Python内的时间戳格式</font>  
+
 例如: 1612236538  
 用到  
 time.localtime  ---> 把数字转为时间元组
