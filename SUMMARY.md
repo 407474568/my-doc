@@ -28,6 +28,7 @@
 * [容器](category_3_Container.md)
     * [kubernetes 之 etcd](Container_etcd.md)
 * [数据库](category_4_Database.md)
+    * [MySQL高可用--主主 / 主从](Database_MySQL_HA.md)
 * [虚拟化](category_5_Virtualization.md)
     * [vCenter操作相关](Virtualization_vcenter_relates.md)
     * [VMware Workstation汇总](Virtualization_vmware_workstation_summary.md)
