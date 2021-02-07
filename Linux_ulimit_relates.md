@@ -86,7 +86,7 @@ https://www.cnblogs.com/lsdb/p/7526448.html   对此文章观点的验证
 的情况下,
 在/etc/security/limits.conf文件中添加
 ```
-* -nproc 65535
+*           -      nproc     65535
 ```
 不会改变普通用户的"max user processes"即nproc值,此时sshd进程和操作系统分别进行过重启,结果都相同.
 
