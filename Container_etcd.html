@@ -1,0 +1,790 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>kubernetes 之 etcd · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-back-to-top-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-chapter-fold/chapter-fold.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-code/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search-pro/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-insert-logo/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-pageview-count/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-tbfed-pagefooter/footer.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="category_4_Database.html" />
+    
+    
+    <link rel="prev" href="category_3_Container.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="category_0_Markdown_grammar.html">
+            
+                <a href="category_0_Markdown_grammar.html">
+            
+                    
+                    Markdown语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="category_1_Programming.html">
+            
+                <a href="category_1_Programming.html">
+            
+                    
+                    编程
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="Programming_git_usage.html">
+            
+                <a href="Programming_git_usage.html">
+            
+                    
+                    Git的使用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="Programming_cmd_expirence_smmary.html">
+            
+                <a href="Programming_cmd_expirence_smmary.html">
+            
+                    
+                    CMD经验汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="Programming_Shell_expirence_smmary.html">
+            
+                <a href="Programming_Shell_expirence_smmary.html">
+            
+                    
+                    Shell经验汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="Programming_Shell_awk.html">
+            
+                <a href="Programming_Shell_awk.html">
+            
+                    
+                    Shell的awk
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="Programming_Python_dynamic_create_variable.html">
+            
+                <a href="Programming_Python_dynamic_create_variable.html">
+            
+                    
+                    Python-语法糖-动态生成变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="Programming_Python_reflection_and_introspection.html">
+            
+                <a href="Programming_Python_reflection_and_introspection.html">
+            
+                    
+                    Python-反射与自省
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="Programming_Python_hotchpotch.html">
+            
+                <a href="Programming_Python_hotchpotch.html">
+            
+                    
+                    Python-杂集
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="category_2_Linux.html">
+            
+                <a href="category_2_Linux.html">
+            
+                    
+                    Linux
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="Linux_hotchpotch.html">
+            
+                <a href="Linux_hotchpotch.html">
+            
+                    
+                    Linux上的杂集
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="Linux_kernel_parameter.html">
+            
+                <a href="Linux_kernel_parameter.html">
+            
+                    
+                    内核参数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="Linux_high_avaliability.html">
+            
+                <a href="Linux_high_avaliability.html">
+            
+                    
+                    高可用汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="Linux_ansible.html">
+            
+                <a href="Linux_ansible.html">
+            
+                    
+                    ansible
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="Linux_bond_config.html">
+            
+                <a href="Linux_bond_config.html">
+            
+                    
+                    bond配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="Linux_zombie_process.html">
+            
+                <a href="Linux_zombie_process.html">
+            
+                    
+                    僵尸进程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="Linux_ulimit_relates.html">
+            
+                <a href="Linux_ulimit_relates.html">
+            
+                    
+                    关于ulimit设置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="Linux_tcpdump_and_wireshark.html">
+            
+                <a href="Linux_tcpdump_and_wireshark.html">
+            
+                    
+                    tcpdump与wireshark在排错中的应用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="Linux_sftp_and_vsftp_config_chroot.html">
+            
+                <a href="Linux_sftp_and_vsftp_config_chroot.html">
+            
+                    
+                    vsftpd和sftp的chroot设置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="Linux_clock_sync_chrony_and_ntpd_config.html">
+            
+                <a href="Linux_clock_sync_chrony_and_ntpd_config.html">
+            
+                    
+                    时钟同步
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="Linux_firewalld_and_iptables.html">
+            
+                <a href="Linux_firewalld_and_iptables.html">
+            
+                    
+                    firewalld和iptables
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="Linux_disk_management.html">
+            
+                <a href="Linux_disk_management.html">
+            
+                    
+                    磁盘管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.13" data-path="Linux_gcc_upgrade.html">
+            
+                <a href="Linux_gcc_upgrade.html">
+            
+                    
+                    gcc的升级操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.14" data-path="Linux_PXE_config.html">
+            
+                <a href="Linux_PXE_config.html">
+            
+                    
+                    PXE Server端的配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="category_3_Container.html">
+            
+                <a href="category_3_Container.html">
+            
+                    
+                    容器
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.5.1" data-path="Container_etcd.html">
+            
+                <a href="Container_etcd.html">
+            
+                    
+                    kubernetes 之 etcd
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="category_4_Database.html">
+            
+                <a href="category_4_Database.html">
+            
+                    
+                    数据库
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="Database_MySQL_HA.html">
+            
+                <a href="Database_MySQL_HA.html">
+            
+                    
+                    MySQL高可用--主主 / 主从
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="category_5_Virtualization.html">
+            
+                <a href="category_5_Virtualization.html">
+            
+                    
+                    虚拟化
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="Virtualization_vcenter_relates.html">
+            
+                <a href="Virtualization_vcenter_relates.html">
+            
+                    
+                    vCenter操作相关
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="Virtualization_vmware_workstation_summary.html">
+            
+                <a href="Virtualization_vmware_workstation_summary.html">
+            
+                    
+                    VMware Workstation汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="category_9_Others.html">
+            
+                <a href="category_9_Others.html">
+            
+                    
+                    其他 / 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="Others_remote_wake_up_computer.html">
+            
+                <a href="Others_remote_wake_up_computer.html">
+            
+                    
+                    远程唤醒计算机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="Others_windows_ipsec.html">
+            
+                <a href="Others_windows_ipsec.html">
+            
+                    
+                    Windows IPSec实现防火墙功能
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >kubernetes 之 etcd</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h4 id="etcd&#x96C6;&#x7FA4;&#x521D;&#x59CB;&#x5316;&#x51FA;&#x73B0;cluster-id-mismatch&#x7684;&#x60C5;&#x51B5;">etcd&#x96C6;&#x7FA4;&#x521D;&#x59CB;&#x5316;&#x51FA;&#x73B0;cluster ID mismatch&#x7684;&#x60C5;&#x51B5;</h4>
+<p><img src="images/lcf2aAz4XQ3EH0YPoOdjrq6eGIFN1CSm.png" alt="">
+&#x521D;&#x59CB;&#x5316;&#x7684;&#x60C5;&#x51B5;<br><a href="https://www.cnops.xyz/archives/1658" target="_blank">https://www.cnops.xyz/archives/1658</a><br><a href="https://www.cnblogs.com/dukuan/p/8671345.html" target="_blank">https://www.cnblogs.com/dukuan/p/8671345.html</a><br>&#x5220;&#x9664;etcd&#x6570;&#x636E;&#x6587;&#x4EF6;, &#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;/etc/etcd/etcd.conf &#x7684; [Member] &#x6BB5;&#x7684; ETCD_DATA_DIR &#x5B9A;&#x4E49;&#x7684;&#x4F4D;&#x7F6E;,&#x9ED8;&#x8BA4;&#x503C; /var/lib/etcd/default.etcd<br>&#x6240;&#x6709;&#x8282;&#x70B9;&#x90FD;&#x5220;&#x9664;&#x4E00;&#x904D;  </p>
+<h4 id="etcd-&#x96C6;&#x7FA4;&#x65B0;&#x589E;&#x8282;&#x70B9;">etcd &#x96C6;&#x7FA4;&#x65B0;&#x589E;&#x8282;&#x70B9;</h4>
+<p><a href="https://www.centos.bz/2018/04/etcd%E9%9B%86%E7%BE%A4%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/" target="_blank">https://www.centos.bz/2018/04/etcd%E9%9B%86%E7%BE%A4%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9/</a><br>&#x5148;&#x5728;&#x96C6;&#x7FA4;&#x5DF2;&#x6709;&#x8282;&#x70B9;&#x4E0A;add &#x65B0;&#x8282;&#x70B9;,&#x518D;&#x5728;&#x65B0;&#x8282;&#x70B9;&#x4E0A;&#x64CD;&#x4F5C;  </p>
+<p>&#x5728;&#x96C6;&#x7FA4;&#x5DF2;&#x6709;&#x8282;&#x70B9;&#x4E0A;add &#x65B0;&#x8282;&#x70B9;,&#x65E0;&#x8BBA;&#x662F;&#x5426;&#x4E3A;Leader&#x8282;&#x70B9;&#x7686;&#x53EF;<br>&#x793A;&#x4F8B;:  </p>
+<pre><code>etcdctl member add etcd-node3 http://192.168.10.152:2380
+</code></pre><p>etcd-node3 &#x4E3A; etcd-name<br><a href="http://192.168.10.152:2380" target="_blank">http://192.168.10.152:2380</a> &#x4E3A; ETCD_LISTEN_PEER_URLS<br><img src="images/K3szqMlOiJynmv07W6RGPSjbra5VXZo4.png" alt=""><br>&#xA0;</p>
+<p>&#x7136;&#x540E;&#x5728;&#x65B0;&#x8282;&#x70B9;&#x4E0A;&#x4FEE;&#x6539;etcd.conf&#xA0;<br>&#x552F;&#x4E00;&#x4E0D;&#x540C;&#x7684;&#x662F; ETCD_INITIAL_CLUSTER_STATE=&quot;existing&quot;<br>&#x6709;&#x4E9B;&#x6587;&#x6863;&#x8BF4;&#x7684;exist, &#x5E94;&#x662F;&#x7248;&#x672C;&#x8FED;&#x4EE3;&#x5173;&#x952E;&#x5B57;&#x5DF2;&#x5931;&#x6548;.<br>&#xA0;</p>
+<p>&#x540C;&#x6837;&#x7684;,&#x9047;&#x5230;cluster ID mismatch , &#x5220;&#x9664;&#x65B0;&#x589E;&#x8282;&#x70B9;&#x4E0A;&#x7684;/var/lib/etcd/default.etcd &#x91CD;&#x542F;&#x670D;&#x52A1;&#x5C1D;&#x8BD5;<br><img src="images/8cRvIZs9n3ryCKYSoxLkeFWDbHfXq640.png" alt=""></p>
+<h4 id="etcd-&#x5220;&#x9664;&#x8282;&#x70B9;">etcd &#x5220;&#x9664;&#x8282;&#x70B9;</h4>
+<p><a href="https://github.com/k8sp/sextant/issues/333" target="_blank">https://github.com/k8sp/sextant/issues/333</a>  </p>
+<pre><code>etcdctl cluster-health  # &#x67E5;&#x770B;&#x5404;&#x8282;&#x70B9;&#x5065;&#x5EB7;&#x72B6;&#x6001;
+etcdctl member remove 66b087520c48d825 # &#x4ECE;cluster&#x4E2D;&#x5220;&#x9664;&#x6709;&#x95EE;&#x9898;&#x8282;&#x70B9;
+</code></pre><p>&#x6E05;&#x7A7A;&#x95EE;&#x9898;&#x8282;&#x70B9;&#x7684;etcd&#x6570;&#x636E;&#x76EE;&#x5F55;, &#x518D;&#x6DFB;&#x52A0;&#x56DE;&#x6709;&#x95EE;&#x9898;&#x8282;&#x70B9;, &#x64CD;&#x4F5C;&#x6B65;&#x9AA4;&#x4E0E;&#x65B0;&#x589E;&#x8282;&#x70B9;&#x76F8;&#x540C;.</p>
+<h4 id="etcd-&#x96C6;&#x7FA4;&#x6574;&#x4F53;&#x7684;&#x707E;&#x96BE;&#x6062;&#x590D;">etcd &#x96C6;&#x7FA4;&#x6574;&#x4F53;&#x7684;&#x707E;&#x96BE;&#x6062;&#x590D;</h4>
+<p><a href="https://github.com/etcd-io/etcd/blob/master/Documentation/v2/admin_guide.md#disaster-recovery" target="_blank">https://github.com/etcd-io/etcd/blob/master/Documentation/v2/admin_guide.md#disaster-recovery</a>  </p>
+<h4 id="etcd-&#x914D;&#x7F6E;tls&#x8BA4;&#x8BC1;">etcd &#x914D;&#x7F6E;TLS&#x8BA4;&#x8BC1;</h4>
+<p>&#x53C8;&#x4E00;&#x5DE8;&#x5751;--&#x914D;&#x7F6E;https&#x8BA4;&#x8BC1;&#x540E;&#x51FA;&#x73B0;&#x7684;, &#x670D;&#x52A1;&#x867D;&#x7136;&#x542F;&#x52A8;,&#x4F46;&#x662F;systemctl&#x662F;activting&#x72B6;&#x6001;,&#x5E76;&#x4E14;&#x6709;&#x5927;&#x91CF;&#x62A5;&#x9519;  </p>
+<pre><code>error &quot;tls: first record does not look like a TLS handshake
+</code></pre><p><a href="https://blog.crazytaxii.com/posts/trap_in_etcds_https_deploying/" target="_blank">https://blog.crazytaxii.com/posts/trap_in_etcds_https_deploying/</a><br>&#x89E3;&#x51B3;&#x529E;&#x6CD5;&#x540C;&#x6837;&#x662F;&#x5220;&#x9664;etcd&#x7684;&#x6570;&#x636E; /var/lib/etcd/default.etcd &#x91CD;&#x542F;&#x670D;&#x52A1;&#x5C1D;&#x8BD5;<br><img src="images/xju7wr6JETokLFDsgzIe14bWpVUnNt8c.png" alt=""></p>
+<p>&#xA0;</p>
+<p>&#x542F;&#x7528;TLS&#x8BA4;&#x8BC1;, etcd&#x7684;service&#x6587;&#x4EF6;&#x53C2;&#x6570;&#x9700;&#x8981;&#x4FEE;&#x6539;</p>
+<pre><code>ExecStart=/bin/bash -c &quot;GOMAXPROCS=$(nproc) /usr/bin/etcd --name=\&quot;${ETCD_NAME}\&quot; --data-dir=\&quot;${ETCD_DATA_DIR}\&quot;  --listen-peer-urls=\&quot;${ETCD_LISTEN_PEER_URLS}\&quot; --listen-client-urls=\&quot;${ETCD_LISTEN_CLIENT_URLS}\&quot; --advertise-client-urls=\&quot;${ETCD_ADVERTISE_CLIENT_URLS}\&quot; --initial-advertise-peer-urls=\&quot;${ETCD_INITIAL_ADVERTISE_PEER_URLS}\&quot; --initial-cluster=\&quot;${ETCD_INITIAL_CLUSTER}\&quot; --initial-cluster-token=\&quot;${ETCD_INITIAL_CLUSTER_TOKEN}\&quot; --initial-cluster-state=\&quot;${ETCD_INITIAL_CLUSTER_STATEN}\&quot; --cert-file=\&quot;${ETCD_CERT_FILE}\&quot; --key-file=\&quot;${ETCD_KEY_FILE}\&quot; --peer-cert-file=\&quot;${ETCD_PEER_CERT_FILE}\&quot; --peer-key-file=\&quot;${ETCD_PEER_KEY_FILE}\&quot; --trusted-ca-file=\&quot;${ETCD_TRUSTED_CA_FILE}\&quot; --peer-trusted-ca-file=\&quot;${ETCD_PEER_TRUSTED_CA_FILE}\&quot;&quot;
+</code></pre><p>&#x53C2;&#x6570;&#x503C;&#x5E94;&#x4ECE;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x8BFB;&#x53D6;, &#x800C;&#x4E0D;&#x662F;&#x76F4;&#x63A5;&#x8D4B;&#x503C;.</p>
+<p>&#x53E6;&#x5916;&#x6CE8;&#x610F;&#x547D;&#x4EE4;&#x4E2D;&#x7684;&#x53CC;&#x5F15;&#x53F7;&#x9700;&#x8981;&#x8F6C;&#x4E49; \&quot;</p>
+<p>&#x542F;&#x7528;&#x540E;, &#x68C0;&#x67E5;&#x96C6;&#x7FA4;&#x5065;&#x5EB7;&#x72B6;&#x51B5;&#x7684;&#x547D;&#x4EE4;&#x4E5F;&#x53D1;&#x751F;&#x53D8;&#x5316;, &#x9700;&#x8981;&#x8BBE;&#x7F6E;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x6307;&#x660E;&#x7248;&#x672C;&#x662F;v3, &#x540C;&#x65F6;&#x63D0;&#x4F9B;pem&#x8BC1;&#x4E66;&#x4F4D;&#x7F6E;</p>
+<pre><code>export ETCDCTL_API=3
+etcdctl --cacert=/etc/etcd/ssl/ca.pem --cert=/etc/etcd/ssl/etcd.pem --key=/etc/etcd/ssl/etcd-key.pem --endpoints=https://192.168.1.161:2379,https://192.168.1.162:2379,https://192.168.1.163:2379,https://192.168.1.164:2379 endpoint health
+</code></pre><h4 id="&#x5173;&#x4E8E;ca&#x81EA;&#x7B7E;&#x540D;&#x8BA4;&#x8BC1;">&#x5173;&#x4E8E;CA&#x81EA;&#x7B7E;&#x540D;&#x8BA4;&#x8BC1;</h4>
+<p><a href="https://github.com/Donyintao/Kubernetes-install/blob/master/%E5%88%9B%E5%BB%BATLS%E8%AF%81%E4%B9%A6%E5%92%8C%E7%A7%98%E9%92%A5.md" target="_blank">https://github.com/Donyintao/Kubernetes-install/blob/master/%E5%88%9B%E5%BB%BATLS%E8%AF%81%E4%B9%A6%E5%92%8C%E7%A7%98%E9%92%A5.md</a><br><a href="https://www.cnblogs.com/wjoyxt/p/9946680.html" target="_blank">https://www.cnblogs.com/wjoyxt/p/9946680.html</a><br><a href="https://blog.51cto.com/phospherus/2445742" target="_blank">https://blog.51cto.com/phospherus/2445742</a><br><a href="https://blog.csdn.net/weixin_42350212/article/details/84930255" target="_blank">https://blog.csdn.net/weixin_42350212/article/details/84930255</a>  </p>
+<ul>
+<li>&#x7B2C;&#x4E00;&#x6B65;, CA&#x81EA;&#x7B7E;&#x540D;&#x4E2D;&#x5FC3;&#x521D;&#x59CB;&#x5316;, &#x7B7E;&#x53D1;&#x81EA;&#x8EAB;&#x7684;&#x8BC1;&#x4E66;</li>
+<li>&#x7B2C;&#x4E8C;&#x6B65;, &#x521B;&#x5EFA;&#x8BC1;&#x4E66;, &#x8BC1;&#x4E66;&#x5206;3&#x79CD;&#x7C7B;&#x578B;:<br>  client certificate&#xFF1A; &#x7528;&#x4E8E;&#x670D;&#x52A1;&#x7AEF;&#x8BA4;&#x8BC1;&#x5BA2;&#x6237;&#x7AEF;,&#x4F8B;&#x5982;etcdctl&#x3001;etcd proxy&#x3001;fleetctl&#x3001;docker&#x5BA2;&#x6237;&#x7AEF;<br>  server certificate:  &#x670D;&#x52A1;&#x7AEF;&#x4F7F;&#x7528;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x4EE5;&#x6B64;&#x9A8C;&#x8BC1;&#x670D;&#x52A1;&#x7AEF;&#x8EAB;&#x4EFD;,&#x4F8B;&#x5982;docker&#x670D;&#x52A1;&#x7AEF;&#x3001;kube-apiserver<br>  peer   certificate:  &#x53CC;&#x5411;&#x8BC1;&#x4E66;&#xFF0C;&#x7528;&#x4E8E;etcd&#x96C6;&#x7FA4;&#x6210;&#x5458;&#x95F4;&#x901A;&#x4FE1;<br>  &#x8FD9;&#x91CC;&#x8BC1;&#x4E66;&#x7684;&#x521B;&#x5EFA;&#x9700;&#x8981;&#x7528;&#x5230;CA&#x7684;&#x8BC1;&#x4E66;, &#x4EE5;&#x53CA;profile, &#x56E0;&#x6B64;&#x5728;csr&#x6587;&#x4EF6;&#x53EF;&#x4EE5;&#x81EA;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x9002;&#x5408;&#x7684;profile&#x65B9;&#x4FBF;&#x5F15;&#x7528;  </li>
+<li>etcd&#x4F1A;&#x7528;&#x5230;&#x7684;&#x662F;&#x4E3A;etcd&#x751F;&#x6210;&#x7684;xxx.pem, xxx-key.pem, &#x4EE5;&#x53CA;CA&#x81EA;&#x5DF1;&#x7684;pem</li>
+</ul>
+<footer class="page-footer"><span class="copyright">Copyright &amp; copy tanhuang1985@gmail.com all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">&#x8BE5;&#x6587;&#x7AE0;&#x4FEE;&#x8BA2;&#x65F6;&#x95F4;&#xFF1A;
+2020-10-10 10:04:49
+</span></footer>
+<script>console.log("plugin-popup....");document.onclick = function(e){ e.target.tagName === "IMG" && window.open(e.target.src,e.target.src)}</script><style>img{cursor:pointer}</style>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="category_3_Container.html" class="navigation navigation-prev " aria-label="Previous page: 容器">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="category_4_Database.html" class="navigation navigation-next " aria-label="Next page: 数据库">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"kubernetes 之 etcd","level":"1.5.1","depth":2,"next":{"title":"数据库","level":"1.6","depth":1,"path":"category_4_Database.md","ref":"category_4_Database.md","articles":[{"title":"MySQL高可用--主主 / 主从","level":"1.6.1","depth":2,"path":"Database_MySQL_HA.md","ref":"Database_MySQL_HA.md","articles":[]}]},"previous":{"title":"容器","level":"1.5","depth":1,"path":"category_3_Container.md","ref":"category_3_Container.md","articles":[{"title":"kubernetes 之 etcd","level":"1.5.1","depth":2,"path":"Container_etcd.md","ref":"Container_etcd.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["back-to-top-button","chapter-fold","code","splitter","-lunr","-search","search-pro","insert-logo","custom-favicon","pageview-count","tbfed-pagefooter","popup","-sharing","sharing-plus"],"pluginsConfig":{"tbfed-pagefooter":{"copyright":"Copyright & copy tanhuang1985@gmail.com","modify_label":"该文章修订时间：","modify_format":"YYYY-MM-DD HH:mm:ss"},"chapter-fold":{},"splitter":{},"search-pro":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"popup":{},"code":{"copyButtons":true},"hide-element":{"elements":[".gitbook-link"]},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"favicon":"./icon/book.ico","back-to-top-button":{},"pageview-count":{},"custom-favicon":{},"sharing":{"qq":true,"all":["douban","facebook","google","instapaper","linkedin","twitter","weibo","messenger","qq","qzone","viber","whatsapp"],"douban":true,"facebook":true,"weibo":true,"twitter":true,"pocket":true,"google":true,"qzone":true},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"insert-logo":{"style":"background: none; max-height: 150px; min-height: 150px","url":"images/书籍 (5).png"}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Container_etcd.md","mtime":"2020-10-10T02:04:49.433Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-06-24T08:09:54.016Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-back-to-top-button/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-chapter-fold/chapter-fold.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-code/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search-pro/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search-pro/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-insert-logo/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-pageview-count/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing-plus/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

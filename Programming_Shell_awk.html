@@ -1,0 +1,972 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Shell的awk · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-back-to-top-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-chapter-fold/chapter-fold.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-code/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search-pro/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-insert-logo/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-pageview-count/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-tbfed-pagefooter/footer.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Programming_Python_dynamic_create_variable.html" />
+    
+    
+    <link rel="prev" href="Programming_Shell_expirence_smmary.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="category_0_Markdown_grammar.html">
+            
+                <a href="category_0_Markdown_grammar.html">
+            
+                    
+                    Markdown语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="category_1_Programming.html">
+            
+                <a href="category_1_Programming.html">
+            
+                    
+                    编程
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="Programming_git_usage.html">
+            
+                <a href="Programming_git_usage.html">
+            
+                    
+                    Git的使用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="Programming_cmd_expirence_smmary.html">
+            
+                <a href="Programming_cmd_expirence_smmary.html">
+            
+                    
+                    CMD经验汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="Programming_Shell_expirence_smmary.html">
+            
+                <a href="Programming_Shell_expirence_smmary.html">
+            
+                    
+                    Shell经验汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.4" data-path="Programming_Shell_awk.html">
+            
+                <a href="Programming_Shell_awk.html">
+            
+                    
+                    Shell的awk
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="Programming_Python_dynamic_create_variable.html">
+            
+                <a href="Programming_Python_dynamic_create_variable.html">
+            
+                    
+                    Python-语法糖-动态生成变量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="Programming_Python_reflection_and_introspection.html">
+            
+                <a href="Programming_Python_reflection_and_introspection.html">
+            
+                    
+                    Python-反射与自省
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.7" data-path="Programming_Python_hotchpotch.html">
+            
+                <a href="Programming_Python_hotchpotch.html">
+            
+                    
+                    Python-杂集
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="category_2_Linux.html">
+            
+                <a href="category_2_Linux.html">
+            
+                    
+                    Linux
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="Linux_hotchpotch.html">
+            
+                <a href="Linux_hotchpotch.html">
+            
+                    
+                    Linux上的杂集
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="Linux_kernel_parameter.html">
+            
+                <a href="Linux_kernel_parameter.html">
+            
+                    
+                    内核参数
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="Linux_high_avaliability.html">
+            
+                <a href="Linux_high_avaliability.html">
+            
+                    
+                    高可用汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="Linux_ansible.html">
+            
+                <a href="Linux_ansible.html">
+            
+                    
+                    ansible
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="Linux_bond_config.html">
+            
+                <a href="Linux_bond_config.html">
+            
+                    
+                    bond配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="Linux_zombie_process.html">
+            
+                <a href="Linux_zombie_process.html">
+            
+                    
+                    僵尸进程
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="Linux_ulimit_relates.html">
+            
+                <a href="Linux_ulimit_relates.html">
+            
+                    
+                    关于ulimit设置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="Linux_tcpdump_and_wireshark.html">
+            
+                <a href="Linux_tcpdump_and_wireshark.html">
+            
+                    
+                    tcpdump与wireshark在排错中的应用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="Linux_sftp_and_vsftp_config_chroot.html">
+            
+                <a href="Linux_sftp_and_vsftp_config_chroot.html">
+            
+                    
+                    vsftpd和sftp的chroot设置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="Linux_clock_sync_chrony_and_ntpd_config.html">
+            
+                <a href="Linux_clock_sync_chrony_and_ntpd_config.html">
+            
+                    
+                    时钟同步
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="Linux_firewalld_and_iptables.html">
+            
+                <a href="Linux_firewalld_and_iptables.html">
+            
+                    
+                    firewalld和iptables
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="Linux_disk_management.html">
+            
+                <a href="Linux_disk_management.html">
+            
+                    
+                    磁盘管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.13" data-path="Linux_gcc_upgrade.html">
+            
+                <a href="Linux_gcc_upgrade.html">
+            
+                    
+                    gcc的升级操作
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.14" data-path="Linux_PXE_config.html">
+            
+                <a href="Linux_PXE_config.html">
+            
+                    
+                    PXE Server端的配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="category_3_Container.html">
+            
+                <a href="category_3_Container.html">
+            
+                    
+                    容器
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="Container_etcd.html">
+            
+                <a href="Container_etcd.html">
+            
+                    
+                    kubernetes 之 etcd
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="category_4_Database.html">
+            
+                <a href="category_4_Database.html">
+            
+                    
+                    数据库
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="Database_MySQL_HA.html">
+            
+                <a href="Database_MySQL_HA.html">
+            
+                    
+                    MySQL高可用--主主 / 主从
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="category_5_Virtualization.html">
+            
+                <a href="category_5_Virtualization.html">
+            
+                    
+                    虚拟化
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="Virtualization_vcenter_relates.html">
+            
+                <a href="Virtualization_vcenter_relates.html">
+            
+                    
+                    vCenter操作相关
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="Virtualization_vmware_workstation_summary.html">
+            
+                <a href="Virtualization_vmware_workstation_summary.html">
+            
+                    
+                    VMware Workstation汇总
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="category_9_Others.html">
+            
+                <a href="category_9_Others.html">
+            
+                    
+                    其他 / 杂项
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="Others_remote_wake_up_computer.html">
+            
+                <a href="Others_remote_wake_up_computer.html">
+            
+                    
+                    远程唤醒计算机
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="Others_windows_ipsec.html">
+            
+                <a href="Others_windows_ipsec.html">
+            
+                    
+                    Windows IPSec实现防火墙功能
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Shell的awk</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h4 id="awk-&#x7B5B;&#x9009;&#x6570;&#x636E;&#x8F93;&#x51FA;">awk &#x7B5B;&#x9009;&#x6570;&#x636E;&#x8F93;&#x51FA;</h4>
+<p>&#x9488;&#x5BF9;&#x6570;&#x636E;&#x6587;&#x4EF6;&#xFF0C;&#x5229;&#x7528;awk &#x5224;&#x65AD;&#x7B26;&#x5408;&#x6761;&#x4EF6;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x5E76;&#x7B5B;&#x9009;&#x51FA;&#x7ED3;&#x679C;&#x6570;&#x636E;&#xFF0C;&#x8F93;&#x5165;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x6587;&#x4EF6;&#x4E2D;&#x3002;</p>
+<pre><code>awk &apos;{if ($7&gt;5) print}&apos; A|less           ###&#x7B5B;&#x9009;A&#x6587;&#x4EF6;&#x4E2D;&#x7B2C;&#x4E03;&#x5217;&#x5927;&#x4E8E;5&#x7684;&#x6570;&#x636E;&#xFF0C;&#x663E;&#x793A;&#x6240;&#x6709;&#x7B26;&#x5408;&#x7684;&#x7ED3;&#x679C;
+awk &apos;{if ($6&gt;5 &amp;&amp; $7&gt;5) print}&apos; A|less   ###&#x7B5B;&#x9009;A&#x6587;&#x4EF6;&#x4E2D;&#x7B2C;&#x516D;&#x5217;&#x548C;&#x4E03;&#x5217;&#x90FD;&#x5927;&#x4E8E;5&#x7684;&#x6570;&#x636E;&#xFF0C;&#x663E;&#x793A;&#x6240;&#x6709;&#x7B26;&#x5408;&#x7684;&#x7ED3;&#x679C;
+awk &apos;{if ($6&gt;5 || $7&gt;5) print}&apos; A|less   ###&#x7B5B;&#x9009;A&#x6587;&#x4EF6;&#x4E2D;&#x7B2C;&#x516D;&#x5217;&#x6216;&#x4E03;&#x5217;&#x90FD;&#x5927;&#x4E8E;5&#x7684;&#x6570;&#x636E;&#xFF0C;&#x663E;&#x793A;&#x6240;&#x6709;&#x7B26;&#x5408;&#x7684;&#x7ED3;&#x679C;
+awk &apos;{if ($7&gt;5) print}&apos; A|less&gt;B         ###&#x7B5B;&#x9009;A&#x6587;&#x4EF6;&#x4E2D;&#x7B2C;&#x4E03;&#x5217;&#x5927;&#x4E8E;5&#x7684;&#x6570;&#x636E;&#xFF0C;&#x5E76;&#x5C06;&#x7B26;&#x5408;&#x7684;&#x7ED3;&#x679C;&#x8F93;&#x5165;&#x5230;B&#x6587;&#x4EF6;&#x4E2D;
+</code></pre><p>&#x6392;&#x9664;&#x7B5B;&#x9009;&#x7684;&#x4F8B;&#x5B50;<br><a href="https://www.cnblogs.com/chenwenyan/p/8580654.html" target="_blank">https://www.cnblogs.com/chenwenyan/p/8580654.html</a><br><a href="https://segmentfault.com/q/1010000006687483" target="_blank">https://segmentfault.com/q/1010000006687483</a><br>&#x4EE5;&#x4E0B;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#x90FD;&#x80FD;&#x5B9E;&#x73B0;&#x6392;&#x9664;&#x4EE5;&quot;NAME&quot;&#x4E3A;&#x5173;&#x952E;&#x5B57;, &#x4E14;&#x9650;&#x5B9A;&#x5728;&#x884C;&#x9996;&#x6216;&#x8005;&#x7B2C;&#x4E00;&#x5217;</p>
+<pre><code>[root@storage ~]# zpool list
+NAME             SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  ALTROOT
+SAS-4T-group01  40.0T  18.2T  21.8T        -         -     0%    45%  1.00x  DEGRADED  -
+my-pool         21.8T  8.32T  13.5T        -         -     0%    38%  1.00x    ONLINE  -
+[root@storage ~]# zpool list | awk &apos;!/^NAME/{print $1}&apos;
+SAS-4T-group01
+my-pool
+[root@storage ~]# zpool list | awk &apos;{if($1!=&quot;NAME&quot;){print $1}}&apos;
+SAS-4T-group01
+my-pool
+[root@storage ~]#
+</code></pre><h4 id="awk&#x8FDB;&#x884C;&#x6D6E;&#x70B9;&#x8BA1;&#x7B97;">awk&#x8FDB;&#x884C;&#x6D6E;&#x70B9;&#x8BA1;&#x7B97;</h4>
+<p><a href="https://blog.51cto.com/radish/1736900" target="_blank">https://blog.51cto.com/radish/1736900</a><br>&#x5178;&#x578B;&#x793A;&#x4F8B;:</p>
+<pre><code>echo &quot;$A $B $C $D&quot; | awk &apos;{printf (&quot;%.2f\n&quot;,$1*$2/$3-$4)}&apos;
+</code></pre><p>awk&#x4EE5;&#x4F20;&#x53C2;&#x5F62;&#x5F0F;&#x63A5;&#x6536;, &#x7B49;&#x540C;shell&#x7684;&#x51FD;&#x6570;&#x8C03;&#x7528;,&#x683C;&#x5F0F;&#x63A7;&#x5236;&#x7531;prinft &#x6765;&#x5B8C;&#x6210;
+&#x4E5F;&#x652F;&#x6301;&#x79D1;&#x5B66;&#x8BA1;&#x6570;&#x6CD5;&#x7684;&#x5F62;&#x5F0F;</p>
+<pre><code>[wangdong@centos715-node1 uncomp]$ echo &quot;6.8923e+08&quot; | awk &apos;{printf (&quot;%.0f\n&quot;,$1)}&apos;
+689230000
+</code></pre><p>&#x4F20;&#x53C2;&#x53D8;&#x91CF;&#x7684;&#x7528;&#x6CD5;</p>
+<pre><code>[wangdong@centos715-node1 ~]$ A=5
+[wangdong@centos715-node1 ~]$ B=16
+[wangdong@centos715-node1 ~]$ C=29
+[wangdong@centos715-node1 ~]$ D=6
+[wangdong@centos715-node1 ~]$ echo &quot;$A $B $C $D&quot; | awk &apos;{printf (&quot;%.2f\n&quot;,$1*$2/$3-$4)}&apos;
+-3.24
+[wangdong@centos715-node1 ~]$ echo &quot;$A $B $C $D&quot; | awk &apos;{printf (&quot;%.2f\n&quot;,$1/$4)}&apos;      
+0.83
+[wangdong@centos715-node1 ~]$ echo &quot;$A $B $C $D&quot; | awk &apos;{printf (&quot;%.3f\n&quot;,$1/$4)}&apos;
+0.833
+</code></pre><h4 id="awk&#x4E2D;rsorsfsofs-&#x7684;&#x4F5C;&#x7528;">awk&#x4E2D;RS,ORS,FS,OFS &#x7684;&#x4F5C;&#x7528;</h4>
+<p><a href="http://blog.51yip.com/shell/1151.html" target="_blank">http://blog.51yip.com/shell/1151.html</a><br>&#x4E00;&#xFF0C;RS&#x4E0E;ORS<br>1&#xFF0C;RS&#x662F;&#x8BB0;&#x5F55;&#x5206;&#x9694;&#x7B26;&#xFF0C;&#x9ED8;&#x8BA4;&#x7684;&#x5206;&#x9694;&#x7B26;&#x662F;\n&#xFF0C;&#x5177;&#x4F53;&#x7528;&#x6CD5;&#x770B;&#x4E0B;</p>
+<pre><code>[root@krlcgcms01 mytest]# cat test1     //&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;  
+ 111 222  
+ 333 444  
+ 555 666
+</code></pre><p>2&#xFF0C;RS&#x9ED8;&#x8BA4;&#x5206;&#x5272;&#x7B26;&#x662F; \n</p>
+<pre><code>[root@krlcgcms01 mytest]# awk &apos;{print $0}&apos; test1  //awk &apos;BEGIN{RS=&quot;\n&quot;}{print $0}&apos; test1 &#x8FD9;&#x4E8C;&#x4E2A;&#x662F;&#x4E00;&#x6837;&#x7684;  
+111 222  
+333 444  
+555 666
+</code></pre><p>&#x5176;&#x5B9E;&#x4F60;&#x53EF;&#x4EE5;&#x628A;&#x4E0A;&#x9762;test1&#x6587;&#x4EF6;&#x91CC;&#x7684;&#x5185;&#x5BB9;&#x7406;&#x89E3;&#x4E3A;&#xFF0C;111 222\n333 444\n555 6666&#xFF0C;&#x5229;&#x7528;\n&#x8FDB;&#x884C;&#x5206;&#x5272;&#x3002;&#x770B;&#x4E0B;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;<br>3&#xFF0C;&#x81EA;&#x5B9A;&#x4E49;RS&#x5206;&#x5272;&#x7B26;</p>
+<pre><code>[zhangy@localhost test]$ echo &quot;111 222|333 444|555 666&quot;|awk &apos;BEGIN{RS=&quot;|&quot;}{print $0,RT}&apos;  
+ 111 222 |  
+ 333 444 |  
+ 555 666
+</code></pre><p>&#x7ED3;&#x5408;&#x4E0A;&#x9762;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x5C31;&#x5F88;&#x5BB9;&#x6613;&#x7406;&#x89E3;RS&#x7684;&#x7528;&#x6CD5;&#x4E86;&#x3002;</p>
+<p>4&#xFF0C;RS&#x4E5F;&#x53EF;&#x80FD;&#x662F;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</p>
+<pre><code>[zhangy@localhost test]$ echo &quot;111 222a333 444b555 666&quot;|awk &apos;BEGIN{RS=&quot;[a-z]+&quot;}{print $1,RS,RT}&apos;  
+ 111 [a-z]+ a  
+ 333 [a-z]+ b  
+ 555 [a-z]+
+</code></pre><p>&#x4ECE;&#x4F8B;3&#x548C;&#x4F8B;4&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#x4E00;&#x70B9;&#xFF0C;&#x5F53;RT&#x662F;&#x5229;&#x7528;RS&#x5339;&#x914D;&#x51FA;&#x6765;&#x7684;&#x5185;&#x5BB9;&#x3002;&#x5982;&#x679C;RS&#x662F;&#x67D0;&#x4E2A;&#x56FA;&#x5B9A;&#x7684;&#x503C;&#x65F6;&#xFF0C;RT&#x5C31;&#x662F;RS&#x7684;&#x5185;&#x5BB9;&#x3002;</p>
+<p>5&#xFF0C;RS&#x4E3A;&#x7A7A;&#x65F6;</p>
+<pre><code>[zhangy@localhost test]$ cat -n test2  
+ 1  111 222  
+ 2  
+ 3  333 444  
+ 4  333 444  
+ 5  
+ 6  
+ 7  555 666  
+
+[zhangy@localhost test]$ awk &apos;BEGIN{RS=&quot;&quot;}{print $0}&apos; test2  
+111 222  
+333 444  
+333 444  
+555 666  
+
+[zhangy@localhost test]$ awk &apos;BEGIN{RS=&quot;&quot;;}{print &quot;&lt;&quot;,$0,&quot;&gt;&quot;}&apos; test2  //&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x770B;&#x7740;&#x6BD4;&#x8F83;&#x660E;&#x663E;  
+&lt; 111 222 &gt;  
+&lt; 333 444     //&#x8FD9;&#x4E00;&#x884C;&#x548C;&#x4E0B;&#x9762;&#x4E00;&#x884C;&#xFF0C;&#x662F;&#x4E00;&#x884C;  
+333 444 &gt;  
+&lt; 555 666 &gt;
+</code></pre><p>&#x4ECE;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#x5F53;RS&#x4E3A;&#x7A7A;&#x65F6;&#xFF0C;awk&#x4F1A;&#x81EA;&#x52A8;&#x4EE5;&#x591A;&#x884C;&#x6765;&#x505A;&#x4E3A;&#x5206;&#x5272;&#x7B26;&#x3002;</p>
+<p>6&#xFF0C;ORS&#x8BB0;&#x5F55;&#x8F93;&#x51FA;&#x5206;&#x7B26;&#x7B26;&#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x662F;\n</p>
+<p>&#x628A;ORS&#x7406;&#x89E3;&#x6210;RS&#x53CD;&#x8FC7;&#x7A0B;&#xFF0C;&#x8FD9;&#x6837;&#x66F4;&#x5BB9;&#x6613;&#x8BB0;&#x5FC6;&#x548C;&#x7406;&#x89E3;&#xFF0C;&#x770B;&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x3002;</p>
+<pre><code>[zhangy@localhost test]$ awk &apos;BEGIN{ORS=&quot;\n&quot;}{print $0}&apos; test1  //awk &apos;{print $0}&apos; test1&#x4E8C;&#x8005;&#x662F;&#x4E00;&#x6837;&#x7684;  
+111 222  
+333 444  
+555 666  
+[zhangy@localhost test]$ awk &apos;BEGIN{ORS=&quot;|&quot;}{print $0}&apos; test1  
+111 222|333 444|555 666|
+</code></pre><p>&#x4E8C;&#xFF0C;FS&#x4E0E;OFS</p>
+<p>1&#xFF0C;FS&#x6307;&#x5B9A;&#x5217;&#x5206;&#x5272;&#x7B26;</p>
+<pre><code>[zhangy@localhost test]$ echo &quot;111|222|333&quot;|awk &apos;{print $1}&apos;  
+ 111|222|333  
+[zhangy@localhost test]$ echo &quot;111|222|333&quot;|awk &apos;BEGIN{FS=&quot;|&quot;}{print $1}&apos;  
+ 111
+</code></pre><p>2&#xFF0C;FS&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x6B63;&#x5219;</p>
+<pre><code>[zhangy@localhost test]$ echo &quot;111||222|333&quot;|awk &apos;BEGIN{FS=&quot;[|]+&quot;}{print $1}&apos;  
+111
+</code></pre><p>3&#xFF0C;FS&#x4E3A;&#x7A7A;&#x7684;&#x65F6;&#x5019;</p>
+<pre><code>[zhangy@localhost test]$ echo &quot;111|222|333&quot;|awk &apos;BEGIN{FS=&quot;&quot;}{NF++;print $0}&apos;  
+1 1 1 | 2 2 2 | 3 3 3
+</code></pre><p>&#x5F53;FS&#x4E3A;&#x7A7A;&#x7684;&#x65F6;&#x5019;&#xFF0C;awk&#x4F1A;&#x628A;&#x4E00;&#x884C;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x5B57;&#x7B26;&#xFF0C;&#x5F53;&#x6210;&#x4E00;&#x5217;&#x6765;&#x5904;&#x7406;&#x3002;</p>
+<p>4&#xFF0C;RS&#x88AB;&#x8BBE;&#x5B9A;&#x6210;&#x975E;\n&#x65F6;&#xFF0C;\n&#x4F1A;&#x6210;FS&#x5206;&#x5272;&#x7B26;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;</p>
+<pre><code>[zhangy@localhost test]$ cat test1  
+ 111 222  
+ 333 444  
+ 555 666  
+[zhangy@localhost test]$ awk &apos;BEGIN{RS=&quot;444&quot;;}{print $2,$3}&apos; test1  
+ 222 333  
+ 666
+</code></pre><p>222&#x548C;333&#x4E4B;&#x95F4;&#x662F;&#x6709;&#x4E00;&#x4E2A;\n&#x7684;&#xFF0C;&#x5F53;RS&#x8BBE;&#x5B9A;&#x6210;444&#x540E;&#xFF0C;222&#x548C;333&#x88AB;&#x8BA4;&#x5B9A;&#x6210;&#x540C;&#x4E00;&#x884C;&#x7684;&#x4E8C;&#x5217;&#x4E86;&#xFF0C;&#x5176;&#x5B9E;&#x6309;&#x5E38;&#x89C4;&#x601D;&#x60F3;&#x662F;&#x4E8C;&#x884C;&#x7684;&#x4E00;&#x5217;&#x624D;&#x5BF9;&#x3002;</p>
+<p>5&#xFF0C;OFS&#x5217;&#x8F93;&#x51FA;&#x5206;&#x9694;&#x7B26;</p>
+<pre><code>[zhangy@localhost test]$ awk &apos;BEGIN{OFS=&quot;|&quot;;}{print $1,$2}&apos; test1  
+ 111|222  
+ 333|444  
+ 555|666  
+[zhangy@localhost test]$ awk &apos;BEGIN{OFS=&quot;|&quot;;}{print $1 OFS $2}&apos; test1  
+ 111|222  
+ 333|444  
+ 555|666
+</code></pre><p>test1&#x53EA;&#x6709;&#x4E8C;&#x5217;&#xFF0C;&#x5982;&#x679C;100&#x5217;&#xFF0C;&#x90FD;&#x5199;&#x51FA;&#x6765;&#x592A;&#x9EBB;&#x70E6;&#x4E86;&#x5427;&#x3002;</p>
+<pre><code>[zhangy@localhost test]$ awk &apos;BEGIN{OFS=&quot;|&quot;;}{print $0}&apos; test1  
+ 111 222  
+ 333 444  
+ 555 666  
+[zhangy@localhost test]$ awk &apos;BEGIN{OFS=&quot;|&quot;;}{NF=NF;print $0}&apos; test1  
+ 111|222  
+ 333|444  
+ 555|666
+</code></pre><p>&#x4E3A;&#x4EC0;&#x4E48;&#x7B2C;&#x4E8C;&#x79CD;&#x65B9;&#x6CD5;&#x4E2D;&#x7684;OFS&#x751F;&#x6548;&#x5462;&#xFF1F;&#x4E2A;&#x4EBA;&#x89C9;&#x5F97;&#xFF0C;awk&#x89C9;&#x67E5;&#x5230;&#x5217;&#x6709;&#x6240;&#x53D8;&#x5316;&#x65F6;&#xFF0C;&#x5C31;&#x4F1A;&#x8BA9;OFS&#x751F;&#x6548;&#xFF0C;&#x6CA1;&#x53D8;&#x5316;&#x76F4;&#x63A5;&#x8F93;&#x51FA;&#x4E86;&#x3002;</p>
+<h4 id="awk-&#xFF1A;8&#x4E2A;&#x5F3A;&#x5927;&#x7684;&#x5185;&#x7F6E;&#x53D8;&#x91CF;">AWK &#xFF1A;8&#x4E2A;&#x5F3A;&#x5927;&#x7684;&#x5185;&#x7F6E;&#x53D8;&#x91CF;</h4>
+<p><a href="http://blog.chinaunix.net/uid-28903506-id-5211480.html" target="_blank">http://blog.chinaunix.net/uid-28903506-id-5211480.html</a></p>
+<p>AWK&#x7684;&#x5185;&#x7F6E;&#x53D8;&#x91CF;&#x6709;&#x4E24;&#x79CD;&#x7C7B;&#x578B;&#xFF1A;<br>&#xFF08;1&#xFF09;. &#x4E00;&#x79CD;&#x662F;&#x503C;&#x53EF;&#x4EE5;&#x88AB;&#x4FEE;&#x6539;&#x7684;&#x53D8;&#x91CF;&#xFF0C;&#x4F8B;&#x5982;&#x57DF;&#x5206;&#x9694;&#x7B26;&#x3001;&#x8BB0;&#x5F55;&#x5206;&#x9694;&#x7B26;&#x7B49;&#x3002;<br>&#xFF08;2&#xFF09;.  &#x53E6;&#x4E00;&#x79CD;&#x662F;&#x88AB;&#x7528;&#x5728;&#x5904;&#x7406;&#x6587;&#x672C;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF08;&#x8BB0;&#x5F55;&#x5904;&#x7406;&#x7684;&#x72B6;&#x6001;&#xFF09;&#x6216;&#x662F;&#x7528;&#x4E8E;&#x7EDF;&#x8BA1;&#xFF0C;&#x4F8B;&#x5982;&#x8BB0;&#x5F55;&#x6570;&#x3001;&#x57DF;&#x7684;&#x4E2A;&#x6570;&#x7B49;&#x3002;</p>
+<p>FS &#x8F93;&#x5165;&#x57DF;&#x5206;&#x9694;&#x7B26;&#x53D8;&#x91CF;<br>awk &#x4ECE;&#x8F93;&#x5165;&#x4E2D;&#x8BFB;&#x53D6;&#x548C;&#x5904;&#x7406;&#x6BCF;&#x4E00;&#x884C;&#xFF0C;&#x9ED8;&#x8BA4;&#x662F;&#x4EE5;&#x7A7A;&#x683C;&#x4F5C;&#x4E3A;&#x5206;&#x9694;&#x7B26;&#xFF0C;&#x540C;&#x65F6;&#x8BBE;&#x7F6E;&#x53D8;&#x91CF;$1&#x3001;$2&#x7B49;&#x7B49;&#x3002;FS &#x53D8;&#x91CF;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x4F5C;&#x4E3A;&#x6BCF;&#x4E00;&#x4E2A;&#x8BB0;&#x5F55;&#x4E2D;&#x7684;&#x57DF;&#x5206;&#x9694;&#x7B26;&#x3002;<br>FS &#x7684;&#x8BBE;&#x7F6E;&#x6709;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#xFF1A;<br>&#xFF08;1&#xFF09;&#x901A;&#x8FC7; -F &#x547D;&#x4EE4;&#x884C;&#x9009;&#x9879;  </p>
+<pre><code>$ awk -F &apos;FS&apos; &apos;commands&apos; inputfilename
+</code></pre><p>&#xFF08;2&#xFF09;&#x76F4;&#x63A5;&#x6309;&#x7167;&#x666E;&#x901A;&#x53D8;&#x91CF;&#x7684;&#x8D4B;&#x503C;&#x65B9;&#x5F0F;</p>
+<pre><code>$ awk &apos;BEGIN{FS=&quot;FS&quot;;}&apos;
+</code></pre><p>&#x6CE8;&#x610F;&#xFF1A;
+&#xFF08;1&#xFF09;FS &#x53EF;&#x4EE5;&#x88AB;&#x8BBE;&#x7F6E;&#x4E3A;&#x4EFB;&#x610F;&#x7684;&#x5355;&#x4E2A;&#x5B57;&#x7B26;&#x6216;&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;&#x3002;<br>&#xFF08;2&#xFF09;FS &#x53EF;&#x4EE5;&#x53D8;&#x66F4;&#x4EFB;&#x610F;&#x6B21;&#xFF0C;&#x4ED6;&#x4F1A;&#x4E00;&#x76F4;&#x4FDD;&#x6301;&#x503C;&#xFF0C;&#x76F4;&#x5230;&#x88AB;&#x663E;&#x5F0F;&#x7684;&#x4FEE;&#x6539;&#x3002;&#x5982;&#x679C;&#x4F60;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x57DF;&#x5206;&#x9694;&#x7B26;&#xFF0C;&#x6700;&#x597D;&#x5728;&#x8BFB;&#x53D6;&#x4E00;&#x884C;&#x4E4B;&#x524D;&#xFF0C;&#x8FD9;&#x6837;&#x53D8;&#x66F4;&#x5C31;&#x80FD;&#x4F5C;&#x7528;&#x4E8E;&#x8BFB;&#x53D6;&#x7684;&#x884C;&#x3002;</p>
+<p>OFS &#x8F93;&#x5165;&#x57DF;&#x5206;&#x9694;&#x7B26;&#x53D8;&#x91CF;<br>OFS &#x4F5C;&#x7528;&#x7C7B;&#x4F3C;&#x4E8E;FS&#xFF0C;&#x4E0D;&#x8FC7;&#x4ED6;&#x4F5C;&#x7528;&#x4E8E;&#x8F93;&#x51FA;&#x6587;&#x672C;&#xFF0C;&#x9ED8;&#x8BA4;&#x503C;&#x662F;&#x5355;&#x4E2A;&#x7A7A;&#x683C;&#x5B57;&#x7B26;&#x3002;</p>
+<pre><code>$ awk -F&apos;:&apos; &apos;{print $3,$4;}&apos; /etc/passwd
+41 41
+100 101
+</code></pre><p>print &#x8BED;&#x53E5;&#x4E2D;&#x7684;&#x8FDE;&#x63A5;&#x7B26;&#x201C;,&#x201D;&#x7528;&#x4E8E;&#x4F7F;&#x7528;OFS&#x503C;&#x6765;&#x8FDE;&#x63A5;&#x4E24;&#x4E2A;&#x53C2;&#x6570;&#xFF0C;&#x5982;&#x679C;&#x53D8;&#x66F4;OFS&#x8BBE;&#x7F6E;&#xFF1A;</p>
+<pre><code>$ awk -F&apos;:&apos; &apos;BEGIN{OFS=&quot;=&quot;;} {print $3,$4;}&apos; /etc/passwd
+41=41
+100=101
+</code></pre><p>RS &#x8F93;&#x5165;&#x8BB0;&#x5F55;&#x5206;&#x9694;&#x7B26;&#x53D8;&#x91CF;<br>RS&#x7528;&#x4E8E;&#x5B9A;&#x4E49;&#x4E00;&#x884C;&#xFF0C;&#x800C;AWK&#x9ED8;&#x8BA4;&#x5373;&#x662F;&#x4E00;&#x884C;&#x63A5;&#x4E00;&#x884C;&#x8BFB;&#x53D6;&#x7684;&#x3002;<br>&#x6765;&#x770B;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x5B66;&#x751F;&#x5206;&#x6570;&#x7684;&#x6587;&#x4EF6;&#xFF08;&#x8BB0;&#x5F55;&#x95F4;&#x4EE5;&#x4E24;&#x4E2A;&#x6362;&#x884C;&#x7B26;&#x5206;&#x9694;&#xFF0C;&#x800C;&#x6BCF;&#x4E00;&#x4E2A;&#x57DF;&#x901A;&#x8FC7;&#x4E00;&#x4E2A;&#x6362;&#x884C;&#x7B26;&#x5206;&#x9694;&#xFF09;&#xFF1A;</p>
+<pre><code>$cat student.txt
+Jones
+2143
+78
+84
+77
+
+
+Gondrol
+2321
+56
+58
+45
+
+
+RinRao
+2122
+38
+37
+65
+</code></pre><p>&#x5982;&#x679C;&#x8981;&#x83B7;&#x53D6;&#x5B66;&#x751F;&#x59D3;&#x540D;&#x548C;&#x7B2C;&#x4E00;&#x4E2A;&#x5206;&#x6570;&#x503C;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x4EE5;&#x4E0B;awk&#x811A;&#x672C;&#xFF1A;</p>
+<pre><code>$cat student.awk
+BEGIN {
+    RS=&quot;\n\n&quot;;
+    FS=&quot;\n&quot;;
+}
+{ print $1,$2; }
+
+$ awk -f student.awk  student.txt
+Jones 2143
+Gondrol 2321
+RinRao 2122
+</code></pre><p>&#x5728;&#x4EE5;&#x4E0A;&#x811A;&#x672C;&#x4E2D;&#xFF0C;&#x56E0;&#x4E3A;RS&#x53D8;&#x91CF;&#x88AB;&#x8BBE;&#x7F6E;&#x4E3A;&#x4E24;&#x4E2A;&#x6362;&#x884C;&#x7B26;&#xFF0C;&#x6240;&#x4EE5;awk&#x8BFB;&#x53D6;&#x6BCF;&#x4E00;&#x4E2A;&#x5B66;&#x751F;&#x7684;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x8BB0;&#x5F55;&#x3002;FS &#x503C;&#x4E3A;&#x6362;&#x884C;&#x7B26;&#xFF0C;&#x6240;&#x4EE5;&#x8BB0;&#x5F55;&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x884C;&#x662F;&#x4E00;&#x4E2A;&#x57DF;&#x3002;</p>
+<p>ORS &#x8F93;&#x51FA;&#x8BB0;&#x5F55;&#x5206;&#x9694;&#x7B26;&#x53D8;&#x91CF;
+ORS&#x7C7B;&#x4F3C;RS&#xFF0C;&#x4ED6;&#x4F5C;&#x7528;&#x4E8E;&#x8F93;&#x51FA;&#x3002;&#x8F93;&#x51FA;&#x65F6;&#x6253;&#x5370;&#x6BCF;&#x4E00;&#x6761;&#x8BB0;&#x5F55;&#x7684;&#x540C;&#x65F6;&#x4F1A;&#x6253;&#x5370;&#x8FD9;&#x4E2A;&#x5B9A;&#x754C;&#x7B26;&#x3002;</p>
+<pre><code>$  awk &apos;BEGIN{ORS=&quot;=&quot;;} {print;}&apos; student-marks
+Jones 2143 78 84 77=Gondrol 2321 56 58 45=RinRao 2122 38 37 65=
+</code></pre><p>NR &#x8BB0;&#x5F55;&#x4E2A;&#x6570;&#x53D8;&#x91CF;<br>NR &#x7ED9;&#x51FA;&#x5DF2;&#x5904;&#x7406;&#x7684;&#x8BB0;&#x5F55;&#x6570;&#x6216;&#x884C;&#x53F7;&#x3002;<br>&#x4E0B;&#x9762;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x4E2D;&#xFF0C;NR&#x53D8;&#x91CF;&#x4FDD;&#x5B58;&#x884C;&#x53F7;&#xFF0C;&#x5728;awk&#x811A;&#x672C;&#x7684;END&#x90E8;&#x5206;&#xFF0C;NR&#x53D8;&#x91CF;&#x53EF;&#x4EE5;&#x544A;&#x8BC9;&#x4F60;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x4E2D;&#x7684;&#x8BB0;&#x5F55;&#x603B;&#x6570;&#x3002;</p>
+<pre><code>$ awk &apos;{print &quot;Processing Record - &quot;,NR;}END {print NR, &quot;Students Records are processed&quot;;}&apos; student-marks
+Processing Record -  1
+Processing Record -  2
+Processing Record -  3
+3 Students Records are processed
+</code></pre><p>&#xFF08;&#x6CE8;&#xFF1A;&#xFF09;&#x5728;&#x5904;&#x7406;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#x65F6;&#xFF0C;&#x60C5;&#x51B5;&#x6709;&#x6240;&#x4E0D;&#x540C;&#xFF0C;NR&#x503C;&#x4F1A;&#x7D2F;&#x52A0;&#xFF0C;&#x4F8B;&#x5982;&#x7B2C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x6709;10&#x4E2A;&#x8BB0;&#x5F55;&#xFF0C;&#x5F53;&#x5904;&#x7406;&#x5230;&#x7B2C;&#x4E8C;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x7B2C;2&#x4E2A;&#x8BB0;&#x5F55;&#x65F6;&#xFF0C;NR&#x503C;&#x4E3A;12</p>
+<p>NF &#x57DF;&#x4E2A;&#x6570;&#x53D8;&#x91CF;<br>NF&#x7ED9;&#x51FA;&#x4E00;&#x4E2A;&#x8BB0;&#x5F55;&#x4E2D;&#x57DF;&#x7684;&#x603B;&#x6570;&#x3002;<br>NF&#x5728;&#x5224;&#x65AD;&#x4E00;&#x4E2A;&#x8BB0;&#x5F55;&#x4E2D;&#x662F;&#x5426;&#x6240;&#x6709;&#x7684;&#x57DF;&#x5747;&#x5B58;&#x5728;&#x65F6;&#x975E;&#x5E38;&#x6709;&#x7528;&#x3002;</p>
+<p>&#x4FEE;&#x6539;&#x4E0B;&#x4E0A;&#x9762;&#x7684;&#x5B66;&#x751F;&#x4FE1;&#x606F;&#x6587;&#x4EF6;&#xFF08;&#x7B2C;&#x4E09;&#x4E2A;&#x8BB0;&#x5F55;&#x7684;&#x7B2C;&#x4E09;&#x4E2A;&#x5206;&#x6570;&#x6CA1;&#x6709;&#x4E86;&#xFF09;&#xFF1A;</p>
+<pre><code>$cat student-marks
+Jones 2143 78 84 77
+Gondrol 2321 56 58 45
+RinRao 2122 38 37
+</code></pre><p>&#x770B;&#x4E0B;&#x9762;&#x811A;&#x672C;&#x7684;&#x8F93;&#x51FA;&#xFF1A;</p>
+<pre><code>$ awk &apos;{print NR,&quot;-&gt;&quot;,NF}&apos; student-marks
+1 -&gt; 5
+2 -&gt; 5
+3 -&gt; 4
+</code></pre><p>FILENAME &#x5F53;&#x524D;&#x8F93;&#x5165;&#x6587;&#x4EF6;&#x540D;&#x53D8;&#x91CF;<br>FILENAME &#x53D8;&#x91CF;&#x7ED9;&#x51FA;&#x6B63;&#x5728;&#x88AB;&#x8BFB;&#x53D6;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x3002;<br>awk&#x662F;&#x53EF;&#x4EE5;&#x63A5;&#x53D7;&#x591A;&#x4E2A;&#x8F93;&#x5165;&#x6587;&#x4EF6;&#x6765;&#x5904;&#x7406;&#x7684;&#x3002;</p>
+<pre><code>$ awk &apos;{print FILENAME}&apos; student-marks
+student-marks
+student-marks
+student-marks
+</code></pre><p>&#x5728;&#x4E0A;&#x9762;&#x7684;&#x5B9E;&#x4F8B;&#x4E2D;&#xFF0C;&#x5728;&#x5904;&#x7406;&#x6587;&#x4EF6;&#x7684;&#x6BCF;&#x4E00;&#x6761;&#x8BB0;&#x5F55;&#x65F6;&#xFF0C;&#x90FD;&#x6253;&#x5370;FILENAME&#xFF0C;&#x4E5F;&#x5C31;&#x662F; student-marks&#x3002;</p>
+<p>FNR &#x5F53;&#x524D;&#x8F93;&#x5165;&#x6587;&#x4EF6;&#x8BB0;&#x5F55;&#x4E2A;&#x6570;&#x53D8;&#x91CF;
+&#x5F53;awk&#x4ECE;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#x8BFB;&#x53D6;&#x65F6;&#xFF0C;NR&#x53D8;&#x91CF;&#x5C06;&#x7ED9;&#x51FA;&#x6240;&#x6709;&#x76F8;&#x5173;&#x6587;&#x4EF6;&#x7684;&#x8BB0;&#x5F55;&#x603B;&#x6570;&#xFF0C;&#x800C; FNR &#x7ED9;&#x51FA;&#x7684;&#x662F;&#x6BCF;&#x4E2A;&#x8F93;&#x5165;&#x6587;&#x4EF6;&#x7684;&#x8BB0;&#x5F55;&#x6570;&#x3002;</p>
+<pre><code>$awk &apos;{print FILENAME, NR, FNR;}&apos; student-marks bookdetails
+student-marks 1 1
+student-marks 2 2
+student-marks 3 3
+bookdetails 4 1
+bookdetails 5 2
+bookdetails 6 3
+</code></pre><footer class="page-footer"><span class="copyright">Copyright &amp; copy tanhuang1985@gmail.com all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">&#x8BE5;&#x6587;&#x7AE0;&#x4FEE;&#x8BA2;&#x65F6;&#x95F4;&#xFF1A;
+2021-01-18 11:04:30
+</span></footer>
+<script>console.log("plugin-popup....");document.onclick = function(e){ e.target.tagName === "IMG" && window.open(e.target.src,e.target.src)}</script><style>img{cursor:pointer}</style>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="Programming_Shell_expirence_smmary.html" class="navigation navigation-prev " aria-label="Previous page: Shell经验汇总">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Programming_Python_dynamic_create_variable.html" class="navigation navigation-next " aria-label="Next page: Python-语法糖-动态生成变量">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Shell的awk","level":"1.3.4","depth":2,"next":{"title":"Python-语法糖-动态生成变量","level":"1.3.5","depth":2,"path":"Programming_Python_dynamic_create_variable.md","ref":"Programming_Python_dynamic_create_variable.md","articles":[]},"previous":{"title":"Shell经验汇总","level":"1.3.3","depth":2,"path":"Programming_Shell_expirence_smmary.md","ref":"Programming_Shell_expirence_smmary.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["back-to-top-button","chapter-fold","code","splitter","-lunr","-search","search-pro","insert-logo","custom-favicon","pageview-count","tbfed-pagefooter","popup","-sharing","sharing-plus"],"pluginsConfig":{"tbfed-pagefooter":{"copyright":"Copyright & copy tanhuang1985@gmail.com","modify_label":"该文章修订时间：","modify_format":"YYYY-MM-DD HH:mm:ss"},"chapter-fold":{},"splitter":{},"search-pro":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"popup":{},"code":{"copyButtons":true},"hide-element":{"elements":[".gitbook-link"]},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"favicon":"./icon/book.ico","back-to-top-button":{},"pageview-count":{},"custom-favicon":{},"sharing":{"qq":true,"all":["douban","facebook","google","instapaper","linkedin","twitter","weibo","messenger","qq","qzone","viber","whatsapp"],"douban":true,"facebook":true,"weibo":true,"twitter":true,"pocket":true,"google":true,"qzone":true},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"insert-logo":{"style":"background: none; max-height: 150px; min-height: 150px","url":"images/书籍 (5).png"}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Programming_Shell_awk.md","mtime":"2021-01-18T03:04:30.173Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-06-24T08:09:54.016Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-back-to-top-button/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-chapter-fold/chapter-fold.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-code/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search-pro/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search-pro/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-insert-logo/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-pageview-count/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing-plus/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
