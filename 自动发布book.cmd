@@ -22,10 +22,14 @@ if %computername% == TANHUANG-PC (set fastcopy_command=C:\Users\Administrator\Fa
 if %computername% == TANHUANG-NOTE (set fastcopy_command="C:\Program Files\FastCopy\FastCopy.exe")
 REM fastcopy同步一次图片文件夹, 避免因每次的文件时间不同, 导致重复上传浪费时间
 %fastcopy_command% /cmd=sync /force_close /estimate /bufsize=256 /acl /log=FALSE /balloon=FALSE D:\Code\my-doc\images\ /to=D:\Code\my-doc\_book\images
-git init
-git remote add git git@github.com:407474568/my-doc.git
-REM git config credential.helper store
-git add .
-git commit -m %title%
-git push -f git master:gh-pages
 
+REM 弃用
+REM git init
+REM git remote add git git@github.com:407474568/my-doc.git
+REM REM git config credential.helper store
+REM git add .
+REM git commit -m %title%
+REM git push -f git master:gh-pages
+
+"D:\Program Files\cygwin64\bin\mintty.exe" bash D:\Code\my-doc\自动发布gitbook_upload.sh
+pause
