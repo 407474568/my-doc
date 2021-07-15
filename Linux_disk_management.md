@@ -145,7 +145,7 @@ https://my.oschina.net/Jalo/blog/804412
 2. fdisk -l
 3. vgdisplay
 4. pvcreate /dev/sdc
-5. gextend centos /dev/sdc
+5. vgextend centos /dev/sdc
 6. vgdisplay
 7. lvextend -l +5G /dev/centos/var
 8. xfs_growps /dev/centos/var
