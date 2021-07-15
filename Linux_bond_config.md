@@ -1,6 +1,40 @@
 #### Red Hat 目前主推的nmcli 命令行方式  
 [文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bonding)
 
+最终操作结果还是写入 /etc/sysconfig/network-scripts/ 下,
+但红帽主导使用这个命令行工具
+再一个它以各种profile的形式管理,也便于在多种类型的配置中快速切换  
+[文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/sec-network_bonding_using_the_networkmanager_command_line_tool_nmcli)  
+[文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/sec-network_bonding_using_the_command_line_interface)  
+[文章链接](https://www.jianshu.com/p/3dd5e4ca4b7d)  
+[文章链接](https://blog.51cto.com/cstsncv/2049474)  
+
+```
+# 添加bonding接口
+nmcli connection add con-name bond0 type bond ifname bond0 mode active-backup
+
+# 为bonding0接口添加从属接口
+nmcli con add type bond-slave ifname ens33 master bond0
+nmcli con add type bond-slave ifname ens37 master bond0
+
+# 启动bonding网卡需要先启动从属网卡。
+nmcli connection up bond-slave-ens33
+nmcli connection up bond-slave-ens37
+
+# 添加一个新配置文件:bond0, 对应接口名称:bond0
+nmcli connection add con-name bond0 ifname bond0 autoconnect yes type ethernet ipv4.method manual ipv4.addresses 192.168.0.102/24 gw4 192.168.0.1
+
+# 启动bond0网卡
+nmcli con up bond0
+
+# 修改已有的配置文件
+nmcli connection modify "bond0" autoconnect yes type ethernet ipv4.method manual ipv4.addresses 192.168.0.102/24 gw4 192.168.0.1
+
+# 启停某个接口
+nmcli con down bond0
+nmcli con up bond0
+```
+
 [使用 NETWORKMANAGER 命令行工具 NMCLI](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/sec-using_the_networkmanager_command_line_tool_nmcli)
 
 #### nmcli 命令方式配置bond 与 team模式的bond

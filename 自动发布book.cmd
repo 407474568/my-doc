@@ -28,3 +28,6 @@ git add .
 git commit -m %title%
 git push -f git master:gh-pages
 
+
+REM 上传本地网站
+REM convmv -f gbk -t utf-8 -r --notest /docker/my-doc-book/

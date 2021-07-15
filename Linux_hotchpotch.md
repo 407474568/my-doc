@@ -44,42 +44,6 @@ dmsetup ls
 从/var/log/messages 和 /var/log/secure 里查找提示
 
 
-#### nmcli命令操作网卡配置
-最终操作结果还是写入 /etc/sysconfig/network-scripts/ 下,
-但红帽主导使用这个命令行工具
-再一个它以各种profile的形式管理,也便于在多种类型的配置中快速切换  
-[文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/sec-network_bonding_using_the_networkmanager_command_line_tool_nmcli)  
-[文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/sec-network_bonding_using_the_command_line_interface)  
-[文章链接](https://www.jianshu.com/p/3dd5e4ca4b7d)  
-[文章链接](https://blog.51cto.com/cstsncv/2049474)  
-
-```
-# 添加bonding接口
-nmcli connection add con-name bond0 type bond ifname bond0 mode active-backup
-
-# 为bonding0接口添加从属接口
-nmcli con add type bond-slave ifname ens33 master bond0
-nmcli con add type bond-slave ifname ens37 master bond0
-
-# 启动bonding网卡需要先启动从属网卡。
-nmcli connection up bond-slave-ens33
-nmcli connection up bond-slave-ens37
-
-# 添加一个新配置文件:bond0, 对应接口名称:bond0
-nmcli connection add con-name bond0 ifname bond0 autoconnect yes type ethernet ipv4.method manual ipv4.addresses 192.168.0.102/24 gw4 192.168.0.1
-
-# 启动bond0网卡
-nmcli con up bond0
-
-# 修改已有的配置文件
-nmcli connection modify "bond0" autoconnect yes type ethernet ipv4.method manual ipv4.addresses 192.168.0.102/24 gw4 192.168.0.1
-
-# 启停某个接口
-nmcli con down bond0
-nmcli con up bond0
-```
-
-
 #### 因机器异常关闭导致xfs文件系统损坏的不能启动
 [文章链接](https://blog.csdn.net/Jaelin_Pang/article/details/77825408)  
 错误大概显示如下：
@@ -316,6 +280,21 @@ rescan-scsi-bus.sh -r ： 删除磁盘以后执行可以剔除磁盘
 hostx表示在/sys/class/scsi_host有多个host开头的文件，映射的磁盘至操作系统可能是通过host0或者其他的hostx，如果执行host0的没有继续执行其余的hostx  
 ```echo "1" > /sys/block/sdx/device/delete```  
 sdx表示要删除的磁盘，比如sdb
+
+
+#### RHEL / CentOS 7 安装图形界面
+安装
+```
+yum -y groupinstall "X Window System" "GNOME Desktop" "Graphical Administration Tools"
+```
+设置图形为默认启动
+```
+systemctl set-default graphical.target
+```
+设置命令行为默认启动
+```
+systemctl set-default multi-user.target
+```
 
 
 #### 用screen来保持需前台活跃的程序
