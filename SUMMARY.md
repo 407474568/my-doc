@@ -23,6 +23,7 @@
     * [时钟同步](Linux_clock_sync_chrony_and_ntpd_config.md)
     * [firewalld和iptables](Linux_firewalld_and_iptables.md)  
     * [磁盘管理](Linux_disk_management.md) 
+    * [yum配置](Linux_yum_config.md) 
     * [gcc的升级操作](Linux_gcc_upgrade.md)
     * [PXE Server端的配置](Linux_PXE_config.md)
 * [容器](category_3_Container.md)
