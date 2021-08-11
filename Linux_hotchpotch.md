@@ -55,7 +55,7 @@ logging = debug
 
 <font color=red>关于autofs里的绝对路径和相对路径</font>  
 绝对路径的配置方法  
-在主配置文件 /etc/auto.amster 书写
+在主配置文件 /etc/auto.amster 书写  
 ```
 /-  附加的配置文件路径
 ```
