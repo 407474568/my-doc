@@ -163,3 +163,108 @@ Remove-OSCustomizationSpec $osspec -Confirm:$false
 # 虚拟机开机
 Start-VM  -VM 指向虚拟机网卡指针 -Confirm:$false
 ```
+
+
+#### 以链接克隆方式创建vSphere虚拟机
+引用:  
+https://blog.51cto.com/foolishfish/1610682
+
+vSphere Horizon View中运用了链接克隆的方法来使多个VDI使用同一基础镜像，而在没有View环境的时候，vSphere的GUI中没有链接克隆的相关使用项。这种情况下，可以使用PowerCLI来创建链接克隆的VM。
+
+方法一：  
+http://michlstechblog.info/blog/vmware-vsphere-create-a-linked-clone-with-powercli/
+
+```
+Connect-VIServer "vCenter_FQDN"
+$sourceVM="source_vm_name"
+#指定源VM名称
+
+$sourceVMSnapshotName="linkedclone_snap" 
+#定义快照名称
+
+$NewVMName="linked_clone_VM"
+#定义链接克隆方式创建的VM的名字
+
+$cloneFolder=(Get-VM $sourceVM).Folder
+#获取源VM所在文件夹
+
+$sourceSnapShot=New-Snapshot -VM $sourceVM -Name $sourceVMSnapshotName -Description "Snapshot for linked clones" -Memory -Quiesce
+#为源VM创建快照
+
+$ESXDatastore=Get-Datastore -Name "Datastore1"
+#指定存储
+
+$LinkedCloneVM=New-VM -Name $NewVMName -VM $sourceVM -Location $cloneFolder -Datastore $ESXDatastore -ResourcePool Resources -LinkedClone -ReferenceSnapshot $sourceSnapShot
+#以LinkedClone方式生成VM
+
+Start-VM $LinkedCloneVM
+#链接克隆VM开机
+
+Stop-VM $LinkedCloneVM -Confirm:$false
+#关机
+
+Remove-VM -DeletePermanently $LinkedCloneVM -Confirm:$false 
+#删除链接克隆VM
+
+Remove-Snapshot -Snapshot $sourceSnapShot -Confirm:$false
+#移除快照
+```
+
+
+方法二：
+
+来源：   
+http://www.vmdev.info/?p=40
+
+```
+Connect-VIServer "vCenter_FQDN"
+#连接到vCenter
+$sourceVM = Get-VM "source_vm_name" | Get-View
+#获取源VM对象的View对象
+$cloneName = "linked_clone_VM"
+#定义克隆VM名称
+$cloneFolder = $sourceVM.parent
+#获取源VM所在文件夹（群集、资源池）
+$cloneSpec = new-object Vmware.Vim.VirtualMachineCloneSpec
+$cloneSpec.Snapshot = $sourceVM.Snapshot.CurrentSnapshot
+#指定克隆方式，基于源VM的当前快照
+
+$cloneSpec.Location = new-object Vmware.Vim.VirtualMachineRelocateSpec
+$cloneSpec.Location.DiskMoveType = [Vmware.Vim.VirtualMachineRelocateDiskMoveOptions]::createNewChildDiskBacking
+#磁盘拷贝类型为ChildDiskBacking
+ 
+$sourceVM.CloneVM_Task( $cloneFolder, $cloneName, $cloneSpec )
+#执行链接克隆
+```
+
+综上方法，写成脚本
+
+```
+#加载PowerCLI环境
+Add-PSSnapin VMware.VimAutomation.Core 
+C:\"Program Files (x86)\VMware\Infrastructure\vSphere PowerCLI\Scripts\Initialize-PowerCLIEnvironment.ps1"
+
+#根据提示输入vCenter连接信息的方式，可以根据实际环境，将部分变量写成固定参数
+$VCServer = Read-Host "Enter vCenter Server Name"
+$Username = Read-Host "Enter Username"
+$Password = Read-Host "Enter Password"
+$SourceVM = Read-Host "Enter Source VM Name"
+$CloneVM  = Read-Host "Enter Clone VM Name"
+#连接vCenter Server
+Connect-VIServer $VCServer -User $Username -Password $Password -Port 443
+
+#如果源VM当前快照名称不是Linked_Clone则为该VM创建快照
+if ((Get-Snapshot -VM $sourceVM).Name -ne "Linked_Clone") {
+$SourceSnapshot = New-Snapshot -VM $SourceVM -Name "Linked_Clone" -Description "Snapshot for linked clones." -Memory -Quiesce
+}
+
+$sourceVMView = Get-VM $SourceVM | Get-View
+$CloneFolder = $sourceVMView.parent
+$CloneSpec = New-Object Vmware.Vim.VirtualMachineCloneSpec
+$CloneSpec.Snapshot = $sourceVMView.Snapshot.CurrentSnapshot
+$CloneSpec.Location = new-object Vmware.Vim.VirtualMachineRelocateSpec
+$CloneSpec.Location.DiskMoveType = [Vmware.Vim.VirtualMachineRelocateDiskMoveOptions]::createNewChildDiskBacking
+
+#执行VM链接克隆任务
+$sourceVMView.CloneVM_Task($CloneFolder, $CloneVM, $CloneSpec)
+```
