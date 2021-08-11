@@ -12,13 +12,13 @@ autofs的工作参数配置文件默认位置是
 有关autofs 相对路径和绝对路径 挂载的两钟写法, 已在上面的第2个链接有所描述  
 简而言之就是, 在auto.master中如果书写为:
 ```
-/-  配置文件路径
+/-  附加的配置文件路径
 ```
 则是以绝对路径的方式挂载, 并且这样不会隐藏父目录下, 与自动挂载点无关的其他文件和目录  
 
 在RHEL/CentOS 6 和 7上配置并不存在太多问题  
 
-关于设备的写法  
+<font color=red>关于设备的写法</font>  
 
 ![](/images/3Z8iKXenYTujrg7QtGcWxRfd5bTk0XFZ.png)
 
@@ -53,7 +53,7 @@ logging = debug
 ```
 则是错误的
 
-关于autofs里的绝对路径和相对路径  
+<font color=red>关于autofs里的绝对路径和相对路径</font>  
 绝对路径的配置方法
 在主配置文件 /etc/auto.amster
 ```
