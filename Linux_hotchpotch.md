@@ -1,3 +1,88 @@
+#### autofs自动挂载
+相比 /etc/fstab 在操作系统启动时挂载  
+autofs 按需挂载具有更多的灵活性  
+https://www.cnblogs.com/felixzh/p/9239298.html
+https://blog.csdn.net/zhangym199312/article/details/78277738
+
+挂载对象的主配置文件默认位置是  
+/etc/auto.master  
+autofs的工作参数配置文件默认位置是  
+/etc/autofs.conf
+
+有关autofs 相对路径和绝对路径 挂载的两钟写法, 已在上面的第2个链接有所描述  
+简而言之就是, 在auto.master中如果书写为:
+```
+/-  配置文件路径
+```
+则是以绝对路径的方式挂载, 并且这样不会隐藏父目录下, 与自动挂载点无关的其他文件和目录  
+
+在RHEL/CentOS 6 和 7上配置并不存在太多问题  
+
+关于设备的写法  
+
+![](/images/3Z8iKXenYTujrg7QtGcWxRfd5bTk0XFZ.png)
+
+经测试, 在RHEL/CentOS 7上  
+无论是  
+/dev/sr0  
+还是  
+:/dev/sr0  
+都是可以正常工作的
+
+而在在RHEL/CentOS 8上  
+挂载光驱等本地类设备需要上图示例中的冒号, 即:
+```
+:/dev/sr0
+```
+否则会出现挂载不上的错误情况  
+此错误信息通过打开autofs.conf的日志级别可以显示
+```
+logging = debug
+```
+此后通过journalctl -u autofs 可以查看到完整的输出信息
+
+而在RHEL/CentOS 8上  
+挂载NFS等网络路径
+如
+```
+192.168.1.2:/nfs_share
+```
+这样的路径则不能在前面冒号, 写成
+```
+:192.168.1.2:/nfs_share
+```
+则是错误的
+
+关于autofs里的绝对路径和相对路径  
+绝对路径的配置方法
+在主配置文件 /etc/auto.amster
+```
+/-  附加的配置文件路径
+```
+在 附加的配置文件路径 书写
+```
+挂载点的绝对路径    设备类型    设备名称
+```
+
+而相对路径的写法  
+以下图为例
+
+![](/images/3Z8iKXenYTUfmjAHxPqaEF6h8NeXDbcV.png)
+
+autofs相对路径, 挂载NFS路径的正解
+
+remoteuser1  
+写成  
+/remoteuser1  
+反而是错的
+
+在auto.master里, 也不需要/结尾
+
+![](/images/3Z8iKXenYTO6mJEPpaeIc85ZnSdtHVgl.png)
+
+实际的文件夹 /rhome/remoteuser1
+remoteuser1 存不存在都不影响
+
 #### 内存做ramdisk
 [https://blog.csdn.net/weixin_37871174/article/details/75084619](https://blog.csdn.net/weixin_37871174/article/details/75084619)
 
