@@ -33,6 +33,8 @@
 * [虚拟化](category_5_Virtualization.md)
     * [vCenter操作相关](Virtualization_vcenter_relates.md)
     * [VMware Workstation汇总](Virtualization_vmware_workstation_summary.md)
+
 * [其他 / 杂项](category_9_Others.md)
     * [远程唤醒计算机](Others_remote_wake_up_computer.md)
     * [Windows IPSec实现防火墙功能](Others_windows_ipsec.md)
+    * [Xshell连接使用隧道](Others_xshell_use_tunnel.md)
