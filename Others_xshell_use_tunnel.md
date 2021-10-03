@@ -20,6 +20,9 @@ https://www.cxyzjd.com/article/qq_42189368/107023408
 
 如果建立后,"状态"为"失败"而不是"打开", 则需要检查端口占用, 以及重建规则另起端口
 
+详细步骤参考以下:  
+![](images/gzkKCyDhqxBXyCQ0kuKb3HqIzGgsrceU.png)
+
 #### 客户端的配置
 
 此时, 在客户端上  
