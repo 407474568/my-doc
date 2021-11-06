@@ -34,6 +34,14 @@ session required /lib/security/$ISA/pam_limits.so
 
 4) 最后,不要在其他文件写死了ulimit，比如:ulimit -n 65535
 
+#### 2021-11-06 增补  
+https://bbs.huaweicloud.com/blogs/108323  
+受systemd 管理的服务进程的配置方式  
+该场景仅针对被systemd管理的进程（也就是可以通过systemctl来控制的进程）生效，可以通过修改该进程的service文件（通常在/etc/systemd/system/目录下），在“[Service]”下面添加“LimitNOFILE=20480000”来实现，修改完成之后需要执行"systemctl daemon-reload"来使该配置生效。
+
+inotify达到上限  
+inotify是linux提供的一种监控机制，可以监控文件系统的变化。该机制受到2个内核参数的影响：“fs.inotify.max_user_instances”和“fs.inotify.max_user_watches”，其中“fs.inotify.max_user_instances”表示每个用户最多可以创建的inotify instances数量上限，“fs.inotify.max_user_watches”表示么个用户同时可以添加的watch数目，当出现too many open files问题而上面三种方法都无法解决时，可以尝试通过修改这2个内核参数来生效。修改方法是修改"/etc/sysctl.conf"文件，并执行"sysctl -p"。
+
 
 #### 字段含义
 https://www.ibm.com/developerworks/cn/linux/l-cn-ulimit/index.html
