@@ -18,6 +18,7 @@
     * [bond配置](Linux_bond_config.md)
     * [僵尸进程](Linux_zombie_process.md)
     * [关于ulimit设置](Linux_ulimit_relates.md)
+    * [升级Openssh和Openssl的事项](Linux_openssh_ssl_upgrade.md)
     * [tcpdump与wireshark在排错中的应用](Linux_tcpdump_and_wireshark.md)
     * [vsftpd和sftp的chroot设置](Linux_sftp_and_vsftp_config_chroot.md)
     * [时钟同步](Linux_clock_sync_chrony_and_ntpd_config.md)
