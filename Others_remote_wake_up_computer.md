@@ -1,4 +1,12 @@
-分为对局域网内计算机进行唤醒和通过互联网唤醒计算机  
+<font color=red>【2021-12-17】</font> 新增 故障处理  
+https://github.com/Bpazy/blog/issues/124  
+https://forums.centos.org/viewtopic.php?t=71861  
+https://bugs.centos.org/view.php?id=16486  
+RHEL / CentOS 7的 3.10.1062后的内核版本, 导致WOL失效, 3.10的内核回退到老版本即恢复该功能
+
+
+
+### 分为对局域网内计算机进行唤醒和通过互联网唤醒计算机  
 通过互联网唤醒计算机, 实际上就是多一步在互联网出口设备上要做端口映射,以及交换机/路由器上可能会需要进行IP与MAC的绑定问题.  
 <br/>
 分别需要对BIOS，操作系统，以及路由器进行设置。
