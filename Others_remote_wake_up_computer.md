@@ -1,3 +1,105 @@
+<font color=red>【2021-12-24】</font> 增补 故障处理  
+archlinux对wake-on-lan的介绍  
+https://wiki.archlinux.org/title/Wake-on-LAN
+
+模块设置  
+https://wiki.archlinux.org/title/Kernel_module#Setting_module_options  
+
+问题讨论  
+https://forums.centos.org/viewtopic.php?f=47&t=71861  
+https://forums.linuxmint.com/viewtopic.php?t=220964
+
+ELRepo  
+http://elrepo.org/tiki/HomePage
+
+根据网上的讨论可知, Realtek的网卡在linux出现wake-on-lan的bug是重灾区  
+1) 通过ELRepo的yum源, yum安装kmod-r8168, 附带更新了linux-firmware, 不能确定是否也是解决问题的关键.  
+2) 需要增加一个模块参数 ```options r8168 s5wol=1```
+
+```
+[root@localhost ~]# yum install kmod-r8168
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * elrepo: hkg.mirror.rackspace.com
+elrepo                                                                                                                                                                   | 3.0 kB  00:00:00     
+elrepo/primary_db                                                                                                                                                        | 539 kB  00:00:01     
+Resolving Dependencies
+--> Running transaction check
+---> Package kmod-r8168.x86_64 0:8.049.02-1.el7_9.elrepo will be installed
+--> Processing Dependency: kernel(strscpy) = 0xdd64e639 for package: kmod-r8168-8.049.02-1.el7_9.elrepo.x86_64
+--> Running transaction check
+---> Package kernel.x86_64 0:3.10.0-1160.49.1.el7 will be installed
+--> Processing Dependency: linux-firmware >= 20190429-72 for package: kernel-3.10.0-1160.49.1.el7.x86_64
+--> Running transaction check
+---> Package linux-firmware.noarch 0:20180911-69.git85c5d90.el7 will be updated
+---> Package linux-firmware.noarch 0:20200421-80.git78c0348.el7_9 will be an update
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================================================================================================================================
+ Package                                       Arch                                  Version                                                       Repository                              Size
+================================================================================================================================================================================================
+Installing:
+ kernel                                        x86_64                                3.10.0-1160.49.1.el7                                          updates                                 50 M
+ kmod-r8168                                    x86_64                                8.049.02-1.el7_9.elrepo                                       elrepo                                  83 k
+Updating for dependencies:
+ linux-firmware                                noarch                                20200421-80.git78c0348.el7_9                                  updates                                 80 M
+
+Transaction Summary
+================================================================================================================================================================================================
+Install  2 Packages
+Upgrade             ( 1 Dependent package)
+
+Total download size: 131 M
+Is this ok [y/d/N]: y
+Downloading packages:
+Delta RPMs disabled because /usr/bin/applydeltarpm not installed.
+warning: /var/cache/yum/x86_64/7/elrepo/packages/kmod-r8168-8.049.02-1.el7_9.elrepo.x86_64.rpm: Header V4 DSA/SHA1 Signature, key ID baadae52: NOKEY          ]  0.0 B/s | 400 kB  --:--:-- ETA 
+Public key for kmod-r8168-8.049.02-1.el7_9.elrepo.x86_64.rpm is not installed
+(1/3): kmod-r8168-8.049.02-1.el7_9.elrepo.x86_64.rpm                                                                                                                     |  83 kB  00:00:00     
+(2/3): kernel-3.10.0-1160.49.1.el7.x86_64.rpm                                                                                                                            |  50 MB  00:00:06     
+(3/3): linux-firmware-20200421-80.git78c0348.el7_9.noarch.rpm                                                                                                            |  80 MB  00:00:08     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                            15 MB/s | 131 MB  00:00:09     
+Retrieving key from file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
+Importing GPG key 0xBAADAE52:
+ Userid     : "elrepo.org (RPM Signing Key for elrepo.org) <secure@elrepo.org>"
+ Fingerprint: 96c0 104f 6315 4731 1e0b b1ae 309b c305 baad ae52
+ Package    : elrepo-release-7.0-5.el7.elrepo.noarch (installed)
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
+Is this ok [y/N]: y
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Updating   : linux-firmware-20200421-80.git78c0348.el7_9.noarch                                                                                                                           1/4 
+  Installing : kernel-3.10.0-1160.49.1.el7.x86_64                                                                                                                                           2/4 
+  Installing : kmod-r8168-8.049.02-1.el7_9.elrepo.x86_64                                                                                                                                    3/4 
+Working. This may take some time ...
+Done.
+  Cleanup    : linux-firmware-20180911-69.git85c5d90.el7.noarch                                                                                                                             4/4 
+  Verifying  : kmod-r8168-8.049.02-1.el7_9.elrepo.x86_64                                                                                                                                    1/4 
+  Verifying  : linux-firmware-20200421-80.git78c0348.el7_9.noarch                                                                                                                           2/4 
+  Verifying  : kernel-3.10.0-1160.49.1.el7.x86_64                                                                                                                                           3/4 
+  Verifying  : linux-firmware-20180911-69.git85c5d90.el7.noarch                                                                                                                             4/4 
+
+Installed:
+  kernel.x86_64 0:3.10.0-1160.49.1.el7                                                        kmod-r8168.x86_64 0:8.049.02-1.el7_9.elrepo                                                       
+
+Dependency Updated:
+  linux-firmware.noarch 0:20200421-80.git78c0348.el7_9                                                                                                                                          
+
+Complete!
+
+```
+模块参数
+```
+[root@localhost ~]# cat /etc/modprobe.d/r8168.conf 
+options r8168 s5wol=1
+```
+
+
 <font color=red>【2021-12-17】</font> 新增 故障处理  
 https://github.com/Bpazy/blog/issues/124  
 https://forums.centos.org/viewtopic.php?t=71861  
