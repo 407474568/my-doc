@@ -36,11 +36,11 @@ config/config.php
 
 ### 用户的配额限制
 https://help.nextcloud.com/t/custom-quota-option/54000/3  
-![](images/lTGqcJNXASRitLPAKHaQuFGr5nCq3DcI.png)
+![](images/lTGqcJNXASRitLPAKHaQuFGr5nCq3DcI.png)  
 以为是要改php代码等手段才能实现, 实际上, 官方论坛上的答复是, 你直接设置就可以了  
 不过实测,nextcloud的管理员很多功能, 典型的如下拉列表等, 在chrome, firefox浏览器上都表现异常  
 在opera浏览器上完成了该操作.
-![](images/lTGqcJNXASo4yvz1fB6TwDenKHhU073Z.png)
+![](images/lTGqcJNXASo4yvz1fB6TwDenKHhU073Z.png)  
 这里需要注意的是, 先在文本框输入你想限制的数值+单位, 待下方提示框出现后, 点击提示框的选择才可选择.  
 如果输入完成直接回车, 则不会生效.  
 
