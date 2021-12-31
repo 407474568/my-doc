@@ -45,7 +45,7 @@ config/config.php
 ![](images/lTGqcJNXAS8sKmCLctUhrfaRJqM9Q3BS.png)
 
 
-<h3 id="2">用户的配额限制</h3>
+<h3 id="3">用户的配额限制</h3>
 https://help.nextcloud.com/t/custom-quota-option/54000/3  
 ![](images/lTGqcJNXASRitLPAKHaQuFGr5nCq3DcI.png)  
 以为是要改php代码等手段才能实现, 实际上, 官方论坛上的答复是, 你直接设置就可以了  
