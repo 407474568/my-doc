@@ -7,7 +7,7 @@ https://docs.nextcloud.com/server/latest/user_manual/en/
 https://docs.nextcloud.com/server/latest/user_manual/zh_CN/  
 
 ### 入门手册  
-https://support.websoft9.com/docs/nextcloud/zh/
+https://support.websoft9.com/docs/nextcloud/zh/  
 http://www.garfielder.com/post/990cc2cb.html  
 
 ### NextCloud config 配置参数
