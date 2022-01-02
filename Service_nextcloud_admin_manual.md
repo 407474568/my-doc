@@ -58,7 +58,14 @@ https://help.nextcloud.com/t/custom-quota-option/54000/3
 
 
 <h3 id="4">新建用户登录的默认时区</h3>
-https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/language_configuration.html   
+https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/language_configuration.html  
+&nbsp;
+
+locale从此处查得  
+https://github.com/moment/moment/tree/2.18.1/locale  
+
+&nbsp;
+
 config/config.php
 需要新增语句
 ```
