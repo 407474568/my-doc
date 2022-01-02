@@ -18,6 +18,7 @@ https://www.gooccoo.com/nextcloud/870/
   * [新建用户首次登录的默认语言从英文改变到中文](#1)
   * [设置用户的密码复杂度策略](#2)
   * [用户的配额限制](#3)
+  * [用户的默认时区](#4)
 
 
     
@@ -55,3 +56,19 @@ https://help.nextcloud.com/t/custom-quota-option/54000/3
 这里需要注意的是, 先在文本框输入你想限制的数值+单位, 待下方提示框出现后, 点击提示框的选择才可选择.  
 如果输入完成直接回车, 则不会生效.  
 
+
+<h3 id="4">新建用户登录的默认时区</h3>
+https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/language_configuration.html   
+config/config.php
+需要新增语句
+```
+"default_locale" => "zh-cn",
+```
+需要注意的是大小写 ```zh-cn```  
+修改前  
+![](images/3Fyr8JdGRl5ZzmcRu7G01ADlSKdI9UkM.png)
+
+修改后  
+![](images/3Fyr8JdGRln2khTrvaPIeX9E5c7Gu6YC.png)  
+用户个人设置上虽然还是显示的美国, 但文件修改时间已显示为中文   
+![](images/3Fyr8JdGRleKBm89c6xowVIdOsaUNbTM.png)
