@@ -2,7 +2,8 @@
   * [虚拟机启停等日常命令](#1)
   * [KVM运行环境的安装](#2)
   * [删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络](#3)
-  * [KVM虚拟机控制台连接的方式](#4)
+  * [创建NAT类型网桥](#4)
+  * [KVM虚拟机控制台连接的方式](#5)
 
     
 <h3 id="1">虚拟机启停等日常命令</h3>
@@ -84,10 +85,145 @@ virt-v2v: 虚拟机迁移工具；
 ```
 
 <h3 id="3">删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络</h3>
+https://bynss.com/linux/591489.html#  
 https://www.liuwg.com/archives/kvm-bridge  
+以下是摘录:  
+<br/>
+
+<font color=red>注意:</font>   
+原文文档没有提到操作系统重启后, ip_forward 参数失效的问题  
+需要额外确保 ```net.ipv4.ip_forward = 1```  
+将其写入 /etc/sysctl.conf 中是选择之一
+
+<br/>
+
+在设置公共桥接网络之前，我们应该禁用 网络过滤器 为了 性能和安全原因. Netfilter 当前默认在网桥上启用。
+要禁用 netfilter，请创建一个名为 /etc/sysctl.d/bridge.conf：
+```
+vi /etc/sysctl.d/bridge.conf
+```
+添加以下几行：  
+```
+net.bridge.bridge-nf-call-ip6tables=0
+net.bridge.bridge-nf-call-iptables=0
+net.bridge.bridge-nf-call-arptables=0
+```
+然后创建另一个文件 /etc/udev/rules.d/99-bridge.rules
+```
+vi /etc/udev/rules.d/99-bridge.rules
+```
+添加以下行：
+```
+ACTION=="add", SUBSYSTEM=="module", KERNEL=="br_netfilter", RUN+="/sbin/sysctl -p /etc/sysctl.d/bridge.conf"
+```
+重新启动系统 使这些更改生效。
+
+通过```ip link```或```ip a```命令查看当前的网络接口  
+可以看到KVM软件包创建了默认的 virbr0 和virbr0-nic 两个接口  
+使用命令删除默认的 KVM 网络：  
+```
+# virsh net-destroy default
+```
+示例输出：
+```
+Network default destroyed
+```
+使用命令取消定义默认网络：
+```
+# virsh net-undefine default
+```
+示例输出：
+```
+Network default has been undefined
+```
+如果上述命令由于任何原因不起作用，您可以使用这些命令禁用和取消定义 KVM 默认网络：
+```
+# ip link delete virbr0 type bridge
+# ip link delete virbr0-nic
+```
+现在运行 ip link 再次验证是否 virbr0 和 virbr0-nic 接口实际上被删除了
+
+现在，让我们设置 KVM 公共桥接器以在创建新 VM 时使用。  
+创建一个名为的新桥接接口 br0 使用 nmcli 命令：
+```
+# nmcli connection add type bridge autoconnect yes con-name br0 ifname br0
+```
+设置桥接接口的 IP 地址：
+```
+# nmcli connection modify br0 ipv4.addresses 192.168.225.53/24 ipv4.method manual
+```
+为桥接接口设置网关：
+```
+# nmcli connection modify br0 ipv4.gateway 192.168.225.1
+```
+为网桥接口设置 DNS：
+```
+# nmcli connection modify br0 ipv4.dns 192.168.225.1
+```
+接下来，我们需要移除您的一张网络接口卡并将其作为从属设备添加到网桥。  
+请注意，如果您的服务器只有一个 NIC，而您通过 SSH 访问服务器，则在移除 NIC 后您的连接将被终止。  
+作为示例，我要补充 enp0s8 接口作为桥接接口br0的从属接口.  
+移除网络接口 enp0s8,执行：
+```
+# nmcli connection del enp0s8
+```
+接下来，添加 enp0s8 使用命令到桥：
+```
+# nmcli connection add type bridge-slave autoconnect yes con-name enp0s8 ifname enp0s8 master br0
+```
+这里，桥接网络接口 br0 连接到主机的网络接口 enp0s8. 替换上述与您的网络匹配的网络接口名称。  
+重新启动网络管理器使更改生效：  
+```
+# systemctl restart NetworkManager
+```
+如果可能，最好重新启动系统：
+```
+# reboot
+```
+登录到您的服务器并检查 IP 地址是否已分配给桥接接口：
+```
+$ ip a
+```
+你也可以使用 bridge 显示网桥状态的命令：
+```
+# bridge link show br0
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br0 state forwarding priority 32 cost 100
+```
+我们已经成功创建了一个桥接接口并且它是活动的。 我们需要做最后一件事。  
+我们应该配置 KVM 使用这个桥接接口作为默认接口。 为此，创建一个 XML 文件名为 host-bridge.xml：  
+```
+# vi host-bridge.xml
+```
+添加以下几行：
+```
+<network>
+  <name>host-bridge</name>
+  <forward mode="bridge"/>
+  <bridge name="br0"/>
+</network>
+```
+运行以下命令以启动新创建的网桥并使其成为虚拟机的默认网桥：
+```
+# virsh net-define host-bridge.xml
+
+# virsh net-start host-bridge
+
+# virsh net-autostart host-bridge
+```
+验证网桥是否处于活动状态并使用以下命令启动：
+```
+# virsh net-list --all
+
+示例输出：
+Name          State    Autostart   Persistent
+------------------------------------------------
+ host-bridge   active   yes         yes
+```
 
 
-<h3 id="4">KVM虚拟机控制台连接的方式</h3>
+<h3 id="4">创建NAT类型的网桥</h3>
+
+<h3 id="5">KVM虚拟机控制台连接的方式</h3>
 #### console直连
 https://blog.csdn.net/lemontree1945/article/details/80461037  
 https://www.cnblogs.com/xieshengsen/p/6215168.html  
