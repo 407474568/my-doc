@@ -89,6 +89,7 @@ virt-v2v: 虚拟机迁移工具；
 ```
 
 <h3 id="3">删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络</h3>
+
 https://bynss.com/linux/591489.html#  
 https://www.liuwg.com/archives/kvm-bridge  
 以下是摘录:  
