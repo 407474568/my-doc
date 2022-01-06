@@ -7,7 +7,9 @@
 
     
 <h3 id="1">虚拟机启停等日常命令</h3>
+
 https://bynss.com/linux/520925.html  
+
 ```
 # 启动虚拟机
 virsh start 虚拟机名称
@@ -60,14 +62,16 @@ osinfo-query os
 ```
 
 <h3 id="2">KVM运行环境的安装</h3>
+
 https://bynss.com/linux/591489.html#  
 https://www.liuwg.com/archives/kvm  
-在RHEL / CentOS / Rocky 8.x上的安装示例
+在RHEL / CentOS / Rocky 8.x上的安装示例  
 ```
 [root@localhost /]# yum -y install qemu-kvm  libvirt libvirt-daemon  \
 libvirt-client  libvirt-daemon-driver-qemu \
 virt-manager virt-install  virt-viewer virt-v2v
 ```
+
 软件包介绍：  
 qemu-kvm: 为kvm提供底层仿真支持；  
 libvirt-daemon: libvirtd守护进程，管理虚拟机；  
