@@ -275,6 +275,9 @@ grubby --update-kernel=ALL --args="console=ttyS0"
 reboot
 ```
 
+效果
+![](images/zi1jmfE8SAa41fJ9UIQtO57AdNHnszMC.png)
+
 - 退出console会话
 退出console会话是按下ctrl+] 的组合键, 但没有特别的提示, 如果主机名没有区别, 看起来像是只是回车换了行, 通过 IP信息等方式来确定到底在哪台主机上,这个细节需要注意.
 
