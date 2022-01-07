@@ -5,6 +5,7 @@
   * [创建NAT类型网桥](#4)
   * [KVM虚拟机控制台连接的方式](#5)
 
+
     
 <h3 id="1">虚拟机启停等日常命令</h3>
 
@@ -227,6 +228,116 @@ Name          State    Autostart   Persistent
 
 
 <h3 id="4">创建NAT类型的网桥</h3>
+https://www.codenong.com/cs109611731/  
+http://www.4k8k.xyz/article/qq_42596792/103291249  
+KVM的软件包会创建一个NAT类型网络的配置定义文件, 也就KVM安装默认就有virbr0网络.  
+其位于 /usr/share/libvirt/networks/default.xml  
+可将其复制, 做自定义修改, 再通过 virsh net-define 导入到KVM的网络定义中去  
+如下所示:
+```
+[root@localhost ~]# ll /usr/share/libvirt/networks/default.xml
+-rw-r--r-- 1 root root 228 Nov  9 21:33 /usr/share/libvirt/networks/default.xml
+[root@localhost ~]# cat /usr/share/libvirt/networks/default.xml
+<network>
+  <name>default</name>
+  <bridge name="virbr0"/>
+  <forward/>
+  <ip address="192.168.122.1" netmask="255.255.255.0">
+    <dhcp>
+      <range start="192.168.122.2" end="192.168.122.254"/>
+    </dhcp>
+  </ip>
+</network>
+[root@localhost ~]# cp /usr/share/libvirt/networks/default.xml nat.xml
+[root@localhost ~]# virsh net-list
+ Name          State    Autostart   Persistent
+------------------------------------------------
+ host-bridge   active   yes         yes
+
+[root@localhost ~]# vi nat.xml 
+[root@localhost ~]# virsh net-define nat.xml 
+Network nat defined from nat.xml
+
+[root@localhost ~]# virsh net-list
+ Name          State    Autostart   Persistent
+------------------------------------------------
+ host-bridge   active   yes         yes
+
+[root@localhost ~]# virsh net-list --all
+ Name          State      Autostart   Persistent
+--------------------------------------------------
+ host-bridge   active     yes         yes
+ nat           inactive   no          yes
+```
+修改虚拟机的配置文件
+![](images/zQyNKDEguIacJWkKqntMYOPuQr3xETC8.png)
+![](images/zQyNKDEguI9Phld1tfyuqLe3bQHcCY4B.png)
+启动后可见网络已通
+```
+[root@localhost ~]# virsh start centos7.9 
+Domain centos7.9 started
+
+[root@localhost ~]# virsh list
+ Id   Name        State
+---------------------------
+ 3    centos7.9   running
+
+[root@localhost ~]# virsh console 3
+Connected to domain centos7.9
+Escape character is ^]
+
+CentOS Linux 7 (Core)
+Kernel 3.10.0-1160.el7.x86_64 on an x86_64
+
+localhost login: root
+Password: 
+Last login: Wed Jan  5 07:25:19 on ttyS0
+[root@localhost ~]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 52:54:00:aa:2c:94 brd ff:ff:ff:ff:ff:ff
+[root@localhost ~]# nmcli con sh
+NAME  UUID                                  TYPE      DEVICE 
+eth0  c9586c80-ffec-4b62-9f85-88e2d20ca6a0  ethernet  --     
+[root@localhost ~]# nmcli con modify eth0 ifname eth0 autoconnect yes
+[root@localhost ~]# nmcli con down eth0;nmcli con up eth0
+Connection 'eth0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/1)
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2)
+[root@localhost ~]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 52:54:00:aa:2c:94 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.26/24 brd 192.168.122.255 scope global noprefixroute dynamic eth0
+       valid_lft 3599sec preferred_lft 3599sec
+    inet6 fe80::fdd1:14b3:14ff:55f5/64 scope link tentative noprefixroute 
+       valid_lft forever preferred_lft forever
+[root@localhost ~]# ping www.baidu.com
+PING www.wshifen.com (45.113.192.101) 56(84) bytes of data.
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=1 ttl=44 time=268 ms
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=2 ttl=44 time=262 ms
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=4 ttl=44 time=262 ms
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=5 ttl=44 time=262 ms
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=6 ttl=44 time=264 ms
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=7 ttl=44 time=262 ms
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=8 ttl=44 time=261 ms
+64 bytes from 45.113.192.101 (45.113.192.101): icmp_seq=9 ttl=44 time=263 ms
+ 
+--- www.wshifen.com ping statistics ---
+9 packets transmitted, 8 received, 11% packet loss, time 8022ms
+rtt min/avg/max/mdev = 261.979/263.528/268.287/2.011 ms
+
+```
+
 
 <h3 id="5">KVM虚拟机控制台连接的方式</h3>
 #### console直连
@@ -306,3 +417,4 @@ virt-install \
 # 将图形显示定向到VNC, 并且指定监听端口和IP
 --graphics vnc,listen=0.0.0.0,port=5903
 ```
+
