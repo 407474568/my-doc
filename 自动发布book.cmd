@@ -1,5 +1,8 @@
 @echo off
 set /p title=输入本次上传的说明标题: 
+if defined title (
+    echo 变量 title 的值为%title%
+) else set title=该用户不屑于输入备注
 
 :build
 REM 在Windows中执行gitbook命令后, 发生了退出操作, 无法获取%errorlevel%来进行后续操作, 用以下这种奇葩方式解决
