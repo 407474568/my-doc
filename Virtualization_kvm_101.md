@@ -374,7 +374,7 @@ https://www.igiftidea.com/article/11397774301.html
           initrd /initramfs-2.6.32-431.el6.x86_64.img
   [root@localhost ~]#
   ```
-  也就是在当前使用的内核版本追加一个参数 ```console=ttyS0```
+  也就是在当前使用的内核版本追加一个参数 ```console=ttyS0```  
   3) 编辑/etc/inittab，在最后一行加入内容
   ```
   S0:12345:respawn:/sbin/agetty ttyS0 115200
