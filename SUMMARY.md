@@ -24,6 +24,7 @@
     * [vsftpd和sftp的chroot设置](Linux_sftp_and_vsftp_config_chroot.md)
     * [时钟同步](Linux_clock_sync_chrony_and_ntpd_config.md)
     * [firewalld和iptables](Linux_firewalld_and_iptables.md)  
+    * [硬件相关](Linux_hardware_stuff.md)  
     * [磁盘管理](Linux_disk_management.md) 
     * [yum配置](Linux_yum_config.md) 
     * [gcc的升级操作](Linux_gcc_upgrade.md)
