@@ -1,3 +1,16 @@
+#### bond的7种模式
+https://blog.csdn.net/watermelonbig/article/details/53127165  
+
+| 英文 | 序号 | 解释 |
+| ---  | ---  | ---  |
+| #define BOND_MODE_ROUNDROBIN    |  0  | （balance-rr模式）网卡的负载均衡模式 |
+| #define BOND_MODE_ACTIVEBACKUP  |  1  | （active-backup模式）网卡的容错模式 |
+| #define BOND_MODE_XOR           |  2  | （balance-xor模式）需要交换机支持 |
+| #define BOND_MODE_BROADCAST     |  3  |  （broadcast模式） |
+| #define BOND_MODE_8023AD        |  4  | （IEEE 802.3ad动态链路聚合模式）需要交换机支持 |
+| #define BOND_MODE_TLB           |  5  | 自适应传输负载均衡模式 |
+| #define BOND_MODE_ALB           |  6  | 网卡虚拟化方式
+
 #### Red Hat 目前主推的nmcli 命令行方式  
 [文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bonding)
 
