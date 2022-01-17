@@ -28,6 +28,12 @@ tmp变量 的取值是 "Manufacturer Product_Name ..."中的一个
 再通过eval 命令将其当作运算对象执行, 就可以得到相应变量存储的值  
 需要注意的是, eval 这种命令也有存在SQL注入漏洞的不当使用的风险, 需要限制其的运行条件
 
+<font color=red>统计文本里的特定字符出现次数</font>   
+https://www.jb51.net/article/157348.htm  
+利用 grep -o 选项只输出匹配字符的特性, 可以是单个字符或多个字符的字符串, 匹配的文本每个都会被单行显示  
+然后再用管道符接wc -l 命令统计次数, 即得出出现次数
+
+
 <h4 id="01">Shell正则</h4>
 
 <font color=red>关于正则表达式分组及后向引用</font>
