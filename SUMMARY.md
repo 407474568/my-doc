@@ -14,6 +14,7 @@
     * [Linux上的杂集](Linux_hotchpotch.md)
     * [内核参数](Linux_kernel_parameter.md)
     * [高可用汇总](Linux_high_avaliability.md)
+    * [故障排除汇总](Linux_troubleshoot_summary.md)
     * [ansible](Linux_ansible.md)
     * [bond配置](Linux_bond_config.md)
     * [僵尸进程](Linux_zombie_process.md)
