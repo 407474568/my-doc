@@ -366,6 +366,13 @@ hostx表示在/sys/class/scsi_host有多个host开头的文件，映射的磁盘
 ```echo "1" > /sys/block/sdx/device/delete```  
 sdx表示要删除的磁盘，比如sdb
 
+* shell循环遍历
+    ```
+    for path in `ls -d /sys/class/scsi_host/host*`
+    do
+        echo "- - -" > $path/scan
+    done
+    ```
 
 #### RHEL / CentOS 7 安装图形界面
 安装
