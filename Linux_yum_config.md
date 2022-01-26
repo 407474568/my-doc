@@ -1,3 +1,51 @@
+#### yum里的变量
+在yum里的URL一项取值会见到  
+$releasever  
+$arch  
+$basearch  
+等的使用, 关于它们的取值是如何而来, 以下2篇帖子已有讨论  
+https://qastack.cn/unix/19701/yum-how-can-i-view-variables-like-releasever-basearch-yum0  
+https://blog.csdn.net/Michaelwubo/article/details/80624727  
+方式1  
+使用rpm -qi centos-release查看
+```
+[root@localhost ~]# rpm -qi centos-release
+Name        : centos-release
+Version     : 7
+Release     : 9.2009.1.el7.centos
+Architecture: x86_64
+Install Date: Thu 23 Dec 2021 02:25:41 AM EST
+Group       : System Environment/Base
+Size        : 44787
+License     : GPLv2
+Signature   : RSA/SHA256, Wed 02 Dec 2020 11:35:28 AM EST, Key ID 24c6a8a7f4a80eb5
+Source RPM  : centos-release-7-9.2009.1.el7.centos.src.rpm
+Build Date  : Mon 23 Nov 2020 10:08:41 AM EST
+Build Host  : x86-01.bsys.centos.org
+Relocations : (not relocatable)
+Packager    : CentOS BuildSystem <http://bugs.centos.org>
+Vendor      : CentOS
+Summary     : CentOS Linux release file
+Description :
+CentOS Linux release files
+```
+方式2:  
+使用python执行查看
+```
+python -c 'import yum, pprint; yb = yum.YumBase(); pprint.pprint(yb.conf.yumvar, width=1)'
+```
+除了RHEL 4 由于python原因不适用, 从5开始都能被覆盖
+```
+[root@localhost ~]# python -c 'import yum, pprint; yb = yum.YumBase(); pprint.pprint(yb.conf.yumvar, width=1)'
+Loaded plugins: fastestmirror
+{'arch': 'ia32e',
+ 'basearch': 'x86_64',
+ 'contentdir': 'centos',
+ 'infra': 'stock',
+ 'releasever': '7',
+ 'uuid': 'b5c933ae-a96e-459c-8412-8c03eb0f5f76'}
+```
+
 #### 使用代理  
 https://docs.huihoo.com/yum/managing-software-with-yum-zh_cn/sn-yum-proxy-server.html   
 永久性生效  
