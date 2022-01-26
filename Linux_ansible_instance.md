@@ -54,11 +54,10 @@ https://stackoverflow.com/questions/61490702/ansible-debug-msg-throws-error-insi
   - debug: msg="{{ output.stdout_lines }}"
     listen: yum_makecache
 ```
-1) find 按规则查找对象, 参数是path和pattern
-2) register 存放find查找出的结果列表
-3) 使用file模块进行删除, 迭代方法使用的with_items的形式, 在playbook里的变量应用形式 ```"{{ need_to_delete.files }}"``` \
-之所以有.files属性是使用的find模块决定的
-4) yum_repository 模块没有特别值得描述的, notify 的特性在于, 只有 "name: 添加清华base源" 这个代码块发生实际更改后才会调用 notify 的对象
-5) handlers 的代码块内容, 在这里为了自定义处理什么样的操作, 比如 ```yum makecache``` 就是ansible不包含的功能,
+1) find 按规则查找对象, 参数是path和pattern  
+2) register 存放find查找出的结果列表  
+3) 使用file模块进行删除, 迭代方法使用的with_items的形式, 在playbook里的变量应用形式 ```"{{ need_to_delete.files }}"``` 之所以有.files属性是使用的find模块决定的
+4) yum_repository 模块没有特别值得描述的, notify 的特性在于, 只有 "name: 添加清华base源" 这个代码块发生实际更改后才会调用 notify 的对象  
+5) handlers 的代码块内容, 在这里为了自定义处理什么样的操作, 比如 ```yum makecache``` 就是ansible不包含的功能,  
 6) debug 在其他模块内使用没有值得特别讲述的要点, 但在handlers 里实测发现debug 的内容未被执行, 通过增加 listen 项得以解决
 
