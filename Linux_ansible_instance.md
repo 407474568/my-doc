@@ -45,6 +45,16 @@ https://stackoverflow.com/questions/61490702/ansible-debug-msg-throws-error-insi
     when: ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
     notify: yum_makecache
 
+  - name: 添加清华elrepo源
+    yum_repository: 
+      name: elrepo
+      description: elrepo
+      state: present
+      enabled: yes
+      baseurl: http://mirrors.tuna.tsinghua.edu.cn/elrepo/elrepo/el$releasever/$basearch
+    when: ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
+    notify: yum_makecache
+
   handlers:
   - name: yum_makecache
     shell: yum clean all;yum makecache
@@ -53,6 +63,7 @@ https://stackoverflow.com/questions/61490702/ansible-debug-msg-throws-error-insi
     register: output
   - debug: msg="{{ output.stdout_lines }}"
     listen: yum_makecache
+
 ```
 1) find 按规则查找对象, 参数是path和pattern  
 2) register 存放find查找出的结果列表  
