@@ -16,6 +16,7 @@
     * [高可用汇总](Linux_high_avaliability.md)
     * [故障排除汇总](Linux_troubleshoot_summary.md)
     * [ansible](Linux_ansible.md)
+    * [ansible实例](Linux_ansible_instance.md)
     * [bond配置](Linux_bond_config.md)
     * [僵尸进程](Linux_zombie_process.md)
     * [关于ulimit设置](Linux_ulimit_relates.md)
