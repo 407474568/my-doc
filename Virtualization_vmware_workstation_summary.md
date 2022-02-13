@@ -2,8 +2,8 @@
 https://www.cxyzjd.com/article/endzhi/89818324  
 https://blog.51cto.com/u_13777759/2437396  
 有两个步骤是必要的:
-1) 虚拟机内, Windows由于不会自动对已删除的空间填0,因此这部分已被回收的无法被宿主机感知,因此需要SDelete工具来进行填0操作
-2) 登录到EXSi控制台调用vmkfstools 进行虚拟机磁盘文件的空间收缩
+1) 虚拟机内, Windows由于不会自动对已删除的空间填0,因此这部分已被回收的无法被宿主机感知,因此需要SDelete工具来进行填0操作  
+2) 登录到EXSi控制台调用vmkfstools 进行虚拟机磁盘文件的空间收缩  
 
 SDelete 的下载页面:  
 https://docs.microsoft.com/en-us/sysinternals/downloads/sdelete
