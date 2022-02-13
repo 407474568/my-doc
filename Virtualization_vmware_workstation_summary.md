@@ -1,3 +1,26 @@
+#### EXSi上的虚拟机空间回收
+https://www.cxyzjd.com/article/endzhi/89818324  
+https://blog.51cto.com/u_13777759/2437396  
+有两个步骤是必要的:
+1) 虚拟机内, Windows由于不会自动对已删除的空间填0,因此这部分已被回收的无法被宿主机感知,因此需要SDelete工具来进行填0操作
+2) 登录到EXSi控制台调用vmkfstools 进行虚拟机磁盘文件的空间收缩
+
+SDelete 的下载页面:  
+https://docs.microsoft.com/en-us/sysinternals/downloads/sdelete
+
+SDelete 执行示例
+```
+sdelete -z D:
+```
+![](images/7F58YhqgTaU1Er0BjAmwz5dVk4FPeMsZ.png)
+
+vmkfstools 执行示例
+```
+[root@exsi01:/vmfs/volumes/6190d60b-b1a898ea-aba3-0002c9d15f48/Windows_7_2015年版本_爬虫机] vmkfstools -K Windows_7_2015年版本_爬虫机.vmdk
+vmfsDisk: 1, rdmDisk: 0, blockSize: 1048576
+Hole Punching: 100% done.
+```
+
 #### VMware workstation虚拟机空间回收
 
 [https://www.howtoforge.com/how-to-shrink-vmware-virtual-disk-files-vmdk](https://www.howtoforge.com/how-to-shrink-vmware-virtual-disk-files-vmdk)
