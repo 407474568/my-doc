@@ -142,21 +142,30 @@ OpenSSH升级过程
 [root@csqtest openssh-5.5p1]# export LIBPATH LD_LIBRARY_PATH LIBRARY_PATH
 ```
 还需要更新一下locate库。
-
+```
 [root@csqtest openssh-5.5p1]# /usr/bin/updatedb
+```
 更新系统库文件
-
+```
 [root@csqtest openssh-5.5p1]# echo " /usr/local/ssl/lib64/" >> /etc/ld.so.conf.d/openssh.1.0.0.conf
 [root@csqtest openssh-5.5p1]# ldconfig –v
+```
 ps:如果是32位的系统可能位置有所不同:/usr/local/ssl/lib/
 
 配置时需要注意-with-ssl-dir需要使用当前SSL的安装路径/usr/local/ssl
+```
 [root@csqtest openssh-5.5p1]# ./configure -prefix=/usr -sysconfdir=/etc/ssh -with-ssl-dir=/usr/local/ssl -with-zlib -with-pam -with-md5-passwords -with-kerberos5 --without-zlib-version-check
-如果没有指定上面三个环境变量会有以下提示： checking OpenSSL header version… 1000000f (OpenSSL 1.0.0 29 Mar 2010) checking OpenSSL library version… 90802f (OpenSSL 0.9.8e-fips-rhel5 01 Jul 2008) checking whether OpenSSL’s headers match the library… no configure: error: Your OpenSSL headers do not match your library. Check config.log for details.
-
+```
+如果没有指定上面三个环境变量会有以下提示： 
+```
+checking OpenSSL header version… 1000000f (OpenSSL 1.0.0 29 Mar 2010) checking OpenSSL library version… 90802f (OpenSSL 0.9.8e-fips-rhel5 01 Jul 2008) checking whether OpenSSL’s headers match the library… no configure: error: Your OpenSSL headers do not match your library. Check config.log for details.
+```
+```
 [root@csqtest openssh-5.5p1]# make
 [root@csqtest openssh-5.5p1]# make install
+```
 查看并修改配置文件。
+```
 [root@csqtest openssh-5.5p1]# more /etc/ssh/sshd_config
 Port 22
 Protocol 2
@@ -167,11 +176,16 @@ ServerKeyBits 1024
 LoginGraceTime 600
 StrictModes yes
 PermitRootLogin no
+```
 重启sshd服务
+```
 [root@csqtest openssh-5.5p1]# ps -ef|grep sshd
 root      9861     1  0 00:06 ?        00:00:00 /usr/sbin/sshd
 root      9925  4977  0 00:28 pts/2    00:00:00 grep sshd
 [root@csqtest openssh-5.5p1]# /sbin/service sshd restart
+```
 查看当前SSL、SSH版本
+```
 [root@csqtest openssh-5.5p1]# ssh -V
 OpenSSH_5.5p1, OpenSSL 1.0.0 29 Mar 2010
+```
