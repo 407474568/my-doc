@@ -213,6 +213,10 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
 
 #### 其他chrony相关命令
 ```
+手动同步, 但执行后并非如ntpdate命令立即出结果
+$ chronyc makestep
+$ chronyc -a makestep
+
 查看 NTP 服务器的在线和离线状态
 $ chronyc activity
 
