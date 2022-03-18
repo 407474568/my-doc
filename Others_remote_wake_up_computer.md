@@ -107,6 +107,12 @@ https://bugs.centos.org/view.php?id=16486
 RHEL / CentOS 7的 3.10.1062后的内核版本, 导致WOL失效, 3.10的内核回退到老版本即恢复该功能
 
 
+### nmcli 命令开启wake-on-lan功能
+```
+nmcli connection modify 配置文件名 802-3-ethernet.wake-on-lan magic
+```
+
+
 
 ### 分为对局域网内计算机进行唤醒和通过互联网唤醒计算机  
 通过互联网唤醒计算机, 实际上就是多一步在互联网出口设备上要做端口映射,以及交换机/路由器上可能会需要进行IP与MAC的绑定问题.  
