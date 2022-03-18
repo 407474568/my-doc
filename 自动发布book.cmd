@@ -22,7 +22,7 @@ git push local master
 
 echo 开始上传静态网站
 cd _book
-if %computername% == TANHUANG-PC (set fastcopy_command=C:\Users\Administrator\FastCopy\FastCopy.exe)
+if %computername% == TANHUANG-PC (set fastcopy_command="C:\Program Files\FastCopy\FastCopy.exe")
 if %computername% == TANHUANG-NOTE (set fastcopy_command="C:\Program Files\FastCopy\FastCopy.exe")
 REM fastcopy同步一次图片文件夹, 避免因每次的文件时间不同, 导致重复上传浪费时间
 %fastcopy_command% /cmd=sync /force_close /estimate /bufsize=256 /acl /log=FALSE /balloon=FALSE D:\Code\my-doc\images\ /to=D:\Code\my-doc\_book\images
