@@ -1,12 +1,14 @@
 * [目录](#0)
   * [虚拟机启停等日常命令](#1)
-  * [KVM运行环境的安装](#2)
-  * [删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络](#3)
-  * [创建NAT类型网桥](#4)
-  * [KVM虚拟机控制台连接的方式](#5)
+  * [虚拟机快照类命令](#2)
+  * [KVM运行环境的安装](#3)
+  * [删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络](#4)
+  * [创建NAT类型网桥](#5)
+  * [KVM虚拟机控制台连接的方式](#6)
+  * [KVM克隆虚拟机](#7)
 
 
-    
+
 <h3 id="1">虚拟机启停等日常命令</h3>
 
 https://bynss.com/linux/520925.html  
@@ -62,7 +64,91 @@ virsh edit 虚拟机名称
 osinfo-query os
 ```
 
-<h3 id="2">KVM运行环境的安装</h3>
+<h3 id="2">虚拟机快照类命令</h3>
+https://www.cnblogs.com/liucx/p/11777336.html
+
+创建磁盘快照
+```
+# 创建磁盘快照
+virsh snapshot-create-as \
+--domain CentOS7 \
+--name snap-test1 \
+--description "URL: www.test.com"
+```
+--domain 虚拟机名称  
+--name 快照名称  
+--description 描述,可选项
+<br>
+<br>
+
+列出虚拟机快照
+```
+# 创建磁盘快照
+virsh snapshot-list 虚拟机名称
+```
+<br>
+<br>
+
+删除虚拟机快照
+```
+virsh snapshot-delete 虚拟机名称(支持id,uuid) --snapshotname 快照名称
+```
+其余选项
+```
+[root@3700X vm]# virsh snapshot-delete --help
+  NAME
+    snapshot-delete - Delete a domain snapshot
+
+  SYNOPSIS
+    snapshot-delete <domain> [--snapshotname <string>] [--current] [--children] [--children-only] [--metadata]
+
+  DESCRIPTION
+    Snapshot Delete
+
+  OPTIONS
+    [--domain] <string>  domain name, id or uuid
+    --snapshotname <string>  snapshot name
+    --current        delete current snapshot
+    --children       delete snapshot and all children
+    --children-only  delete children but not snapshot
+    --metadata       delete only libvirt metadata, leaving snapshot contents behind
+```
+<br>
+<br>
+
+保存虚拟机状态
+```
+virsh save --bypass-cache 虚拟机名称(支持id,uuid) 内存状态保存文件位置 --running
+```
+其中--running和--paused 是2选1的可选参数, 用于指定恢复后的虚拟机是运行还是暂停状态
+
+其余选项
+```
+[root@3700X vm]# virsh save --help
+  NAME
+    save - save a domain state to a file
+
+  SYNOPSIS
+    save <domain> <file> [--bypass-cache] [--xml <string>] [--running] [--paused] [--verbose]
+
+  DESCRIPTION
+    Save the RAM state of a running domain.
+
+  OPTIONS
+    [--domain] <string>  domain name, id or uuid
+    [--file] <string>  where to save the data
+    --bypass-cache   avoid file system cache when saving
+    --xml <string>   filename containing updated XML for the target
+    --running        set domain to be running on restore
+    --paused         set domain to be paused on restore
+    --verbose        display the progress of save
+```
+对应的恢复命令是
+```
+vish restore 内存状态保存文件位置
+```
+
+<h3 id="3">KVM运行环境的安装</h3>
 
 https://bynss.com/linux/591489.html#  
 https://www.liuwg.com/archives/kvm  
@@ -89,7 +175,7 @@ virt-v2v: 虚拟机迁移工具；
 [root@localhost /]# systemctl enable libvirtd
 ```
 
-<h3 id="3">删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络</h3>
+<h3 id="4">删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络</h3>
 
 https://bynss.com/linux/591489.html#  
 https://www.liuwg.com/archives/kvm-bridge  
@@ -227,7 +313,7 @@ Name          State    Autostart   Persistent
 ```
 
 
-<h3 id="4">创建NAT类型的网桥</h3>
+<h3 id="5">创建NAT类型的网桥</h3>
 https://www.codenong.com/cs109611731/  
 http://www.4k8k.xyz/article/qq_42596792/103291249  
 KVM的软件包会创建一个NAT类型网络的配置定义文件, 也就KVM安装默认就有virbr0网络.  
@@ -339,7 +425,7 @@ rtt min/avg/max/mdev = 261.979/263.528/268.287/2.011 ms
 ```
 
 
-<h3 id="5">KVM虚拟机控制台连接的方式</h3>
+<h3 id="6">KVM虚拟机控制台连接的方式</h3>
 #### console直连
 https://blog.csdn.net/lemontree1945/article/details/80461037  
 https://www.cnblogs.com/xieshengsen/p/6215168.html  
@@ -437,3 +523,22 @@ virt-install \
 --graphics vnc,listen=0.0.0.0,port=5903
 ```
 
+<h3 id="7">KVM克隆虚拟机</h3>
+https://www.cnblogs.com/5201351/p/4461000.html  
+方法1
+```
+virt-clone \
+-o rhel_7.9_template \
+-n redis-01 \ # 
+-f /vm/redis/redis-01.img
+```
+| 命令                   | 含义             |
+|:---------------------|:---------------|
+| -o rhel_7.9_template | 克隆的源虚拟机        |
+| -n redis-01          | 克隆的新虚拟机名称      | 
+| -f /vm/redis/redis-01.img | 克隆的新虚拟机磁盘文件位置  |
+
+方法2  
+也可以手动拷贝虚拟机文件, 再创建虚拟机定义xml文件, 用virsh define 在virsh里添加此虚拟机
+
+但既然都要编辑xml文件,还不如用方法1
