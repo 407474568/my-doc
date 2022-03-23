@@ -65,9 +65,9 @@ osinfo-query os
 ```
 
 <h3 id="2">虚拟机快照类命令</h3>
-https://www.cnblogs.com/liucx/p/11777336.html
+https://www.cnblogs.com/liucx/p/11777336.html  
 
-创建磁盘快照
+创建磁盘快照  
 ```
 # 创建磁盘快照
 virsh snapshot-create-as \
@@ -81,7 +81,7 @@ virsh snapshot-create-as \
 <br>
 <br>
 
-列出虚拟机快照
+列出虚拟机快照  
 ```
 # 创建磁盘快照
 virsh snapshot-list 虚拟机名称
@@ -89,11 +89,11 @@ virsh snapshot-list 虚拟机名称
 <br>
 <br>
 
-删除虚拟机快照
+删除虚拟机快照  
 ```
 virsh snapshot-delete 虚拟机名称(支持id,uuid) --snapshotname 快照名称
 ```
-其余选项
+其余选项  
 ```
 [root@3700X vm]# virsh snapshot-delete --help
   NAME
@@ -116,13 +116,13 @@ virsh snapshot-delete 虚拟机名称(支持id,uuid) --snapshotname 快照名称
 <br>
 <br>
 
-保存虚拟机状态
+保存虚拟机状态  
 ```
 virsh save --bypass-cache 虚拟机名称(支持id,uuid) 内存状态保存文件位置 --running
 ```
 其中--running和--paused 是2选1的可选参数, 用于指定恢复后的虚拟机是运行还是暂停状态
 
-其余选项
+其余选项  
 ```
 [root@3700X vm]# virsh save --help
   NAME
@@ -143,14 +143,14 @@ virsh save --bypass-cache 虚拟机名称(支持id,uuid) 内存状态保存文�
     --paused         set domain to be paused on restore
     --verbose        display the progress of save
 ```
-对应的恢复命令是
+对应的恢复命令是  
 ```
 vish restore 内存状态保存文件位置
 ```
 
 <h3 id="3">KVM运行环境的安装</h3>
 
-https://bynss.com/linux/591489.html#  
+https://bynss.com/linux/591489.html  
 https://www.liuwg.com/archives/kvm  
 在RHEL / CentOS / Rocky 8.x上的安装示例  
 ```
