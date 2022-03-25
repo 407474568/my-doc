@@ -3,19 +3,25 @@ https://blog.51cto.com/u_1364952/1964774
 
     
 <h3 id="1">virt-install 命令可选参数</h3>
-virt-install是一个命令行工具，它能够为KVM、Xen或其它支持libvrit API的hypervisor创建虚拟机并完成GuestOS安装；此外，它能够基于串行控制台、VNC或SDL支持文本或图形安装界面。安装过程可以使用本地的安装介质如CDROM，也可以通过网络方式如NFS、HTTP或FTP服务实现。对于通过网络安装的方式，virt-install可以自动加载必要的文件以启动安装过程而无须额外提供引导工具。当然，virt-install也支持PXE方式的安装过程，也能够直接使用现有的磁盘映像直接启动安装过程。 
+virt-install是一个命令行工具  
+它能够为KVM、Xen或其它支持libvrit API的hypervisor创建虚拟机并完成GuestOS安装  
+此外，它能够基于串行控制台、VNC或SDL支持文本或图形安装界面。  
+安装过程可以使用本地的安装介质如CDROM，也可以通过网络方式如NFS、HTTP或FTP服务实现。  
+对于通过网络安装的方式，virt-install 可以自动加载必要的文件以启动安装过程而无须额外提供引导工具。  
+当然，virt-install也支持PXE方式的安装过程，也能够直接使用现有的磁盘映像直接启动安装过程。
 
 virt-install命令有许多选项，这些选项大体可分为下面几大类，同时对每类中的常用选项也做出简单说明。  
+<br>
 <br>
 
 一般选项, 指定虚拟机的名称、内存大小、VCPU个数及特性等
 
-| 参数 | 作用 |
-| ---- | ---- |
-| -n NAME, --name=NAME | 虚拟机名称，需全局惟一 |
-| -r MEMORY, --ram=MEMORY | 虚拟机内在大小，单位为MB |
-| --vcpus=VCPUS[,maxvcpus=MAX][,sockets=#][,cores=#][,threads=#] | VCPU个数及相关配置 |
-| --cpu=CPU | CPU模式及特性，如coreduo等；可以使用qemu-kvm -cpu ?来获取支持的CPU模式 |
+| 参数                                                             | 作用                                                |
+|----------------------------------------------------------------|---------------------------------------------------|
+| -n NAME, --name=NAME                                           | 虚拟机名称，需全局惟一                                       |
+| -r MEMORY, --ram=MEMORY                                        | 虚拟机内在大小，单位为MB                                     |
+| --vcpus=VCPUS[,maxvcpus=MAX][,sockets=#][,cores=#][,threads=#] | VCPU个数及相关配置                                       |
+| --cpu=CPU                                                      | CPU模式及特性，如coreduo等；可以使用qemu-kvm -cpu ?来获取支持的CPU模式 |
 
 <br>
 <br>
