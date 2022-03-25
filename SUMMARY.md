@@ -38,6 +38,7 @@
     * [MySQL高可用--主主 / 主从](Database_MySQL_HA.md)
 * [虚拟化](category_5_Virtualization.md)
     * [KVM虚拟化入门](Virtualization_kvm_101.md)
+    * [KVM进阶技巧](Virtualization_kvm_advance.md)
     * [KVM的virt-install和virsh可选参数](Virtualization_kvm_virt-install_and_virsh_option.md)
     * [vCenter操作相关](Virtualization_vcenter_relates.md)
     * [VMware Workstation汇总](Virtualization_vmware_workstation_summary.md)
