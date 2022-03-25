@@ -112,7 +112,20 @@ virt-install命令有许多选项，这些选项大体可分为下面几大类�
 | --dry-run        | 执行创建虚拟机的整个过程，但不真正创建虚拟机、改变主机上的设备配置信息及将其创建的需求通知给libvirt              |
 | -d, <br> --debug | 显示debug信息                                                          | 
 
-尽管virt-install命令有着类似上述的众多选项，但实际使用中，其必须提供的选项仅包括--name、--ram、--disk（也可是--nodisks）及安装过程相关的选项。此外，有时还需要使用括--connect=CONNCT选项来指定连接至一个非默认的hypervisor。  
+<br>
+
+尽管virt-install命令有着类似上述的众多选项，但实际使用中，其必须提供的选项仅包括
+--name、  
+--ram、  
+--disk（也可是--nodisks）  
+及安装过程相关的选项。  
+此外，有时还需要使用括--connect=CONNCT选项来指定连接至一个非默认的hypervisor。  
+
+<br>
+<br>
+<br>
+<br>
+实例
 
 ```
 下面这个示例创建一个名为rhel5的虚拟机，其hypervisor为KVM，内存大小为512MB，磁盘为8G的映像文件/var/lib/libvirt/p_w_picpaths/rhel5.8.img，通过boot.iso光盘镜像来引导启动安装过程。  
