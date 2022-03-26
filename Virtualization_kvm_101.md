@@ -68,15 +68,13 @@ osinfo-query os
 https://www.cnblogs.com/liucx/p/11777336.html  
 
 创建磁盘快照  
-<br>
+
 ```shell
-# 创建磁盘快照
 virsh snapshot-create-as 
 --domain CentOS7 
 --name snap-test1 
 --description "URL: www.test.com"
 ```
-<br>
 
 --domain 虚拟机名称  
 --name 快照名称  
