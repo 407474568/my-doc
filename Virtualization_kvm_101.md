@@ -68,6 +68,7 @@ osinfo-query os
 https://www.cnblogs.com/liucx/p/11777336.html  
 
 创建磁盘快照  
+
 ```
 # 创建磁盘快照
 virsh snapshot-create-as \
@@ -75,13 +76,15 @@ virsh snapshot-create-as \
 --name snap-test1 \
 --description "URL: www.test.com"
 ```
+
 --domain 虚拟机名称  
 --name 快照名称  
---description 描述,可选项
+--description 描述,可选项  
 <br>
 <br>
 
 列出虚拟机快照  
+
 ```
 # 创建磁盘快照
 virsh snapshot-list 虚拟机名称
@@ -90,10 +93,13 @@ virsh snapshot-list 虚拟机名称
 <br>
 
 删除虚拟机快照  
+
 ```
 virsh snapshot-delete 虚拟机名称(支持id,uuid) --snapshotname 快照名称
 ```
+
 其余选项  
+
 ```
 [root@3700X vm]# virsh snapshot-delete --help
   NAME
@@ -123,6 +129,7 @@ virsh save --bypass-cache 虚拟机名称(支持id,uuid) 内存状态保存文�
 其中--running和--paused 是2选1的可选参数, 用于指定恢复后的虚拟机是运行还是暂停状态
 
 其余选项  
+
 ```
 [root@3700X vm]# virsh save --help
   NAME
@@ -143,7 +150,9 @@ virsh save --bypass-cache 虚拟机名称(支持id,uuid) 内存状态保存文�
     --paused         set domain to be paused on restore
     --verbose        display the progress of save
 ```
+
 对应的恢复命令是  
+
 ```
 vish restore 内存状态保存文件位置
 ```
