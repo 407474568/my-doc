@@ -87,7 +87,7 @@ virsh snapshot-create-as
 列出虚拟机快照  
 
 ```shell
-# 创建磁盘快照
+# 创建磁盘快照  
 virsh snapshot-list 虚拟机名称
 ```
 <br>
