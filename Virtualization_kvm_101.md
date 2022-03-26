@@ -70,13 +70,11 @@ https://www.cnblogs.com/liucx/p/11777336.html
 创建磁盘快照  
 
 ```shell
-
 # 创建磁盘快照
-virsh snapshot-create-as \
---domain CentOS7 \
---name snap-test1 \
+virsh snapshot-create-as 
+--domain CentOS7 
+--name snap-test1 
 --description "URL: www.test.com"
-
 ```
 
 --domain 虚拟机名称  
