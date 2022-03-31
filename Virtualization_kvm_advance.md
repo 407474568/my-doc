@@ -259,6 +259,12 @@ http://ronaldevers.nl/2012/10/14/adding-a-physical-disk-kvm-libvirt.html
 在参考此文档之后,走通流程  
 https://blog.csdn.net/c5113620/article/details/115434366  
 
+其他文档  
+https://www.codetd.com/en/article/6422338  
+https://blog.csdn.net/chenxiangneu/article/details/78955462?utm_source=blogxgwz3  
+2篇相同, 只是对英文的翻译  
+
+
 流程如下
 
 - 编译安装Python 3 
