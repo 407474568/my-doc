@@ -3,10 +3,13 @@
   * [KVM GPU直通](#2)
   * [KVM PCI设备直通](#3)
   * [KVM 添加物理磁盘](#4)
+  * [KVM x86模拟ARM环境](#5)
 
 
 <h3 id="1">KVM 去除虚拟机特征</h3>
+
 为虚拟机添加 ```<features>``` 段落定义
+
 ```
 $ virsh edit windows
 <domain>
@@ -244,4 +247,100 @@ http://ronaldevers.nl/2012/10/14/adding-a-physical-disk-kvm-libvirt.html
   <target dev='vdb' bus='virtio'/>
   <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/> #我的配置文件加入了这部分
 </disk>
+```
+
+<h3 id="5">KVM x86模拟ARM环境</h3>
+
+- 目标是创建受 libvirt 管理的模拟 aarch64 的环境
+- 在已有libvirt, virt-install, virt-manager的前提下
+- 宿主机只使用命令行, 不使用图形界面
+
+在参考此文档之后,走通流程  
+https://blog.csdn.net/c5113620/article/details/115434366  
+
+流程如下
+
+- 编译安装Python 3 
+  (由于我选择了当前最新的qemu稳定版(6.2), 因此对python解释器的版本要求大于3.6)
+- 编译安装qemu
+- 下载安装edk2-aarch64 (aarch64的uefi BIOS文件)
+- virsh 建立虚拟机
+
+
+1) 编译安装python3.10.4  
+   略
+
+
+2) 编译安装qemu  
+https://download.qemu.org/  
+参考文档作者的原文
+```
+yum groupinstall 'Development Tools' -y
+yum groupinstall "Virtualization Host" -y
+yum install kvm qemu virt-viewer virt-manager libvirt libvirt-python python-virtinst
+systemctl enable libvirtd
+systemctl start libvirtd
+usermod -aG libvirt $(whoami)
+yum install virt-install virt-viewer virt-manager -y
+vi /etc/libvirt/qemu.conf # 打开两个注释 user="root" 和 group="root"
+reboot
+
+# 编译qemu-system-aarch64
+tar xf qemu-4.2.0.tar.xz
+cd qemu-4.2.0/
+yum install python2 zlib-devel glib2-devel pixman-devel -y
+./configure --target-list=aarch64-softmmu --prefix=/usr
+make -j8
+make install  # default location /usr/local/bin/qemu-system-aarch64
+```
+
+编译安装会遇到提示没有ninja, 需要下载  
+https://github.com/ninja-build/ninja/releases  
+下载后放到可被执行的目录如/bin , /sbin, /usr/sbin 等, 或是配置环境变量皆可    
+实际上我执行的
+```
+yum groupinstall 'Development Tools' -y
+yum groupinstall "Virtualization Host" -y
+tar -xvf qemu-6.2.0.tar.xz
+cd qemu-6.2.0/
+yum install python2 zlib-devel glib2-devel pixman-devel
+./configure --target-list=aarch64-softmmu --prefix=/usr/local/qemu --python=/usr/bin/python3
+make -j16 && make install
+
+qemu_path=/usr/local/qemu/bin
+for i in `ls $qemu_path`
+do
+    echo $qemu_path/$i
+    ln -s $qemu_path/$i /bin/
+done
+```
+
+
+3) 下载uefi bios文件  
+没有找到git等地址  
+https://rpmfind.net/linux/rpm2html/search.php?query=edk2-aarch64  
+下载后用yum安装, 未发现有包依赖  
+安装后需要编辑 /etc/libvirt/qemu.conf
+取消原有的注释
+```
+770 nvram = [
+771    "/usr/share/OVMF/OVMF_CODE.fd:/usr/share/OVMF/OVMF_VARS.fd",
+772    "/usr/share/OVMF/OVMF_CODE.secboot.fd:/usr/share/OVMF/OVMF_VARS.fd",
+773    "/usr/share/AAVMF/AAVMF_CODE.fd:/usr/share/AAVMF/AAVMF_VARS.fd",
+774    "/usr/share/AAVMF/AAVMF32_CODE.fd:/usr/share/AAVMF/AAVMF32_VARS.fd"
+775 ]
+```
+完成后需要重启 libvirt
+```
+systemctl restart libvirtd
+```
+
+4) libvirt 建立虚拟机的示例
+```
+virt-install \
+--name kylin-aarch64 --vcpus 4 --ram 4096 --arch aarch64 --os-variant rhel7.9 \
+--boot uefi \
+--graphics vnc,listen=0.0.0.0,port=5903 \
+--cdrom /mnt/ISO/银河麒麟_Kylin-Server-10-SP2-aarch64-Release-Build09-20210524.iso \
+--disk path=/vm/kylin-aarch64.qcow2,size=20,bus=virtio,format=qcow2
 ```
