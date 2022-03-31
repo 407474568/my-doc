@@ -27,7 +27,8 @@ $ virsh edit windows
 
 
 <h3 id="2">KVM GPU直通</h3>
-https://blog.csdn.net/u010099177/article/details/120709515  
+
+https://blog.csdn.net/u010099177/article/details/120709515    
 https://blog.acesheep.com/index.php/archives/720/  
 https://blog.csdn.net/hbuxiaofei/article/details/106566348  
 https://doowzs.com/posts/2021/04/rtx-vfio-passthrough/  
