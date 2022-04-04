@@ -8,8 +8,74 @@
 
 <h3 id="1">KVM 去除虚拟机特征</h3>
 
-为虚拟机添加 ```<features>``` 段落定义
+这篇文章 qlf2012 的回答从原理层面作了解释  
+https://www.zhihu.com/question/359121561  
+实操层面给了一些示例,但偏少  
 
+让虚拟机的CPU型号与宿主机一致  
+https://blog.51cto.com/molewan/1926131  
+具体我的做法是:  
+原本  
+
+```
+  <cpu mode='host-passthrough' check='none'/>
+```
+
+改为了
+
+```
+  <cpu mode='host-passthrough' check='none'>
+    <feature policy='disable' name='hypervisor'/>
+  </cpu>
+
+```
+
+此外修改KVM Hypervisor信息,在```<features>``` 段落中插入以下内容  
+
+```
+<hyperv>
+  <vendor_id state="on" value="random"/>
+</hyperv>
+<kvm>
+  <hidden state="on"/>
+</kvm>
+```
+
+原本的示例
+
+```
+  <features>
+    <acpi/>
+    <apic/>
+    <hyperv>
+      <relaxed state='on'/>
+      <vapic state='on'/>
+      <spinlocks state='on' retries='8191'/>
+    </hyperv>
+  </features>
+```
+
+修改后的示例
+
+```
+  <features>
+    <acpi/>
+    <apic/>
+    <hyperv>
+      <relaxed state='on'/>
+      <vapic state='on'/>
+      <spinlocks state='on' retries='8191'/>
+      <vendor_id state='on' value='random'/>
+    </hyperv>
+    <kvm>
+      <hidden state='on'/>
+    </kvm>
+  </features>
+```
+
+
+另一种方法:  
+为虚拟机添加 ```<features>``` 段落定义
 ```
 $ virsh edit windows
 <domain>
@@ -24,6 +90,7 @@ $ virsh edit windows
   </features>
 </domain>
 ```
+
 
 
 <h3 id="2">KVM GPU直通</h3>
