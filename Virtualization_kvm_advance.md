@@ -1,12 +1,13 @@
 * [目录](#0)
-  * [KVM 去除虚拟机特征](#1)
-  * [KVM GPU直通](#2)
-  * [KVM PCI设备直通](#3)
-  * [KVM 添加物理磁盘](#4)
-  * [KVM x86模拟ARM环境](#5)
+  * [去除虚拟机特征](#1)
+  * [GPU直通](#2)
+  * [PCI设备直通](#3)
+  * [网卡和硬盘类型改 virtio](#4)
+  * [添加物理磁盘](#5)
+  * [x86模拟ARM环境](#6)
 
 
-<h3 id="1">KVM 去除虚拟机特征</h3>
+<h3 id="1">去除虚拟机特征</h3>
 
 这篇文章 qlf2012 的回答从原理层面作了解释  
 https://www.zhihu.com/question/359121561  
@@ -94,7 +95,9 @@ $ virsh edit windows
 
 
 
-<h3 id="2">KVM GPU直通</h3>
+
+
+<h3 id="2">GPU直通</h3>
 
 https://blog.csdn.net/u010099177/article/details/120709515    
 https://blog.acesheep.com/index.php/archives/720/  
@@ -300,7 +303,83 @@ bus号:slot号.function号
 
 
 
-<h3 id="4">KVM 添加物理磁盘</h3>
+<h3 id="4">网卡和硬盘类型改 virtio</h3>
+宿主机上是 三星970 EVO plus 512G 的 NVMe 固态  
+在启用 virtio 前后的虚拟机 使用 Crystaldiskmark 6 测的基准情况对比如下  
+磁盘IO-启用前  
+
+![](images/aYdg0j1LAkTdVipBP3rOQ1sq2u7GZIU6.png)
+
+磁盘IO-启用后  
+
+![](images/aYdg0j1LAkiV9s5tcdZS1mBbOaXrKH2u.png)
+
+千兆网卡启用前后并无明显差异  
+![](images/aYdg0j1LAkULcPJgkHrM72RdXwFuBp6i.png)
+
+![](images/aYdg0j1LAkFdPpXLRMftz6x0U5GZYE4o.png)
+
+操作方法  
+https://blog.51cto.com/u_15329153/4598066  
+这篇文档给出2种方式  
+1) 虚拟机已装好了系统, IDE改virtio
+2) 虚拟机使用 virtio 全新安装windows操作系统
+
+第1种方式先装出系统, 然后分别多添加一块 virtio 类型的网卡和磁盘, 再安装 virtio 的windows驱动, 使windows有能力识别  
+第2种方式是通过有集成 virtio 驱动的第三方 Win PE 在 PE使用系统安装助手的第三方工具辅助 windows 原版ISO的安装
+
+具体到修改虚拟机配置  
+https://blog.51cto.com/u_15329153/4589606  
+
+
+在我的实例上  
+磁盘的修改前后  
+
+```
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/vm/games_mu_02.qcow2'/>
+      <target dev='sda' bus='sata'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+```
+
+```
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/vm/games_mu_01.qcow2'/>
+      <target dev='sda' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </disk>
+```
+
+重点在```<address>```标签内, slot要注意不要与已有的冲突  
+bus 可以参照已有的硬盘内容, 如没有则可以从 0x00 开始尝试  
+
+
+网卡的修改前后
+
+```
+    <interface type='bridge'>
+      <mac address='52:54:00:91:65:22'/>
+      <source bridge='br0'/>
+      <model type='e1000e'/>
+      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+    </interface>
+```
+
+```
+    <interface type='bridge'>
+      <mac address='52:54:00:db:52:a3'/>
+      <source bridge='br0'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </interface>
+```
+
+
+
+<h3 id="5">添加物理磁盘</h3>
 https://blog.acesheep.com/index.php/archives/720/  
 引用它的原文
 >本段文章  
@@ -318,7 +397,7 @@ http://ronaldevers.nl/2012/10/14/adding-a-physical-disk-kvm-libvirt.html
 </disk>
 ```
 
-<h3 id="5">KVM x86模拟ARM环境</h3>
+<h3 id="6">x86模拟ARM环境</h3>
 
 - 目标是创建受 libvirt 管理的模拟 aarch64 的环境
 - 在已有libvirt, virt-install, virt-manager的前提下
