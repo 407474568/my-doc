@@ -330,6 +330,12 @@ https://blog.51cto.com/u_15329153/4598066
 第1种方式先装出系统, 然后分别多添加一块 virtio 类型的网卡和磁盘, 再安装 virtio 的windows驱动, 使windows有能力识别  
 第2种方式是通过有集成 virtio 驱动的第三方 Win PE 在 PE使用系统安装助手的第三方工具辅助 windows 原版ISO的安装
 
+<font color=red>注意:  </font>  
+
+系统安装时, 是 qemu 的硬盘, 则即使Windows 虚拟机安装了 virtio-win , 如果直接修改磁盘类型为 virtio, 则系统启动时依然会蓝屏.
+依然需要额外添加一块 virtio 类型的硬盘, 待windows识别以后, 再将系统盘改为 virtio 类型,才可以正常使用
+
+
 具体到修改虚拟机配置  
 https://blog.51cto.com/u_15329153/4589606  
 
