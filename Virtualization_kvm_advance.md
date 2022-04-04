@@ -382,8 +382,11 @@ bus 可以参照已有的硬盘内容, 如没有则可以从 0x00 开始尝试
 
 
 <h3 id="5">添加物理磁盘</h3>
+
 https://blog.acesheep.com/index.php/archives/720/  
+
 引用它的原文
+
 >本段文章  
 2012/10/14: Adding a Physical Disk to a Guest with Libvirt / KVM 
 http://ronaldevers.nl/2012/10/14/adding-a-physical-disk-kvm-libvirt.html  
