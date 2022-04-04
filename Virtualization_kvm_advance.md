@@ -332,7 +332,7 @@ https://blog.51cto.com/u_15329153/4598066
 
 <font color=red>注意:  </font>  
 
-系统安装时, 是 qemu 的硬盘, 则即使Windows 虚拟机安装了 virtio-win , 如果直接修改磁盘类型为 virtio, 则系统启动时依然会蓝屏.
+系统安装时, 是 qemu 的硬盘, 则即使Windows 虚拟机安装了 virtio-win , 如果直接修改磁盘类型为 virtio, 则系统启动时依然会蓝屏.  
 依然需要额外添加一块 virtio 类型的硬盘, 待windows识别以后, 再将系统盘改为 virtio 类型,才可以正常使用
 
 
