@@ -304,6 +304,7 @@ bus号:slot号.function号
 
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
+
 宿主机上是 三星970 EVO plus 512G 的 NVMe 固态  
 在启用 virtio 前后的虚拟机 使用 Crystaldiskmark 6 测的基准情况对比如下  
 磁盘IO-启用前  
@@ -315,6 +316,7 @@ bus号:slot号.function号
 ![](images/aYdg0j1LAkiV9s5tcdZS1mBbOaXrKH2u.png)
 
 千兆网卡启用前后并无明显差异  
+
 ![](images/aYdg0j1LAkULcPJgkHrM72RdXwFuBp6i.png)
 
 ![](images/aYdg0j1LAkFdPpXLRMftz6x0U5GZYE4o.png)
