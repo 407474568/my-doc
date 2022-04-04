@@ -12,7 +12,7 @@
 https://www.zhihu.com/question/359121561  
 实操层面给了一些示例,但偏少  
 
-#### 让虚拟机的CPU型号与宿主机一致  
+##### 让虚拟机的CPU型号与宿主机一致  
 https://blog.51cto.com/molewan/1926131  
 具体我的做法是:  
 原本  
@@ -30,7 +30,7 @@ https://blog.51cto.com/molewan/1926131
 
 ```
 
-#### 隐藏KVM Hypervisor信息
+##### 隐藏KVM Hypervisor信息
 在```<features>``` 段落中插入以下内容  
 
 ```
