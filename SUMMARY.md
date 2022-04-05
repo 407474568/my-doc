@@ -32,6 +32,7 @@
     * [PXE Server端的配置](Linux_PXE_config.md)
 * [容器](category_3_Container.md)
     * [kubernetes 之 etcd](Container_etcd.md)
+    * [docker 单机日常事务](Container_docker_routing_work.md)
 * [服务应用](category_3_service_application.md)
     * [nextcloud管理员手册](Service_nextcloud_admin_manual.md)
 * [数据库](category_4_Database.md)
