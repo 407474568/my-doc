@@ -22,9 +22,9 @@ ssh-keygen -t ed25519
 ### BUG / 未知问题
 源码编译安装的openssh在RHEL 7的systemctl上工作不正常的情况  
 https://bbs.csdn.net/topics/392512080  
-带来了2个问题:
-1) systemctl 不能正确监测到sshd的状态,当它汇报sshd失败时,实际可能是正常
-2) 由于上述原因,systemctl 不停在"重启进程--检测sshd进程是否存活失败--重启进程"
+带来了2个问题:  
+1) systemctl 不能正确监测到sshd的状态,当它汇报sshd失败时,实际可能是正常  
+2) 由于上述原因,systemctl 不停在"重启进程--检测sshd进程是否存活失败--重启进程"  
 
 解决办法:  
 删除 /usr/lib/systemd/system/sshd.service  
