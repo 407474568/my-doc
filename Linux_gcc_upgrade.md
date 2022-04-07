@@ -1,3 +1,31 @@
+### 红帽 8 的方法
+红帽 8 集成的 gcc 为8.5  
+https://blog.whsir.com/post-6114.html  
+在红帽 8 里名称已变更为 gcc-toolset  
+repo 由 AppStream 提供  
+现已有  
+
+- gcc-toolset-9  
+- gcc-toolset-10
+- gcc-toolset-11  
+
+3个选择  
+
+示例  
+
+```
+# 安装gcc-toolset-10  
+dnf install gcc-toolset-10
+
+# 激活gcc版本，使其生效
+scl enable gcc-toolset-10 bash
+# 或
+source /opt/rh/gcc-toolset-10/enable
+```
+此时通过gcc --version命令可以看到，gcc版本已经变成10.x.x，值得注意的是这仅仅在当前bash生效，如果需要永久生效，可以请自行添加环境变量。
+
+### 红帽 <= 7 的方法  
+
 出处:
 
 [https://www.vpser.net/manage/centos-6-upgrade-gcc.html](https://www.vpser.net/manage/centos-6-upgrade-gcc.html)
