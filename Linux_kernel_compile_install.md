@@ -26,7 +26,7 @@ cp /boot/config-4.18.0-348.20.1.el8_5.x86_64 ./.config
 在.config文件中找到 ```CONFIG_SYSTEM_TRUSTED_KEYS```，```CONFIG_DEBUG_INFO_BTF```这两行，并将这两行注释。
 
 
-接下执行 make menuconfig  
+接下来执行 make menuconfig  
 进入UI界面，参数不用改，切换到save直接保存，尔后按两下Esc退出。  
 
 ```
