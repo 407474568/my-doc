@@ -60,6 +60,13 @@ virsh create 文件名称.xml
 # 编辑器取决于你的$EDITOR 变量设置
 virsh edit 虚拟机名称
 
+# 把虚拟机设为开机自启动
+virsh autostart 虚拟机名称
+
+# 查看设置了开机自启动的虚拟机
+检查在/etc/libvirt/qemu/autostart/下会生成一个（虚拟机名.xml）文件
+
+
 # virt-install --os-variant 可选值
 osinfo-query os
 ```
