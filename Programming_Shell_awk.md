@@ -25,6 +25,23 @@ my-pool
 [root@storage ~]# 
 ```
 
+#### 内置算数函数
+
+https://www.omicsclass.com/article/471  
+取对数  
+awk 具有内置算术函数log(x)，以e 为底可以对数据取对数运算，而以其他数值为底进行取对数可以基于这一函数进行转换，譬如  以2为底取对数： log(x)/log(2)即可。  
+
+```
+[root@3700X ~]# echo 48 | awk '{print (log($1)/log(2))}'
+5.58496
+[root@3700X ~]# echo 24 | awk '{print (log($1)/log(2))}'
+4.58496
+[root@3700X ~]# echo 88 | awk '{print (log($1)/log(2))}'
+6.45943
+[root@3700X ~]# echo 32 | awk '{print (log($1)/log(2))}'
+5
+```
+
 #### awk进行浮点计算
 https://blog.51cto.com/radish/1736900  
 典型示例:
