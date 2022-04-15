@@ -204,3 +204,16 @@ https://www.cnblogs.com/yanh0606/p/10488356.html
 效果如下:
 
 <a href="files/test.txt" target="_blank">附件1</a>
+
+
+#### 特殊字符的转义
+在代码块的引用里有特殊字符, 导致样式渲染出错  
+https://www.v2ex.com/t/323402  
+尝试各种声明都不解除问题  
+
+```
+{%raw%} ```代码块``` {%endraw%} 
+{%raw%} ~~~代码块~~~ {%endraw%} 
+{%raw%} <code>代码块</code> {%endraw%} 
+{%raw%} ```代码块``` {%endraw%} 
+```
