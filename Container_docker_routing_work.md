@@ -78,24 +78,26 @@ systemctl restart docker
 ##### --format 用法
 docker ps –format参数可以实现格式化输出自定义列。各列意义如下：  
 
-```shell
--format="TEMPLATE"
-Pretty-print containers using a Go template.
-Valid placeholders:
-.ID - Container ID
-.Image - Image ID
-.Command - Quoted command
-.CreatedAt - Time when the container was created.
-.RunningFor - Elapsed time since the container was started.
-.Ports - Exposed ports.
-.Status - Container status.
-.Size - Container disk size.
-.Names - Container names.
-.Labels - All labels assigned to the container.
-.Label - Value of a specific label for this container. For example \{\{ \.Label \"com.docker.swarm.cpu\" \}\}
-.Mounts - Names of the volumes mounted in this container.
-```
-
+{%raw%}
+-format="TEMPLATE"  
+Pretty-print containers using a Go template.  
+Valid placeholders:  
+.ID - Container ID  
+.Image - Image ID  
+.Command - Quoted command  
+.CreatedAt - Time when the container was created.  
+.RunningFor - Elapsed time since the container was started.  
+.Ports - Exposed ports.  
+.Status - Container status.  
+.Size - Container disk size.  
+.Names - Container names.  
+.Labels - All labels assigned to the container.  
+.Label - Value of a specific label for this container. For example {{ .Label "com.docker.swarm.cpu" }}  
+.Mounts - Names of the volumes mounted in this container.  
+{%endraw%}
 
 示例:  
 
+{%raw%}
+docker ps --format "table {{ .Names }}\t{{ .Ports }}\t{{ .Status }}\t{{ .ID }}\t{{.Image}}"  
+{%endraw%}
