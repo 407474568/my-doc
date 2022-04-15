@@ -209,13 +209,8 @@ https://www.cnblogs.com/yanh0606/p/10488356.html
 #### 特殊字符的转义
 在代码块的引用里有特殊字符, 导致样式渲染出错  
 https://www.v2ex.com/t/323402  
-尝试各种声明都不解除问题  
+尝试各种声明都不解除问题, 最后还是只能用以下牺牲样式的方式暂时解决
 
-{%raw%}
-
-``` ``` 
-~~~  ~~~
-<code> </code> 
-<script type="text/javascript"> </script>
-
-{%endraw%} 
+```
+{%raw%} {%endraw%} 
+```
