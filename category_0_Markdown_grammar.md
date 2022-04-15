@@ -211,9 +211,11 @@ https://www.cnblogs.com/yanh0606/p/10488356.html
 https://www.v2ex.com/t/323402  
 尝试各种声明都不解除问题  
 
-```
-{%raw%} ```代码块``` {%endraw%} 
-{%raw%} ~~~代码块~~~ {%endraw%} 
-{%raw%} <code>代码块</code> {%endraw%} 
-{%raw%} ```代码块``` {%endraw%} 
-```
+{%raw%}
+
+``` ``` 
+~~~  ~~~
+<code> </code> 
+<script type="text/javascript"> </script>
+
+{%endraw%} 
