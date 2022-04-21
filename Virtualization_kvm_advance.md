@@ -99,6 +99,9 @@ $ virsh edit windows
 
 <h3 id="2">GPU直通</h3>
 
+另一个前期整理的笔记  
+<a href="files/KVM直通相关.sh" target="_blank">KVM直通相关.sh</a>
+
 https://blog.csdn.net/u010099177/article/details/120709515    
 https://blog.acesheep.com/index.php/archives/720/  
 https://blog.csdn.net/hbuxiaofei/article/details/106566348  
@@ -115,6 +118,8 @@ vfio 属于KVM后来版本迭代中出现的更新的一种方法, 技术原理�
 2) 禁用nouveau 驱动
 3) 加载vfio-pci 内核模块
 4) 为虚拟机配置直通GPU
+
+
 
 
 #### 1) 宿主机开启IOMMU
