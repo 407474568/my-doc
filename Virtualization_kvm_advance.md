@@ -5,7 +5,8 @@
   * [网卡和硬盘类型改 virtio](#4)
   * [添加物理磁盘](#5)
   * [x86模拟ARM环境](#6)
-
+  * [内存膨胀](#7)
+  
 
 <h3 id="1">去除虚拟机特征</h3>
 
@@ -514,3 +515,26 @@ virt-install \
 --cdrom /mnt/ISO/银河麒麟_Kylin-Server-10-SP2-aarch64-Release-Build09-20210524.iso \
 --disk path=/vm/kylin-aarch64.qcow2,size=20,bus=virtio,format=qcow2
 ```
+
+<h3 id="8">内存膨胀</h3>
+
+https://github.com/yangcvo/KVM/blob/master/KVM%E8%99%9A%E6%8B%9F%E5%8C%96(%E5%85%AD)%E8%B0%83%E6%95%B4%E8%99%9A%E6%8B%9F%E6%9C%BACPU%E5%A4%A7%E5%B0%8F%2C%E6%B7%BB%E5%8A%A0memory%E5%86%85%E5%AD%98%2C%E6%B7%BB%E5%8A%A0%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%A1%AC%E7%9B%98disk%2C%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AD%98%E5%87%8F%E5%8D%8A%E7%8E%B0%E8%B1%A1.md  
+
+https://cloud.tencent.com/developer/article/1087028  
+
+一个比较有意思的细节, 关于kvm虚拟机内存容量的定义语句
+
+```
+  <memory unit='KiB'>8388608</memory>
+  <currentMemory unit='KiB'>8388608</currentMemory>
+```
+
+字面含义 currentMemory 应该是当前内存, 网上的文章会说这是"最小内存"也就是 minRAM  
+
+姑且照此理解, 但在使用 Win10 作为guestOS的虚拟机开机内存占用呈现以下趋势  
+
+memory 8G, currentMemory 1G, Win10 guestOS 开机内存占用 7.7G  
+memory 8G, currentMemory 2G, Win10 guestOS 开机内存占用 7.5G  
+memory 8G, currentMemory 4G, Win10 guestOS 开机内存占用 4.xG  
+memory 8G, currentMemory 6G, Win10 guestOS 开机内存占用 3.xG  
+memory 8G, currentMemory 8G, Win10 guestOS 开机内存占用 1.8G (物理机的合理值)  
