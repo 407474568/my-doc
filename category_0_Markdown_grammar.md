@@ -21,6 +21,7 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 <font size=5>我是尺寸</font>
 <font face="黑体" color=green size=5>我是黑体，绿色，尺寸为5</font>
 ```
+
 效果  
 <font face="黑体">我是黑体字</font><br />
 <font face="微软雅黑">我是微软雅黑</font><br />
@@ -30,6 +31,7 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 <font color=Blue>我是蓝色</font><br />
 <font size=5>我是尺寸</font><br />
 <font face="黑体" color=green size=5>我是黑体，绿色，尺寸为5</font><br />
+
 
 ```
 浅红色文字：<font color="#dd0000">浅红色文字</font><br /> 
@@ -45,6 +47,7 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 浅紫色文字：<font color="#dd00dd">浅紫色文字</font><br /> 
 深紫色文字：<font color="#660066">深紫色文字</font><br /> 
 ```
+
 效果  
 浅红色文字：<font color="#dd0000">浅红色文字</font><br /> 
 深红色文字：<font color="#660000">深红色文字</font><br /> 
