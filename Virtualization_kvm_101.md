@@ -546,8 +546,8 @@ https://www.cnblogs.com/5201351/p/4461000.html
 ```
 virt-clone \
 -o rhel_7.9_template \
--n redis-01 \ # 
--f /vm/redis/redis-01.img
+-n redis-01 \
+-f /vm/redis/redis-01.qcow2
 ```
 | 命令                   | 含义             |
 |:---------------------|:---------------|
