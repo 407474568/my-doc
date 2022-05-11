@@ -114,7 +114,7 @@ KVM配置GPU直通有 pci-stub 和 vfio 两种模式
 pci-stub 属于更"传统"的方式  
 vfio 属于KVM后来版本迭代中出现的更新的一种方法, 技术原理上有更多优势.  
 
-流程:
+流程:  
 1) 宿主机开启IOMMU  
 2) 禁用nouveau 驱动  
 3) 加载vfio-pci 内核模块  
