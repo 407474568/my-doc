@@ -333,11 +333,14 @@ Name          State    Autostart   Persistent
 
 <h3 id="5">创建NAT类型的网桥</h3>
 https://www.codenong.com/cs109611731/  
+
 http://www.4k8k.xyz/article/qq_42596792/103291249  
+
 KVM的软件包会创建一个NAT类型网络的配置定义文件, 也就KVM安装默认就有virbr0网络.  
 其位于 /usr/share/libvirt/networks/default.xml  
 可将其复制, 做自定义修改, 再通过 virsh net-define 导入到KVM的网络定义中去  
 如下所示:
+
 ```
 [root@localhost ~]# ll /usr/share/libvirt/networks/default.xml
 -rw-r--r-- 1 root root 228 Nov  9 21:33 /usr/share/libvirt/networks/default.xml
@@ -553,11 +556,14 @@ virt-clone \
 -f /vm/redis/redis-01.qcow2
 ```
 
+解释
+
 | 命令                   | 含义             |
 |:---------------------|:---------------|
 | -o rhel_7.9_template | 克隆的源虚拟机        |
 | -n redis-01          | 克隆的新虚拟机名称      | 
 | -f /vm/redis/redis-01.img | 克隆的新虚拟机磁盘文件位置  |
+
 
 方法2  
 
