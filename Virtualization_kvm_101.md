@@ -378,9 +378,12 @@ Network nat defined from nat.xml
 ```
 
 
-修改虚拟机的配置文件
-![](images/zQyNKDEguIacJWkKqntMYOPuQr3xETC8.png)
-![](images/zQyNKDEguI9Phld1tfyuqLe3bQHcCY4B.png)
+修改虚拟机的配置文件  
+
+![](images/zQyNKDEguIacJWkKqntMYOPuQr3xETC8.png)  
+
+![](images/zQyNKDEguI9Phld1tfyuqLe3bQHcCY4B.png)  
+
 启动后可见网络已通
 
 ```
