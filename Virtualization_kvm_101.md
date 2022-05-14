@@ -543,13 +543,16 @@ virt-install \
 
 <h3 id="7">KVM克隆虚拟机</h3>
 https://www.cnblogs.com/5201351/p/4461000.html  
+
 方法1
+
 ```
 virt-clone \
 -o rhel_7.9_template \
 -n redis-01 \
 -f /vm/redis/redis-01.qcow2
 ```
+
 | 命令                   | 含义             |
 |:---------------------|:---------------|
 | -o rhel_7.9_template | 克隆的源虚拟机        |
@@ -557,6 +560,7 @@ virt-clone \
 | -f /vm/redis/redis-01.img | 克隆的新虚拟机磁盘文件位置  |
 
 方法2  
+
 也可以手动拷贝虚拟机文件, 再创建虚拟机定义xml文件, 用virsh define 在virsh里添加此虚拟机
 
 但既然都要编辑xml文件,还不如用方法1
