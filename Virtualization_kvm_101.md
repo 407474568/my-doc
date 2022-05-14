@@ -376,10 +376,13 @@ Network nat defined from nat.xml
  host-bridge   active     yes         yes
  nat           inactive   no          yes
 ```
+
+
 修改虚拟机的配置文件
 ![](images/zQyNKDEguIacJWkKqntMYOPuQr3xETC8.png)
 ![](images/zQyNKDEguI9Phld1tfyuqLe3bQHcCY4B.png)
 启动后可见网络已通
+
 ```
 [root@localhost ~]# virsh start centos7.9 
 Domain centos7.9 started
@@ -442,17 +445,21 @@ PING www.wshifen.com (45.113.192.101) 56(84) bytes of data.
 --- www.wshifen.com ping statistics ---
 9 packets transmitted, 8 received, 11% packet loss, time 8022ms
 rtt min/avg/max/mdev = 261.979/263.528/268.287/2.011 ms
-
 ```
 
 
 <h3 id="6">KVM虚拟机控制台连接的方式</h3>
+
 #### console直连
+
 https://blog.csdn.net/lemontree1945/article/details/80461037  
+
 https://www.cnblogs.com/xieshengsen/p/6215168.html  
+
 前两篇内容相同  
 https://blog.csdn.net/qq_36885515/article/details/112367143  
 https://www.igiftidea.com/article/11397774301.html  
+
 - 对于RHEL 6版本的虚拟机的配置步骤  
   1) 添加ttyS0的许可，允许root登陆
   ```
@@ -522,6 +529,7 @@ https://www.igiftidea.com/article/11397774301.html
 在创建虚拟机阶段, 使用virt-install 的 --graphics 参数可将虚拟机的图形输出定向到VNC连接  
 虚拟机已经创建的, 也可以通过virsh edit 编辑配置文件追加上  
 示例:
+
 ```
 virt-install \
 --virt-type=kvm \
@@ -535,7 +543,9 @@ virt-install \
 --graphics vnc,listen=0.0.0.0,port=5903 \
 --disk path=/vm/centos6.qcow2,size=20,bus=virtio,format=qcow2
 ```
-其中两个参数起作用
+
+其中两个参数起作用  
+
 ```
 # 让KVM不要自动创建console连接
 --noautoconsole
@@ -544,7 +554,8 @@ virt-install \
 --graphics vnc,listen=0.0.0.0,port=5903
 ```
 
-<h3 id="7">KVM克隆虚拟机</h3>
+<h3 id="7">KVM克隆虚拟机</h3>  
+
 https://www.cnblogs.com/5201351/p/4461000.html  
 
 方法1
