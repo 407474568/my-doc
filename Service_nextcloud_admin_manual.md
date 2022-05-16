@@ -25,13 +25,16 @@ https://www.gooccoo.com/nextcloud/870/
 
     
 <h3 id="1">新建用户首次登录的默认语言从英文改变到中文</h3>
+
 https://hostloc.com/thread-609835-1-1.html  
 如此帖里提到的  
 config/config.php
 需要新增语句
+
 ```
 'default_language' => 'zh',
 ```
+
 ![](images/lTGqcJNXAS9DIirqYxlRbskWeMSng1u5.png)
 
 如帖子中所说, 原本的zh_CN应是在nextcloud 新版中失效  
@@ -39,6 +42,7 @@ config/config.php
 
 
 <h3 id="2">设置用户的密码复杂度策略</h3>
+
 管理员账户登录nextcloud, 从个人设置里"设置"导航到左侧"管理"部分里的"安全"  
 
 ![](images/lTGqcJNXAScHLahnO5kW9AX0G4idxBtR.png)
@@ -49,17 +53,23 @@ config/config.php
 
 
 <h3 id="3">用户的配额限制</h3>
+
 https://help.nextcloud.com/t/custom-quota-option/54000/3  
+
 ![](images/lTGqcJNXASRitLPAKHaQuFGr5nCq3DcI.png)  
+
 以为是要改php代码等手段才能实现, 实际上, 官方论坛上的答复是, 你直接设置就可以了  
 不过实测,nextcloud的管理员很多功能, 典型的如下拉列表等, 在chrome, firefox浏览器上都表现异常  
 在opera浏览器上完成了该操作.
-![](images/lTGqcJNXASo4yvz1fB6TwDenKHhU073Z.png)  
+
+![](images/lTGqcJNXASo4yvz1fB6TwDenKHhU073Z.png) 
+
 这里需要注意的是, 先在文本框输入你想限制的数值+单位, 待下方提示框出现后, 点击提示框的选择才可选择.  
 如果输入完成直接回车, 则不会生效.  
 
 
 <h3 id="4">新建用户登录的默认时区</h3>
+
 https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/language_configuration.html  
 &nbsp;
 
@@ -70,16 +80,22 @@ https://github.com/moment/moment/tree/2.18.1/locale
 
 config/config.php
 需要新增语句
+
 ```
 "default_locale" => "zh-cn",
 ```
+
 需要注意的是大小写 ```zh-cn```  
 修改前  
+
 ![](images/3Fyr8JdGRl5ZzmcRu7G01ADlSKdI9UkM.png)
 
 修改后  
+
 ![](images/3Fyr8JdGRln2khTrvaPIeX9E5c7Gu6YC.png)  
-用户个人设置上虽然还是显示的美国, 但文件修改时间已显示为中文   
+
+用户个人设置上虽然还是显示的美国, 但文件修改时间已显示为中文
+
 ![](images/3Fyr8JdGRleKBm89c6xowVIdOsaUNbTM.png)
 
 
