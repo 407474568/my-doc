@@ -105,7 +105,7 @@ config/config.php
 https://www.gooccoo.com/nextcloud/870/
 
 防失效  
-<a href="files/NextCloud config 配置参数.rar" target="_blank">NextCloud config 配置参数1</a>
+<a href="files/NextCloud config 配置参数.rar" target="_blank">NextCloud config 配置参数</a>
 
 
 <h3 id="6">NextCloud一直处于维护状态解决方法</h3>
