@@ -19,6 +19,8 @@ https://www.gooccoo.com/nextcloud/870/
   * [设置用户的密码复杂度策略](#2)
   * [用户的配额限制](#3)
   * [用户的默认时区](#4)
+  * [config 可选参数](#5)
+  * [NextCloud一直处于维护状态解决方法](#6)
 
 
     
@@ -79,3 +81,20 @@ config/config.php
 ![](images/3Fyr8JdGRln2khTrvaPIeX9E5c7Gu6YC.png)  
 用户个人设置上虽然还是显示的美国, 但文件修改时间已显示为中文   
 ![](images/3Fyr8JdGRleKBm89c6xowVIdOsaUNbTM.png)
+
+
+<h3 id="5">config 可选参数</h3>
+
+出处:  
+https://www.gooccoo.com/nextcloud/870/
+
+防失效  
+<a href="files/NextCloud config 配置参数.rar" target="_blank">NextCloud config 配置参数1</a>
+
+
+<h3 id="6">NextCloud一直处于维护状态解决方法</h3>
+
+https://blog.csdn.net/chenbetter1996/article/details/82831413  
+
+主要修改的也是config/config.php，如果命令不行，直接修改该文件  
+把'maintenance' => true 改为 false, 或者直接删掉这句  
