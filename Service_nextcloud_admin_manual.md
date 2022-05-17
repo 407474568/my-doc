@@ -10,21 +10,27 @@ https://docs.nextcloud.com/server/latest/user_manual/zh_CN/
 https://support.websoft9.com/docs/nextcloud/zh/  
 http://www.garfielder.com/post/990cc2cb.html  
 
-### NextCloud config 配置参数
-https://www.gooccoo.com/nextcloud/870/  
-<a href="files/NextCloud%20config%20配置参数%20–%20GOC云.rar" target="_blank">NextCloud config 配置参数.rar</a>
 
 * [目录](#0)
-  * [新建用户首次登录的默认语言从英文改变到中文](#1)
-  * [设置用户的密码复杂度策略](#2)
-  * [用户的配额限制](#3)
-  * [用户的默认时区](#4)
   * [config 可选参数](#5)
+  * [新建用户首次登录的默认语言从英文改变到中文](#2)
+  * [设置用户的密码复杂度策略](#3)
+  * [用户的配额限制](#4)
+  * [用户的默认时区](#5)
   * [NextCloud一直处于维护状态解决方法](#6)
+  * [NextCloud客户端, 尽管登录url以https开头,但轮询url中没有](#7)
 
+
+<h3 id="1">config 可选参数</h3>
+
+出处:  
+https://www.gooccoo.com/nextcloud/870/
+
+防失效  
+<a href="files/NextCloud config 配置参数.rar" target="_blank">NextCloud config 配置参数</a>
 
     
-<h3 id="1">新建用户首次登录的默认语言从英文改变到中文</h3>
+<h3 id="2">新建用户首次登录的默认语言从英文改变到中文</h3>
 
 https://hostloc.com/thread-609835-1-1.html  
 如此帖里提到的  
@@ -41,7 +47,7 @@ config/config.php
 同时, 经过此设置后, 新增用户同样有报错, 但新用户数次登录后的确已变为中文.
 
 
-<h3 id="2">设置用户的密码复杂度策略</h3>
+<h3 id="3">设置用户的密码复杂度策略</h3>
 
 管理员账户登录nextcloud, 从个人设置里"设置"导航到左侧"管理"部分里的"安全"  
 
@@ -52,7 +58,7 @@ config/config.php
 ![](images/lTGqcJNXAS8sKmCLctUhrfaRJqM9Q3BS.png)
 
 
-<h3 id="3">用户的配额限制</h3>
+<h3 id="4">用户的配额限制</h3>
 
 https://help.nextcloud.com/t/custom-quota-option/54000/3  
 
@@ -68,7 +74,7 @@ https://help.nextcloud.com/t/custom-quota-option/54000/3
 如果输入完成直接回车, 则不会生效.  
 
 
-<h3 id="4">新建用户登录的默认时区</h3>
+<h3 id="5">新建用户登录的默认时区</h3>
 
 https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/language_configuration.html  
 &nbsp;
@@ -99,14 +105,6 @@ config/config.php
 ![](images/3Fyr8JdGRleKBm89c6xowVIdOsaUNbTM.png)
 
 
-<h3 id="5">config 可选参数</h3>
-
-出处:  
-https://www.gooccoo.com/nextcloud/870/
-
-防失效  
-<a href="files/NextCloud config 配置参数.rar" target="_blank">NextCloud config 配置参数</a>
-
 
 <h3 id="6">NextCloud一直处于维护状态解决方法</h3>
 
@@ -114,3 +112,34 @@ https://blog.csdn.net/chenbetter1996/article/details/82831413
 
 主要修改的也是config/config.php，如果命令不行，直接修改该文件  
 把'maintenance' => true 改为 false, 或者直接删掉这句  
+
+
+<h3 id="7">NextCloud客户端, 尽管登录url以https开头,但轮询url中没有</h3>
+
+以下场景限定:
+1) nextcloud 自身没有启用 https 功能
+2) nextcloud 前端有一个nginx 的反向代理, 使用证书启用https (其他web服务器原理也相同)
+3) web页面访问nextcloud 服务正常, 但PC端会提示"尽管登录url以https开头,但轮询url中没有"
+
+之所以web页面能正常访问,因为之前 config.php 有配置
+
+```
+  'overwrite.cli.url' => 'http://192.168.1.30:999',
+```
+
+这里的值由nextcloud 初始化向导填入, 因为初始化时我使用浏览器访问的内部地址就是此地址
+
+但当我需要PC客户端访问nextcloud 的地址时, 即使我加入了以下正确的配置语句
+
+```
+  'trusted_proxies'   => ['192.168.1.30'],
+  'overwriteprotocol' => 'https',
+  'overwritehost' => 'netdisk.heyday.net.cn:1000',
+```
+
+会出现服务反而不可用的情况, 因为 overwrite.cli.url 的存在会把客户端请求改写为 http  
+而此时的 overwriteprotocol 又会改写为 https, 这一自相矛盾的设定即错误原因所在.
+
+解决办法:
+移除 ```'overwrite.cli.url' => 'http://192.168.1.30:999',``` 改语句  
+
