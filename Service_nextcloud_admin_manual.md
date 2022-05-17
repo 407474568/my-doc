@@ -116,6 +116,9 @@ https://blog.csdn.net/chenbetter1996/article/details/82831413
 
 <h3 id="7">NextCloud客户端, 尽管登录url以https开头,但轮询url中没有</h3>
 
+https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html  
+https://ld246.com/article/1631157051782  
+
 以下场景限定:
 1) nextcloud 自身没有启用 https 功能
 2) nextcloud 前端有一个nginx 的反向代理, 使用证书启用https (其他web服务器原理也相同)
@@ -141,5 +144,7 @@ https://blog.csdn.net/chenbetter1996/article/details/82831413
 而此时的 overwriteprotocol 又会改写为 https, 这一自相矛盾的设定即错误原因所在.
 
 解决办法:
-移除 ```'overwrite.cli.url' => 'http://192.168.1.30:999',``` 改语句  
+移除 ```'overwrite.cli.url' => 'http://192.168.1.30:999',``` 该语句
+
+
 
