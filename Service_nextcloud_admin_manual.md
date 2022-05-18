@@ -19,6 +19,7 @@ http://www.garfielder.com/post/990cc2cb.html
   * [用户的默认时区](#5)
   * [NextCloud一直处于维护状态解决方法](#6)
   * [NextCloud客户端, 尽管登录url以https开头,但轮询url中没有](#7)
+  * [上传 / 同步时出现413 Request Entity Too Large](#7)
 
 
 <h3 id="1">config 可选参数</h3>
@@ -147,4 +148,21 @@ https://ld246.com/article/1631157051782
 移除 ```'overwrite.cli.url' => 'http://192.168.1.30:999',``` 该语句
 
 
+<h3 id="7">上传 / 同步时出现413 Request Entity Too Large</h3>
 
+https://help.nextcloud.com/t/files-not-getting-synced-413-request-entity-too-large/45681
+
+https://pieterbakker.com/error-413-on-large-file-uploads-with-nextcloud-behind-nginx-reverse-proxy/
+
+常规原因是 nextcloud 的前端web服务器对于 ```max body``` 的设置不够
+
+我选择的直接限制为0, 即不限制.
+
+```
+server {
+    ...
+    client_max_body_size 0;
+}
+```
+
+但反馈也有设置此值, 而并非真正因为大小导致的错误, 待发现
