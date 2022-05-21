@@ -3,6 +3,7 @@
   * [改国内镜像](#2)
   * [docker ps 命令](#3)
   * [卷挂载的几种选择](#4)
+  * [修改默认网段](#5)
 
 
 <h3 id="2">环境安装</h3>
@@ -141,3 +142,67 @@ docker run --rm -dit \
 --mount type=bind,source=/mnt/百度云同步盘,target=/var/www/html/data/tanhuang/files,readonly \
 -p 999:80 --name=my_nextcloud nextcloud:24.0.0
 ```
+
+
+<h3 id="5">修改默认网段</h3>
+
+前提:
+1) docker 容器使用桥接模式
+2) 发现从docker宿主机上不通容器的IP (通过 ```docker inspect 容器名/ID``` 可以查询)
+3) 与容器的网关IP 可能是通的 (通过 ```docker inspect 容器名/ID``` 可以查询)
+
+具备以上情景就很可能是docker 的桥接口 (构建的NAT网络) 与真实网络环境中的IP网段向重合导致的.
+
+解决办法就是为docker 的桥接口更换网段
+
+https://blog.51cto.com/wsxxsl/2060761
+
+第一步 删除原有配置
+
+```
+sudo service docker stop
+sudo ip link set dev docker0 down
+sudo brctl delbr docker0
+sudo iptables -t nat -F POSTROUTING
+```
+
+第二步 创建新的网桥
+
+```
+sudo brctl addbr docker0
+sudo ip addr add 172.17.10.1/24 dev docker0
+sudo ip link set dev docker0 up
+```
+
+第三步 配置Docker的文件
+
+增加一个 ```"bip": "172.17.10.1/24"``` 的项
+
+```
+[root@rltestapp4-localdomain docker]# cat /etc/docker/daemon.json 
+{
+  "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn"],
+  "bip": "172.17.10.1/24"
+}
+```
+
+
+<h3 id="6">docker 的几种网络模式</h3>
+
+引用自:
+
+https://www.cnblogs.com/davis12/p/14392125.html  
+
+![](/images/2121520-20210209101320897-1516104081.png)
+
+host 模式
+
+![](/images/2121520-20210209101342976-1177695742.png)
+
+bridge模式
+
+![](/images/2121520-20210209101412547-1464356333.png)
+
+其他容器（container）模式
+
+![](/images/2121520-20210209101500011-79014329.png)
