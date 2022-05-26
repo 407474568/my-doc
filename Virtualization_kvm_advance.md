@@ -308,6 +308,53 @@ bus号:slot号.function号
 ```
 
 
+2022-05-26 增补
+
+"BAR 1: can't reserve [mem ....."  错误的处理
+
+报错内容如下
+
+```
+[root@5950X vm]# dmesg -T | grep -i vfio | tail
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+[Thu May 26 17:04:45 2022] vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem 0xd0000000-0xdfffffff 64bit pref]
+```
+
+起因是显卡硬件设备发生变化, 最初的排错是修改  
+
+/etc/modprobe.d/vfio.conf 里的 供应商ID:设备ID
+
+但重启后发现虚拟机启动依然报错, 此时查看dmesg 发现有上述报错内容  
+
+解决办法在此处找到  
+
+https://forum.proxmox.com/threads/problem-with-gpu-passthrough.55918/
+
+以更新grub 参数的方式,屏蔽 efi 对GPU的使用
+
+```
+GRUB_CMDLINE_LINUX="textonly video=astdrmfb video=efifb:off"
+```
+
+于是我的 grub 更新为了
+
+```
+[root@5950X ~]# cat /proc/cmdline 
+BOOT_IMAGE=(hd1,msdos2)/vmlinuz-5.10.90 root=/dev/mapper/rootvg-lvroot ro crashkernel=auto rd.lvm.lv=rootvg/lvroot rhgb quiet amd_iommu=on iommu=pt textonly video=astdrmfb video=efifb:off
+```
+
+问题的确得到了解决, 虚拟机启动不再hang住最后蓝屏
+
+然后这个方案也并不完美, 因为有一个代价是:  
+VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
 
