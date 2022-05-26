@@ -353,7 +353,7 @@ BOOT_IMAGE=(hd1,msdos2)/vmlinuz-5.10.90 root=/dev/mapper/rootvg-lvroot ro crashk
 
 问题的确得到了解决, 虚拟机启动不再hang住最后蓝屏
 
-然后这个方案也并不完美, 因为有一个代价是:  
+然而这个方案也并不完美, 因为有一个代价是:  
 VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
