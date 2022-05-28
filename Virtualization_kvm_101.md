@@ -67,9 +67,6 @@ virsh autostart 虚拟机名称
 # 查看已设置了开机自启动的虚拟机
 ll /etc/libvirt/qemu/autostart/
 
-# 查看设置了开机自启动的虚拟机
-检查在/etc/libvirt/qemu/autostart/下会生成一个（虚拟机名.xml）文件
-
 
 # virt-install --os-variant 可选值
 osinfo-query os
