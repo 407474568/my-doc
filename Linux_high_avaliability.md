@@ -32,10 +32,8 @@ https://www.keepalived.org/manpage.html
 
 适合入手的文章  
 https://blog.51cto.com/xuweitao/1953167  
-http://www.voidcn.com/article/p-bnfpdubt-vm.html  
 https://blog.csdn.net/LL845876425/article/details/82084560  
 https://my.oschina.net/hncscwc/blog/158746  
-https://peiqiang.net/2014/11/21/keepalived-and-redis.html  
 https://blog.csdn.net/qq_26545305/article/details/79957992  
 https://blog.51cto.com/lansgg/1179636
 
