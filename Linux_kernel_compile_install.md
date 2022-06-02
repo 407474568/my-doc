@@ -60,12 +60,12 @@ dnf --enablerepo=elrepo-kernel install kernel-ml kernel-ml-devel kernel-ml-heade
 https://hicode.club/articles/2021/08/24/1629807082331.html
 
 资源站点, 涵盖RHEL 5-9  
-http://mirrors.coreix.net/elrepo-archive-archive/kernel/
-http://mirrors.coreix.net/elrepo-archive-archive/kernel/el5/x86_64/RPMS/
-http://mirrors.coreix.net/elrepo-archive-archive/kernel/el6/x86_64/RPMS/
-http://mirrors.coreix.net/elrepo-archive-archive/kernel/el7/x86_64/RPMS/
-http://mirrors.coreix.net/elrepo-archive-archive/kernel/el8/x86_64/RPMS/
-http://mirrors.coreix.net/elrepo-archive-archive/kernel/el9/x86_64/RPMS/
+http://mirrors.coreix.net/elrepo-archive-archive/kernel/  
+http://mirrors.coreix.net/elrepo-archive-archive/kernel/el5/x86_64/RPMS/  
+http://mirrors.coreix.net/elrepo-archive-archive/kernel/el6/x86_64/RPMS/  
+http://mirrors.coreix.net/elrepo-archive-archive/kernel/el7/x86_64/RPMS/  
+http://mirrors.coreix.net/elrepo-archive-archive/kernel/el8/x86_64/RPMS/  
+http://mirrors.coreix.net/elrepo-archive-archive/kernel/el9/x86_64/RPMS/  
 
 引用其原文
 
