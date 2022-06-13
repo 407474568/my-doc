@@ -163,6 +163,12 @@ IPv6 路由表
 - 直接编辑配置文件
 - nmcli 命令行
 
+首先应明确这两种方式的应用范围.  
+- 直接编辑配置文件:   
+  红帽系( RHEL 4, RHEL 5, RHEL 6 )  
+  SuSE( SuSE 10, SuSE 11 )  
+- nmcli 命令行
+
 <h3 id="6">sshd服务</h3>
 
 

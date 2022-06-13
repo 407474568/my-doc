@@ -20,6 +20,7 @@ http://www.garfielder.com/post/990cc2cb.html
   * [NextCloud一直处于维护状态解决方法](#6)
   * [NextCloud客户端, 尽管登录url以https开头,但轮询url中没有](#7)
   * [上传 / 同步时出现413 Request Entity Too Large](#7)
+  * [OCC 批量导入文件](#8)
 
 
 <h3 id="1">config 可选参数</h3>
@@ -166,3 +167,18 @@ server {
 ```
 
 但反馈也有设置此值, 而并非真正因为大小导致的错误, 待发现
+
+<h3 id="8">OCC 批量导入文件</h3>
+
+```
+[root@docker ~]# docker exec -u 33 -it my_nextcloud /var/www/html/occ files:scan tanhuang
+Starting scan for user 1 out of 1 (tanhuang)
++---------+-------+--------------+
+| Folders | Files | Elapsed time |
++---------+-------+--------------+
+| 910     | 10569 | 00:00:40     |
++---------+-------+--------------+
+```
+
+nextcloud 的 OCC 命令 位于 nextcloud 的网站根目录下
+容器环境 和 编译 / rpm 安装的路径存在区别, 需要自己查找.
