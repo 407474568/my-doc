@@ -1,4 +1,13 @@
-#### LVS
+* [目录](#0)
+  * [LVS](#1)
+  * [keepalived](#2)
+  * [关于LVS Nginx HAProxy 对比的文章](#3)
+  * [HAProxy](#4)
+  * [LVS+keepalived 和 heartbeat都会面临的脑裂问题](#5)
+
+
+<h3 id="1">LVS</h3>
+
 概念与原理  
 https://blog.csdn.net/weixin_43314056/article/details/86674517  
 https://blog.csdn.net/Running_free/article/details/77981201  
@@ -25,17 +34,46 @@ ipvsadm -ln 列出当前工作的条目
 ipvsadm -C 清除当前配置  
 ipvsadm -S 用于列出当前配置,其内容可以重定向写入文件中,用于ipvsadm启动时的恢复设置所用  
 
-#### keepalived
+<h3 id="2">keepalived</h3>
+
 官网和手册( 实际上也就是man里的内容,比较欠缺实例结合 )  
 https://www.keepalived.org/download.html  
 https://www.keepalived.org/manpage.html  
 
+#### 环境编译
+
+https://segmentfault.com/a/1190000013214834  
+https://blog.csdn.net/oyym_mv/article/details/107105993  
+
+编译脚本, 异常处理仍有提升空间
+
+```
+file_name=$(ls keepalived-*.tar.gz | sort -r | head -n 1)
+keepalived_version=$(echo "$file_name" | sed "s/.tar.gz//")
+keepalived_install_path=/usr/local/keepalived
+
+if [ ! -d "$keepalived_install_path" ];then
+    mkdir "$keepalived_install_path"
+fi
+yum -y group install "Development Tools"
+yum -y install openssl-devel make
+tar -xvzf "$file_name"
+cd "$keepalived_version"
+./configure --prefix="$keepalived_install_path"
+make
+make install
+
+ln -s "$keepalived_install_path"/*bin/* /usr/sbin/
+cp keepalived/keepalived.service /usr/lib/systemd/system
+systemctl daemon-reload
+systemctl status keepalived
+```
+
+#### 配置
 适合入手的文章  
 https://blog.51cto.com/xuweitao/1953167  
-http://www.voidcn.com/article/p-bnfpdubt-vm.html  
 https://blog.csdn.net/LL845876425/article/details/82084560  
 https://my.oschina.net/hncscwc/blog/158746  
-https://peiqiang.net/2014/11/21/keepalived-and-redis.html  
 https://blog.csdn.net/qq_26545305/article/details/79957992  
 https://blog.51cto.com/lansgg/1179636
 
@@ -69,7 +107,8 @@ user USERNAME [GROUPNAME] 运行健康检查脚本的用户身份
 
 另外一个思路就是,详细的健康检查只在real_server自身上进行,keepalived的Director上只作简单的服务可用性检查
 
-#### 关于LVS Nginx HAProxy 对比的文章
+<h3 id="3">关于LVS Nginx HAProxy 对比的文章</h3>
+
 http://www.ha97.com/5646.html  
 https://www.cnblogs.com/yangmingxianshen/p/8426847.html  
 https://blog.csdn.net/u010285974/article/details/86750527  
@@ -82,7 +121,9 @@ LVS 分发TCP/UDP流量,决定了它可以支撑更大的负载量; 同时也决
 HAproxy 可以工作在第四/七层,可以实现更精细的控制; 承载能力弱于LVS, 但也足够优秀.高于nginx.  
 Nginx 纯粹工作于第七层应用层, 对web程序员更友好, 适用于web服务内部的流转与控制.
 
-#### HAproxy
+
+<h3 id="4">HAproxy</h3>
+
 http://www.haproxy.org/  
 http://cbonte.github.io/haproxy-dconv/1.9/intro.html
 
@@ -150,10 +191,10 @@ heartbeat的获取方式
 1) EPEL源  
 2) http://linux-ha.org/wiki/Downloads  
 
-yum安装的heartbeat, 在 /etc/ha.d/  下有:
-ha.cf：             heartbeat主配置文件
-haresources： 本地资源文件
-authkeys：      认证文件
+yum安装的heartbeat, 在 /etc/ha.d/  下有:  
+ha.cf：             heartbeat主配置文件  
+haresources： 本地资源文件  
+authkeys：      认证文件  
 
 在介绍HAproxy+heartbeat的文章中讲到heartbeat会监控HAproxy服务,在heartbeat接管服务时也会带起HAproxy
 haresources配置文件中有如下示例配置语句:
@@ -163,7 +204,8 @@ ha-master IPaddr::172.16.60.229/24/eth0 haproxy
 核心思想仍然是主机持有服务资源(VIP等) , 主机宕机,备机接管. 主机恢复后,是否抢回资源可配置.
 
 
-#### LVS+keepalived 和 heartbeat都会面临的脑裂问题
+<h3 id="5">LVS+keepalived 和 heartbeat都会面临的脑裂问题</h3>
+
 针对脑裂这一问题,要实现高可靠性, 仲裁节点 / 设备 是必不可少的,以下这两个思路都不错  
 
 https://www.zhihu.com/question/50997425  
