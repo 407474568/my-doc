@@ -165,11 +165,44 @@ IPv6 路由表
 
 首先应明确这两种方式的应用范围.  
 - 直接编辑配置文件:   
-  红帽系( RHEL 4, RHEL 5, RHEL 6 )  
+  红帽系( RHEL 4, RHEL 5, RHEL 6 ) , 以及衍生的CentOS Oracle-Linux  
   SuSE( SuSE 10, SuSE 11 )  
 - nmcli 命令行
+  红帽系( RHEL 7及以后 )  
+  SuSE 15 (需确认)
+
+有关 RHEL 6以及SuSE 通过修改network-scripts 下的文件进行IP地址配置的操作方法,互联网上已足够丰富,不在此赘述.
+
+nmcli 命令行的使用方法  
+红帽的官方文档应是一个很好的起点  
+
+https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/sec-using_the_networkmanager_command_line_tool_nmcli
+
+以及其他一些文档
+
+https://blog.51cto.com/cstsncv/2049474  
+https://www.jianshu.com/p/3dd5e4ca4b7d  
+
+如以上资料仍不足以满足需要, 善用谷歌等搜索引擎
+
+需要掌握的技能目标: 在提供网络信息的前提下, 进行配置并验证其连通性.
 
 <h3 id="6">sshd服务</h3>
+
+基本概念:
+
+> SSH（Secure Shell）建立在应用层和传输层基础上的安全协议。它使用加密验证来确认用户身份，并对两台主机之间的所有通信加密。
+
+> SSH主要的组件有：一个服务器守护进程sshd，一个用于远程登录的ssh，还有用户主机之间复制文件的 sftp/scp。SSH其它组件：生成公钥对的 ssh-keygen 命令。
+
+服务安装
+
+openssh 和 openssl 软件包是红帽Linux(RHEL) 及其衍生的CentOS, Oracle Linux  
+以及SuSE, Ubuntu等发行厂商都预置的软件包.    
+自操作系统安装初始化以来, 即使是选择最小化安装的情形, 就已被安装, 是rpm包的形式.  
+客户可能出于安全漏洞的关系,  
+
+配置文件
 
 
 <h3 id="7">yum的基本使用</h3>
