@@ -21,6 +21,7 @@ http://www.garfielder.com/post/990cc2cb.html
   * [NextCloud客户端, 尽管登录url以https开头,但轮询url中没有](#7)
   * [上传 / 同步时出现413 Request Entity Too Large](#7)
   * [OCC 批量导入文件](#8)
+  * [OCC 清理 "files_version" 目录](#9)
 
 
 <h3 id="1">config 可选参数</h3>
@@ -182,3 +183,60 @@ Starting scan for user 1 out of 1 (tanhuang)
 
 nextcloud 的 OCC 命令 位于 nextcloud 的网站根目录下
 容器环境 和 编译 / rpm 安装的路径存在区别, 需要自己查找.
+
+
+<h3 id="9">OCC 清理 "files_version" 目录</h3>
+
+发现 nextcloud 目录下似乎有不合理的空间占用
+
+```
+[root@docker ~]# du -sh /docker/nextcloud/data/tanhuang/*
+28K	/docker/nextcloud/data/tanhuang/cache
+4.0K	/docker/nextcloud/data/tanhuang/files
+123M	/docker/nextcloud/data/tanhuang/files_trashbin
+4.7G	/docker/nextcloud/data/tanhuang/files_versions
+4.0K	/docker/nextcloud/data/tanhuang/uploads
+
+
+[root@docker ~]# du -sh /docker/nextcloud/data/tanhuang/files_versions/*
+3.8G	/docker/nextcloud/data/tanhuang/files_versions/Software
+5.8M	/docker/nextcloud/data/tanhuang/files_versions/个人
+230M	/docker/nextcloud/data/tanhuang/files_versions/工作资料
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1652784184
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1653485169
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1653619020
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1653628643
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1653914578
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654089762
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654103194
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654149585
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654173954
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654409015
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654410121
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654420152
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654437700
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654439891
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654493737
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654530614
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654581910
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654606081
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654839854
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654958215
+7.2M	/docker/nextcloud/data/tanhuang/files_versions/新旗舰.xlsx.v1654959470
+```
+
+官方论坛有讨论  
+
+https://help.nextcloud.com/t/how-to-force-delete-of-versions-in-files-versions/87993
+
+其中 smeijer 的回答已给出正解
+
+> There is an occ command version:cleanup, which deletes all files in the files_versions directory. I use this on my home instance every now and then. However, this deletes the files for all users. I do not know how to run the command for a specific user only. Maybe in the doc this is further explained.
+
+他所说的不知道针对单独用户进行清理, 其实也如下格式即可
+
+```
+[root@docker ~]# docker exec -u 33 -it my_nextcloud /var/www/html/occ version:cleanup tanhuang
+Delete versions of   tanhuang
+```
+
