@@ -243,16 +243,20 @@ html代码如下
 
 此外,如果在表格的字符还存在 html 语法里的特殊字符, 还需做额外的处理
 
+常用对照表  
+https://tool.oschina.net/commons?type=2
+
+
 https://blog.csdn.net/sinat_26342009/article/details/87650636
 
 
 | 字符                        |     十进制 |  转义字符   |
 |:--------------------------|--------:|:-------:|
-| "                         |   &#34; | &quot;  |
+| "                         |   &#34; | \&quot; |
 | &                         |   &#38; |  &amp;  |
 | <                         |   &#60; |  &lt;   |
 | \>                        |   &#62; |  &gt;   |
-| 不断开空格(non-breaking space) |  &#160; | &nbsp; |
+| 不断开空格(non-breaking space) |  &#160; | &nbsp;  |
 
 #### 添加附件
 
