@@ -196,6 +196,64 @@ https://www.runoob.com/markdown/md-table.html
 
 &nbsp;
 
+#### 表格中合并单元格的处理
+
+如下示例
+
+<table>
+    <tr>
+        <th>班级</th><th>课程</th><th>平均分</th>
+    </tr>
+    <tr>
+        <td rowspan="3">1班</td><td>语文</td><td>95</td>
+    </tr>
+    <tr>
+        <td>数学</td><td>96</td>
+    </tr>
+    <tr>
+        <td>英语</td><td>92</td>
+    </tr>
+</table>
+
+其中"1班" 这种希望被合并的单元格, 处理的方法只能是html代码, markdown语法至今不支持
+
+https://www.zhihu.com/question/50267650  
+"图南"的回答
+
+html代码如下
+
+```
+<table>
+    <tr>
+        <th>班级</th><th>课程</th><th>平均分</th>
+    </tr>
+    <tr>
+        <td rowspan="3">1班</td><td>语文</td><td>95</td>
+    </tr>
+    <tr>
+        <td>数学</td><td>96</td>
+    </tr>
+    <tr>
+        <td>英语</td><td>92</td>
+    </tr>
+</table>
+```
+
+逻辑不复杂, 费时
+
+此外,如果在表格的字符还存在 html 语法里的特殊字符, 还需做额外的处理
+
+https://blog.csdn.net/sinat_26342009/article/details/87650636
+
+
+| 字符                        |     十进制 |  转义字符   |
+|:--------------------------|--------:|:-------:|
+| "                         |  \&#34; | \&quot; |
+| &                         |  \&#38; | \&amp;  |
+| <                         | 	\&#60; |  \&lt;  |
+| \>                        |  \&#62; |  \&gt;  |
+| 不断开空格(non-breaking space) | \&#160; | \&nbsp; |
+
 #### 添加附件
 
 https://www.cnblogs.com/yanh0606/p/10488356.html
@@ -217,3 +275,5 @@ https://www.v2ex.com/t/323402
 {%raw%}
 {%raw%} {%endraw%} 
 {%endraw%} 
+
+
