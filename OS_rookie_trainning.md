@@ -198,17 +198,31 @@ https://www.jianshu.com/p/3dd5e4ca4b7d
 服务安装
 
 openssh 和 openssl 软件包是红帽Linux(RHEL) 及其衍生的CentOS, Oracle Linux  
-以及SuSE, Ubuntu等发行厂商都预置的软件包.    
+以及SuSE, Ubuntu等发行厂商都会预置的软件包.    
 自操作系统安装初始化以来, 即使是选择最小化安装的情形, 就已被安装, 是rpm包的形式.  
-客户可能出于安全漏洞的关系,  
+客户可能出于安全漏洞的关系,  对openssh / openssl 有版本升级的需求, 具体升级的操作细节属于操作系统工程师的技能范畴,非系统工程师可以不要求掌握.  
+
 
 配置文件
+以红帽RHEL或是CentOS发行版为例:  
+系统安装时是由rpm包安装的 openssh和openssl, openssh的配置文件的默认位置为  
+/etc/ssh/sshd_config  
+需要注意的是, 与之文件名称相近的还有  
+/etc/ssh/ssh_config  
 
 
 <h3 id="7">yum的基本使用</h3>
-
+repo 文件的建立
+yum provides
+yum whatprovides
 
 <h3 id="8">其他常用工具的介绍</h3>
+netstat
+route
+traceroute
+iostat
+vmstat
+sar
 
 
 <h3 id="9">操作系统日志、文件类型和文件权限、用户和组</h3>
