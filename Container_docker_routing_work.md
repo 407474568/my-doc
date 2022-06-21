@@ -76,6 +76,19 @@ systemctl daemon-reload
 systemctl restart docker
 ```
 
+查看当前的镜像站点信息, docker info 输出的最后 Registry Mirrors 部分
+```
+docker info
+
+...
+Registry Mirrors:
+ https://hub-mirror.c.163.com/
+ https://registry.docker-cn.com/
+ https://mirror.baidubce.com/
+Live Restore Enabled: false
+Product License: Community Engine
+```
+
 <h3 id="3">docker ps 命令</h3>
 
 ##### --format 用法
