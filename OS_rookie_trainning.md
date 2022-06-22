@@ -189,13 +189,13 @@ https://www.jianshu.com/p/3dd5e4ca4b7d
 
 <h3 id="6">sshd服务</h3>
 
-基本概念:
+#### 基本概念:
 
 > SSH（Secure Shell）建立在应用层和传输层基础上的安全协议。它使用加密验证来确认用户身份，并对两台主机之间的所有通信加密。
 
 > SSH主要的组件有：一个服务器守护进程sshd，一个用于远程登录的ssh，还有用户主机之间复制文件的 sftp/scp。SSH其它组件：生成公钥对的 ssh-keygen 命令。
 
-服务安装
+#### 服务安装
 
 openssh 和 openssl 软件包是红帽Linux(RHEL) 及其衍生的CentOS, Oracle Linux  
 以及SuSE, Ubuntu等发行厂商都会预置的软件包.    
@@ -203,18 +203,46 @@ openssh 和 openssl 软件包是红帽Linux(RHEL) 及其衍生的CentOS, Oracle 
 客户可能出于安全漏洞的关系,  对openssh / openssl 有版本升级的需求, 具体升级的操作细节属于操作系统工程师的技能范畴,非系统工程师可以不要求掌握.  
 
 
-配置文件
+#### 配置文件
+
 以红帽RHEL或是CentOS发行版为例:  
 系统安装时是由rpm包安装的 openssh和openssl, openssh的配置文件的默认位置为  
 /etc/ssh/sshd_config  
 需要注意的是, 与之文件名称相近的还有  
 /etc/ssh/ssh_config  
+需要分清这两者的区别:  
+服务端: /etc/ssh/sshd_config  
+客户端: /etc/ssh/ssh_config  
+同时要分清楚在 ssh 里服务端与客户端的角色关系  
+现假设有 A和B 两台主机, 现在A要通过ssh 连接到B主机上, 那么在这个网络连接里  
+A 是ssh客户端, B 是ssh服务端  
+连接方向对换一下, 则它们的角色关系也随之互换.  
+同时, 还需要了解, 服务端的执行程序是 sshd, 而客户端是 ssh, 两者的执行程序也不同.  
+因此, 如果需要查看 openssh 的版本时, 你需要知晓以下两条命令的区别  
 
+```
+ssh -V
+sshd -V
+```
+
+服务端的sshd的配置文件有几个基本配置项
 
 <h3 id="7">yum的基本使用</h3>
-repo 文件的建立
+
+#### repo 文件的建立
+
+
+
+#### 我只知道一个命令, 但我不知道这个命令由哪个软件包提供
+
+需要记住以下 yum 的两个参数
+
+```
 yum provides
 yum whatprovides
+```
+
+这两个
 
 <h3 id="8">其他常用工具的介绍</h3>
 netstat

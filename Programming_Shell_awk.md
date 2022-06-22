@@ -1,3 +1,27 @@
+#### 按行过滤
+
+https://www.itranslater.com/qa/details/2125844298871604224  
+
+需求的起源是, sort 命令做排序, 但首行可能是标题行, 不希望参与排序.  
+发现实现的方法用到管道符和awk  
+回答中的示例
+
+```
+# awk 的方法
+extract_data | awk 'NR<3{print $0;next}{print $0| "sort -r"}' 
+
+# 这两种当然也算另一种思路
+(read -r; printf "%s\n" "$REPLY"; sort)
+(head -n 2 <file> && tail -n +3 <file> | sort) > newfile
+```
+
+在我的例子中
+
+```
+alias dockerimage="docker image ls | awk 'NR<2{print \$0;next}{print \$0| \"sort\"}'"
+```
+
+
 #### awk 筛选数据输出
 针对数据文件，利用awk 判断符合条件的数据，并筛选出结果数据，输入到对应的文件中。
 ```
