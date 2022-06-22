@@ -225,15 +225,50 @@ ssh -V
 sshd -V
 ```
 
-服务端的sshd的配置文件有几个基本配置项
+服务端的sshd的配置文件有几个基本配置项, 即使非系统工程师, 作为常识也应有所了解.  
+在 /etc/ssh/sshd_config 中的
+
+```
+sshd 监听端口号, 初始化是注释状态, 即使注释状态也有默认值是22
+#Port 22
+
+sshd 监听的IP地址, 初始化是注释状态, 即使注释状态也有默认值是0.0.0.0, 即该主机上的所有网络接口地址
+#ListenAddress 0.0.0.0
+
+root用户是否允许通过ssh登录, 当此项为no时, 即使输入正确的root口令, 也是提示不正确
+PermitRootLogin yes
+
+ssh 是否启用dns解析, 登录验证过程会更慢, 因此作为标准配置, 我们使用的是禁用状态, 即no
+需要显式配置为no, 不可因为注释项, 就认为该值一定生效, 因为软件版本的变化, 导致默认值可能会变化
+#UseDNS no
+```
+
 
 <h3 id="7">yum的基本使用</h3>
 
 #### repo 文件的建立
 
+yum 命令寻找软件包, 通过它的repo 文件所定义的, 我们所谓的"源"来进行匹配.  
+由于yum 会建立自身的数据索引, 所以可以从中查询是否有匹配的软件包.  
+在红帽发行版中, yum的repo文件位于 /etc/yum.repos.d/ 下  
+一个 repo 文件的基本格式如下  
 
+```
+[RHEL]
+name=RHEL6.4
+baseurl=file:///mnt/cdrom 
+gpgcheck=0
+enabled=1
+```
 
-#### 我只知道一个命令, 但我不知道这个命令由哪个软件包提供
+以上语句是一个repo最基本的要素
+- 第1行 ```[RHEL]``` 是yum源 的显示名称 
+- 第2行 ```name=RHEL6.4``` 是yum源 的别名 
+- 第3行 ```baseurl=file:///mnt/cdrom ``` 是yum源 的别名 
+- 第2行 ```name=RHEL6.4``` 是yum源 的别名 
+- 第2行 ```name=RHEL6.4``` 是yum源 的别名 
+
+#### 我只知道命令, 但我不知道这个命令由哪个软件包提供
 
 需要记住以下 yum 的两个参数
 
@@ -242,7 +277,35 @@ yum provides
 yum whatprovides
 ```
 
-这两个
+这两个参数实现的结果都是查询命令由哪个软件包提供, 示例如下:
+
+```
+[root@docker ~]# yum provides iostat
+Loaded plugins: fastestmirror, langpacks, priorities
+Loading mirror speeds from cached hostfile
+sysstat-10.1.5-19.el7.x86_64 : Collection of performance monitoring tools for Linux
+Repo        : base
+Matched from:
+Filename    : /usr/bin/iostat
+
+
+
+sysstat-10.1.5-19.el7.x86_64 : Collection of performance monitoring tools for Linux
+Repo        : @base
+Matched from:
+Filename    : /bin/iostat
+
+
+
+sysstat-10.1.5-19.el7.x86_64 : Collection of performance monitoring tools for Linux
+Repo        : @base
+Matched from:
+Filename    : /usr/bin/iostat
+```
+
+它会从yum 的数据库中去查询是否有相匹配的结果.  
+但并非每一个红帽发行版, 或者有安装yum 命令的操作系统都一定可以使用这参数.  
+该功能由yum 的插件(plugins)提供, 可能会存在由于未安装无法使用的情况.
 
 <h3 id="8">其他常用工具的介绍</h3>
 netstat
@@ -255,7 +318,132 @@ sar
 
 <h3 id="9">操作系统日志、文件类型和文件权限、用户和组</h3>
 
+#### 操作系统日志
+
+红帽, SuSE 都位于 /var/log 目录下, 是操作系统相关的日志约定俗成的存放位置.  
+
+其中  
+- ```/var/log/messages``` 记录了系统多种事务日志, 这是首要查看的重点  
+- ```/var/log/secure```  红帽将系统sshd服务的登录日志记录在此处, SuSE将此类日志放在 /var/log/messages 中
+- ```/var/log/cron```  红帽将计划任务 crond 的执行记录 记录在此处
+- ```/var/log/dmesg``` 操作系统启动的事件记录,非系统工程师了解即可,不作要求
+
+#### 文件类型和文件权限、用户和组
+
+不作介绍, 如不具备相应知识, 自行查阅资料.  
+无论中间件还是数据库技术方向, 此两项作为基本常识在自己的工作也是必然要打交道的对象.
+
 
 <h3 id="10">shell编写与文本工具</h3>
 
+在本节内不会详尽的介绍shell的各个细节, 网络上的入门类教程已经足够丰富  
+只重点简要介绍shell 脚本的两个核心: 循环, 分支(判断)的基本概念
 
+#### 循环的基本格式
+
+for 循环
+
+```
+for 变量 in 集合
+do
+    执行动作
+done
+```
+
+while 循环
+
+```
+集合 | while read 变量
+do
+    执行动作
+done
+```
+
+以上2个示例, 是shell 循环的基本格式, 不难发现, 循环体的基本格式是在 ```do...done```  
+如果对以上示例表达的含义不够理解, 网上也有足够多的例子帮助你理解.  
+
+#### 分支 / 判断
+
+if 判断
+
+```
+# 单分支
+if 条件表达式;then
+    执行动作
+fi
+
+# 两个分支
+if 条件表达式;then
+    执行动作
+else
+    执行动作
+fi
+
+# 多分支
+if 条件表达式;then
+    执行动作
+elif 条件表达式;then
+    执行动作
+else
+    执行动作
+fi
+```
+
+其中多分支中, elif 可以扩展无限多个  
+
+case in 语句的分支
+
+```
+case $num in
+    1)
+        echo "Monday"
+        ;;
+    2)
+        echo "Tuesday"
+        ;;
+    3)
+        echo "Wednesday"
+        ;;
+    4)
+        echo "Thursday"
+        ;;
+    5)
+        echo "Friday"
+        ;;
+    6)
+        echo "Saturday"
+        ;;
+    7)
+        echo "Sunday"
+        ;;
+    *)
+        echo "error"
+esac
+```
+
+由以上两种分支可以看出, shell 在分支结构中的特点就是以回文的形式作为分支结构体的结束符  
+case in 语句就以 esac 结束  
+if 语句就以 fi 结束  
+作为基本语法, 需要牢记, 否则执行报错.
+
+#### 思考
+
+现假设有情景如下所示:
+
+```
+[root@docker ~]# ls
+AliDDNSv3_scheduler.sh              git_sync.sh                                  openssh-8.8p1                           shrink.sh                            zabbix-agent.sysv.j2
+AliDDNSv3.sh                        hardware_performance_benchmark.sh            openssh-8.8p1.tar.gz                    test.sh                              zabbix-server-mysql:6.0.3.tar
+anaconda-ks.cfg                     home                                         openssh_ssl_upgrade_no_interatctive.sh  test.sh~                             zabbix-server-mysql-rebuild:6.0.3.tar
+current_containers.txt              kernel-devel-3.10.0-1062.9.1.el7.x86_64.rpm  openssl-1.1.1l                          ui.zip                               zabbix-web-nginx-mysql:6.0.3.tar
+denyhosts-3.0                       Linux_routing_inspection                     openssl-1.1.1l.tar.gz                   wait_to_delete
+denyhosts-3.0_for_RHEL7_install.sh  list.txt                                     privoxy-3.0.33-stable-src.tar.gz        zabbix-agent-5.4.9-1.el6.x86_64.rpm
+denyhosts-3.0.tar.gz                mysql80-community-release-el7-4.noarch.rpm   repair_chinese_filename_error.sh        zabbix-agent-5.4.9-1.el7.x86_64.rpm
+docker_mysql_data_bak_del           nginx_install                                rsync_to_new_docker.log                 zabbix-agent.systemctl.j2
+```
+
+ls 命令(不加参数的情况下)显示了当前路径下的文件名称.  
+文件具体名称不是考察重点, 在自己的练习环境中不需要完全一致.  
+有以下两个问题可以作为自行练习的内容, 在遇到类似要求时, 应如何解决
+- 将以上文件的数量统计出来, 不借助其他命令--考察循环的使用, 用循环遍历每个文件名, 并计数.
+- 将以上文件名中包含 .sh 的, 筛选显示出来--考察判断的使用
