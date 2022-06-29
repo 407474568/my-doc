@@ -1,4 +1,9 @@
-#### vcenter批量克隆虚拟机
+* [目录](#0)
+  * [vcenter批量克隆虚拟机](#1)
+  * [以链接克隆方式创建vSphere虚拟机](#2)
+  * [重新挂载vmfs格式的磁盘](#3)
+
+<h3 id="1">vcenter批量克隆虚拟机</h3>
 
 首次运行powershell, 需要执行
 
@@ -165,7 +170,8 @@ Start-VM  -VM 指向虚拟机网卡指针 -Confirm:$false
 ```
 
 
-#### 以链接克隆方式创建vSphere虚拟机
+<h3 id="2">以链接克隆方式创建vSphere虚拟机</h3>
+
 引用:  
 https://blog.51cto.com/foolishfish/1610682
 
@@ -268,3 +274,29 @@ $CloneSpec.Location.DiskMoveType = [Vmware.Vim.VirtualMachineRelocateDiskMoveOpt
 #执行VM链接克隆任务
 $sourceVMView.CloneVM_Task($CloneFolder, $CloneVM, $CloneSpec)
 ```
+
+
+<h3 id="3">重新挂载vmfs格式的磁盘</h3>
+
+https://blog.csdn.net/weixin_36092871/article/details/116837412  
+
+出于种种原因, 一块原有vmfs格式, 并且有数据的磁盘, 在主机上已从"设备"上可以查看到该硬盘的硬件信息, 但vmfs分区却未被挂载.
+
+在帖子中的案例是2块硬盘, 从一台主机拆除安装到另一台主机, 两台主机原本在一个vcenter中.  
+而我的案例是同一个主机, 但该硬盘原本在SAS直通卡上, 更换到板载SATA接口上.与帖子案例原理相同.  
+
+从帖子给出的方法不难猜出, vmware这一设计是为避免误操作, 通过命令行可以操作解决, 目的就是需要你清楚你在做什么.
+
+正解:
+
+ssh 连接到 ESXi 主机
+
+```
+# 查看未被挂载的卷信息
+esxcfg-volume -l 
+
+# 通过前一个命令查看到的id 进行挂载
+esxcfg-volume -m < volume 的UUID >
+```
+
+![](images/btkVmdYSOrePFly2zZucGoJhY85w7Ogi.jpg)
