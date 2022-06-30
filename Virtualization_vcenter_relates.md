@@ -2,6 +2,7 @@
   * [vcenter批量克隆虚拟机](#1)
   * [以链接克隆方式创建vSphere虚拟机](#2)
   * [重新挂载vmfs格式的磁盘](#3)
+  * [vcenter websphere 503系列错误](#4)
 
 <h3 id="1">vcenter批量克隆虚拟机</h3>
 
@@ -300,3 +301,87 @@ esxcfg-volume -m < volume 的UUID >
 ```
 
 ![](images/btkVmdYSOrePFly2zZucGoJhY85w7Ogi.jpg)
+
+
+<h3 id="4">vcenter websphere 503系列错误</h3>
+
+vcenter websphere client 页面访问, http 报503错误, 原因是各种各样, 其报错信息后方跟的更相信错误代码通常才是问题关键.
+
+经常也会只需要重启一次主机就解决的情况( on Windows, 自6.7和7.0集成到一个linux虚拟机以后应该此类问题又会少很多)
+
+本次遇到的问题:
+
+https://blog.moper.net/1965.html  
+https://blog.csdn.net/weixin_38623994/article/details/107168402  
+
+先是通过这两篇文章, 找到vcenter的服务命令位置(默认安装位置)
+
+```
+cd C:\Program Files\VMware\vCenter Server\bin
+service-control --status --all
+```
+
+通过执行 ```service-control --status --all``` 确实发现大量服务停止
+
+不过按照文章提示, 手动挨个启动, 却有报错提示.
+
+```
+root@vcenter [ ~ ]# service-control --start vmware-vpxd
+Operation not cancellable. Please wait for it to finish...
+Performing start operation on service vpxd...
+Error executing start on service vpxd. Details {
+    "componentKey": null,
+    "detail": [
+        {
+            "id": "install.ciscommon.service.failstart",
+            "translatable": "An error occurred while starting service '%(0)s'",
+            "args": [
+                "vpxd"
+            ],
+            "localized": "An error occurred while starting service 'vpxd'"
+        }
+    ],
+    "resolution": null,
+    "problemId": null
+}
+Service-control failed. Error: {
+    "componentKey": null,
+    "detail": [
+        {
+            "id": "install.ciscommon.service.failstart",
+            "translatable": "An error occurred while starting service '%(0)s'",
+            "args": [
+                "vpxd"
+            ],
+            "localized": "An error occurred while starting service 'vpxd'"
+        }
+    ],
+    "resolution": null,
+    "problemId": null
+}
+```
+
+这也是无论重启了多少次操作系统, 依然故障的原因.  
+
+很多网上的文章故障现象并不完全一样, 但指向了数据库连接问题, 数据库所在位置的可用磁盘空间问题.  
+
+数据库(安装时使用的SQL Server)可用性没验证, 只检查到SQL服务已运行. 磁盘空间也有.
+
+凑巧发现linux平台上的相关日志位置, 使用windows搜索发现它的位置.
+
+```
+C:\ProgramData\VMware\vCenterServer\logs\vmon\vMon.log
+```
+
+打开日志文件, 搜索 ```fail``` 关键字, 进而发现记录中有以下几个json文件读取报错
+
+```
+C:\ProgramData\VMware\vCenterServer\data\vmware-vmon\.svcStats\stats_cis-license.json
+```
+
+另外还有两个文件名称已不可考, 在记录中前后相邻不远.
+
+再进而打开3个文件, 发现果然是非可见字符.
+删除3个文件, 再重启windows, 再观察内存占用增长情况符合以往经验, 基本断定服务恢复.
+最后确认的确恢复.
+并且以上3个中, 文件名称中有 license 相关的, 也并未发现因删除操作而重置某个功能的授权.
