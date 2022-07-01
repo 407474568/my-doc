@@ -1,6 +1,8 @@
 * [目录](#0)
   * [IPMI 命令列表](#1)
 
+<h3 id="1">IPMI 命令列表</h3>
+
 引用自  
 https://www.cnblogs.com/zhangxinglong/p/10529877.html
 
