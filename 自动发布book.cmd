@@ -36,4 +36,3 @@ REM git commit -m %title%
 REM git push -f git master:gh-pages
 
 "C:\cygwin64\bin\mintty.exe" -l bash D:\Code\my-doc\自动发布gitbook_upload.sh
-pause
