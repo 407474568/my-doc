@@ -37,4 +37,4 @@ https://forums.guru3d.com/threads/afterburner-command-line-options-and-startup.3
 在 MSI Afterburner 的软件安装目录保存有用户保存的配置 profile, 如果事先通过软件的图形界面进行了设置并保存方案, 则会有对应文件生成.  
 文件名中就包含设备的唯一标识, 而你只需要在 cmd 命令行作为参数传入即可.
 
-
+![](images/noFOzB2rT7OKy4ZaeFcSRBnG7zY9Wt5l.png)
