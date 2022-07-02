@@ -196,6 +196,10 @@ https://www.runoob.com/markdown/md-table.html
 
 &nbsp;
 
+#### 表格内的换行
+
+> 可以用html的代码，插入代码```<br>```
+
 #### 表格中合并单元格的处理
 
 如下示例
@@ -281,3 +285,21 @@ https://www.v2ex.com/t/323402
 {%endraw%} 
 
 
+#### markdown直接转成pdf格式
+
+https://juejin.cn/post/6844903990732259336
+
+chrome 安装扩展  
+```Markdown Viewer```
+
+https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgfkaikojcbjk/related
+
+在 chrome 中要赋予文件网址的访问权限
+
+![](images/JZGwP2AxWT5VUx91GFdp78K60lcTHeX4.png)
+
+接下来使用浏览器打印功能, 打印成pdf文件即可.
+
+代码块的背景保留还需要在打印选项上勾选,图形背景(Background graphics)
+
+![](images/JZGwP2AxWTiCbcSFnJsD2ohk0tOXwgYA.png)

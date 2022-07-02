@@ -46,6 +46,7 @@
     * [vCenter操作相关](Virtualization_vcenter_relates.md)
     * [VMware Workstation汇总](Virtualization_vmware_workstation_summary.md)
 * [其他 / 杂项](category_9_Others.md)
+    * [IO性能的基准测试](Others_io_performance_benchmark.md)
     * [IPMI 命令列表](Others_ipmi_command_list.md)
     * [微星 MSI Afterburner 用法](Others_msi_afterburner.md)
     * [Windows 大杂烩](Others_windows_hotchpotch.md)
