@@ -296,10 +296,13 @@ https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgf
 
 在 chrome 中要赋予文件网址的访问权限
 
-![](images/JZGwP2AxWT5VUx91GFdp78K60lcTHeX4.png){:height="50%" width="50%"}
+[//]: # (![]&#40;images/JZGwP2AxWT5VUx91GFdp78K60lcTHeX4.png&#41;)
+<img src="images/JZGwP2AxWT5VUx91GFdp78K60lcTHeX4.png" style="zoom:30%" />
 
 接下来使用浏览器打印功能, 打印成pdf文件即可.
 
 代码块的背景保留还需要在打印选项上勾选,图形背景(Background graphics)
 
-![](images/JZGwP2AxWTiCbcSFnJsD2ohk0tOXwgYA.png)
+<img src="images/JZGwP2AxWTiCbcSFnJsD2ohk0tOXwgYA.png" style="zoom:30%" />
+
+[//]: # (![]&#40;images/JZGwP2AxWTiCbcSFnJsD2ohk0tOXwgYA.png&#41;)
