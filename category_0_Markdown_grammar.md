@@ -67,11 +67,13 @@ https://blog.csdn.net/manjianchao/article/details/53668280  颜色,大小,字体
 ```
 <span style="color:red;"> 红色 </span>
 ```
+
 效果  
 <span style="color:red;"> 红色 </span>
 
 
 #### 加粗和斜体
+
 ```
 **加粗**
 ```
@@ -151,6 +153,7 @@ https://guo365.github.io/study/Markdown.html#41
 用html代码的方式标记标题, 并添加id, 则在"目录"里锚点标定这个id, 即可实现跳转
 
 #### 添加删除线
+
 文字前后都加2个 ~ 号
 ```
 ~~删除线示例~~
@@ -161,12 +164,14 @@ https://guo365.github.io/study/Markdown.html#41
 https://www.jianshu.com/p/2df05f279331  
 https://www.runoob.com/markdown/md-table.html  
 语法格式如下:  
+
 ```
 | 一个普通标题 | 一个普通标题 | 一个普通标题 |
 | ------ | ------ | ------ |
 | 短文本 | 中等文本 | 稍微长一点的文本 |
 | 稍微长一点的文本 | 短文本 | 中等文本 | 
 ```  
+
 效果如下:  
 
 | 一个普通标题 | 一个普通标题 | 一个普通标题 |
@@ -180,6 +185,7 @@ https://www.runoob.com/markdown/md-table.html
 &nbsp;
 
 对齐方式
+
 ```
 | 左对齐标题 | 右对齐标题 | 居中对齐标题 |
 | :------| ------: | :------: |
@@ -306,3 +312,17 @@ https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgf
 <img src="images/JZGwP2AxWTiCbcSFnJsD2ohk0tOXwgYA.png" style="zoom:30%" />
 
 [//]: # (![]&#40;images/JZGwP2AxWTiCbcSFnJsD2ohk0tOXwgYA.png&#41;)
+
+
+#### 图片缩放
+
+https://www.zhihu.com/question/23378396  
+
+用 html 标签, 按比例缩放  
+虽然也可以指定像素等形式, 但还需要计算以避免不成比例的缩放导致的图片拉伸变形等, 麻烦
+
+这个方式胜简单易操作
+
+```
+<img src="https://www.google.com/doodles/kamma-rahbeks-241st-birthday" style="zoom:50%" />
+```
