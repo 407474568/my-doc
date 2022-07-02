@@ -296,7 +296,7 @@ https://chrome.google.com/webstore/detail/markdown-viewer/ckkdlimhmcjmikdlpkmbgf
 
 在 chrome 中要赋予文件网址的访问权限
 
-![](images/JZGwP2AxWT5VUx91GFdp78K60lcTHeX4.png)
+![](images/JZGwP2AxWT5VUx91GFdp78K60lcTHeX4.png){:height="50%" width="50%"}
 
 接下来使用浏览器打印功能, 打印成pdf文件即可.
 
