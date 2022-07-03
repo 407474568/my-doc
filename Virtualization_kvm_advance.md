@@ -405,6 +405,7 @@ VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像
 
 这应该只是 kvm 直通磁盘的方式的一种
 
+https://www.cnblogs.com/EasonJim/p/11629211.html  
 https://chubuntu.com/questions/15902/add-physical-disk-to-kvm-virtual-machine.html  
 
 ```
@@ -423,6 +424,11 @@ https://chubuntu.com/questions/15902/add-physical-disk-to-kvm-virtual-machine.ht
 ```
 
 这种方法确实有够简便, SATA 和 NVMe M.2 两种接口形式的SSD都得到了添加.
+
+bus 类型除了 ```virtio``` 还有 ```scsi``` 和 ```ide```
+
+很可惜, 实测下来, 除了连续大块IO, ```scsi``` 比 ```virtio``` 有更大的缓存效果以外.  
+小块IO均造成了瓶颈限制, 限制了SSD的性能发挥, 也就是说, 这种方式仅限于并不怎么计较IO性能的损失的情景.
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
 
