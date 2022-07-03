@@ -32,6 +32,40 @@ https://blog.51cto.com/molewan/1926131
 
 ```
 
+#### 核心数受限的问题
+
+https://blog.51cto.com/iyull/1864357?spm=a2c6h.12873639.article-detail.4.40e537d5a2GIqa  
+
+实际原因是 guestOS 的类型, 例如 win7 只支持2颗CPU  
+而KVM 默认情况下 一个每个CPU模拟一个socket，必须修改虚拟机CPU的topology，才能使用超过一个CPU。  
+
+语句如下  
+
+```
+  <cpu>
+    <topology sockets='2' cores='2' threads='2'/>
+  </cpu>
+```
+
+如果是在前面同时配置了CPU型号直通给虚拟机, 实际情况就类似如下:  
+
+```
+  <cpu mode='host-passthrough' check='none'>
+    <topology sockets='2' dies='1' cores='2' threads='2'/>
+    <feature policy='disable' name='hypervisor'/>
+  </cpu>
+```
+
+除此之外
+
+```
+  <vcpu placement='static'>32</vcpu>
+```
+
+也同步做修改.
+
+不过依然要注意的是, 在有反虚拟化技术的情况下, 不正确的核心数等相关CPU信息, 依然也是被反虚拟化技术捕获的特征之一.
+
 ##### 隐藏KVM Hypervisor信息
 在```<features>``` 段落中插入以下内容  
 
@@ -124,6 +158,7 @@ vfio 属于KVM后来版本迭代中出现的更新的一种方法, 技术原理�
 
 
 #### 1) 宿主机开启IOMMU
+
 以下是grub2的操作步骤  
 
 修改/etc/default/grub，在GRUB_CMDLINE_LINUX_DEFAULT中添加内核启动参数
@@ -134,11 +169,13 @@ AMD CPU添加 amd_iommu=on iommu=pt
 ![](images/RSiM0HtZIo0lcFCMg31nuBwHx9DKoJE8.png)
 
 更新grub2启动参数
+
 ```
 grub2-mkconfig -o /boot/grub2/grub.cfg
 ```
 
 重启系统后验证
+
 ```
 grep intel_iommu=on /proc/cmdline 
 
@@ -146,16 +183,21 @@ dmesg | grep -E "DMAR|IOMMU"
 ```
 
 #### 2) 禁用nouveau 驱动
+
 先通过lspci 命令, 在第一列的信息即为该设备的PCI-E设备的序号
+
 ```
 lspci -nnk | grep -i nvidia
 ```
+
 示例输出如下
+
 ```
 [root@3700X vm]# lspci -nnk | grep -i nvidia
 27:00.0 VGA compatible controller [0300]: NVIDIA Corporation GA106 [GeForce RTX 3060] [10de:2503] (rev a1)
 27:00.1 Audio device [0403]: NVIDIA Corporation Device [10de:228e] (rev a1)
 ```
+
 即  
 27:00.0  
 27:00.1  
@@ -169,6 +211,7 @@ lspci -vv -s 27:00.1 | grep driver
 <br>
 
 查到的驱动就是需要纳入屏蔽清单的内容  
+
 ```
 [root@3700X vm]# cat /etc/modprobe.d/blacklist.conf
 blacklist nouveau
@@ -179,6 +222,7 @@ blacklist snd_hda_intel
 
 vim /usr/lib/modprobe.d/dist-blacklist.conf  
 加上一行options nouveau modeset=0  
+
 ```
 [root@3700X vm]# tail /usr/lib/modprobe.d/dist-blacklist.conf
 # ISDN - see bugs 154799, 159068
@@ -355,6 +399,11 @@ BOOT_IMAGE=(hd1,msdos2)/vmlinuz-5.10.90 root=/dev/mapper/rootvg-lvroot ro crashk
 
 然而这个方案也并不完美, 因为有一个代价是:  
 VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像
+
+
+<h3 id="3">PCI设备直通</h3>
+
+
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
 
