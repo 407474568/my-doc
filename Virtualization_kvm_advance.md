@@ -1,7 +1,7 @@
 * [目录](#0)
   * [去除虚拟机特征](#1)
   * [GPU直通](#2)
-  * [PCI设备直通](#3)
+  * [磁盘设备直通](#3)
   * [网卡和硬盘类型改 virtio](#4)
   * [添加物理磁盘](#5)
   * [x86模拟ARM环境](#6)
@@ -401,9 +401,28 @@ BOOT_IMAGE=(hd1,msdos2)/vmlinuz-5.10.90 root=/dev/mapper/rootvg-lvroot ro crashk
 VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像
 
 
-<h3 id="3">PCI设备直通</h3>
+<h3 id="3">磁盘设备直通</h3>
 
+这应该只是 kvm 直通磁盘的方式的一种
 
+https://chubuntu.com/questions/15902/add-physical-disk-to-kvm-virtual-machine.html  
+
+```
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source dev='/dev/nvme1n1' index='3'/>
+      <target dev='sdb' bus='virtio'/>
+      <alias name='virtio-disk1'/>
+    </disk>
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source dev='/dev/sda' index='2'/>
+      <target dev='sdc' bus='virtio'/>
+      <alias name='virtio-disk2'/>
+    </disk>
+```
+
+这种方法确实有够简便, SATA 和 NVMe M.2 两种接口形式的SSD都得到了添加.
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
 
