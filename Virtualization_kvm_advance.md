@@ -403,11 +403,13 @@ VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像
 
 <h3 id="3">磁盘设备直通</h3>
 
-这应该只是 kvm 直通磁盘的方式的一种
+- 以块设备的方式提供虚拟机使用
 
+这应该只是 kvm 直通磁盘方式的其中一种选择
+  
 https://www.cnblogs.com/EasonJim/p/11629211.html  
 https://chubuntu.com/questions/15902/add-physical-disk-to-kvm-virtual-machine.html  
-
+  
 ```
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw'/>
@@ -422,13 +424,66 @@ https://chubuntu.com/questions/15902/add-physical-disk-to-kvm-virtual-machine.ht
       <alias name='virtio-disk2'/>
     </disk>
 ```
-
+  
 这种方法确实有够简便, SATA 和 NVMe M.2 两种接口形式的SSD都得到了添加.
 
 bus 类型除了 ```virtio``` 还有 ```scsi``` 和 ```ide```
 
 很可惜, 实测下来, 除了连续大块IO, ```scsi``` 比 ```virtio``` 有更大的缓存效果以外.  
 小块IO均造成了瓶颈限制, 限制了SSD的性能发挥, 也就是说, 这种方式仅限于并不怎么计较IO性能的损失的情景.
+
+- PCI-E的SSD使用与显卡相同的透传方式
+
+走PCI-E通道的SSD, 例如M.2 / U.2 接口形式或是本身就是PCI-E插卡式的SSD, 那么自然也同样具有PCI-E插槽的通道号等
+
+光查看通道号不难, ```lspci``` 即可
+
+```
+[root@5950X-node1 ~]# lspci | grep -i samsung
+01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+04:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+```
+
+但需要知道它和 ```/dev``` 下的盘符是如何对应的.  
+
+绝大多数文章引用了它  
+https://blog.weixiaoline.com/956.html  
+
+但实际上, ```/sys/class/block/``` 下的编号很容易让人困惑, 究竟哪一个是bus号?  
+
+```
+[root@5950X-node1 ~]# ll /sys/class/block/
+total 0
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 dm-0 -> ../../devices/virtual/block/dm-0
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 nvme0n1 -> ../../devices/pci0000:00/0000:00:01.1/0000:01:00.0/nvme/nvme0/nvme0n1
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 nvme0n1p1 -> ../../devices/pci0000:00/0000:00:01.1/0000:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p1
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 nvme0n1p2 -> ../../devices/pci0000:00/0000:00:01.1/0000:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p2
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 nvme0n1p3 -> ../../devices/pci0000:00/0000:00:01.1/0000:01:00.0/nvme/nvme0/nvme0n1/nvme0n1p3
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 nvme1n1 -> ../../devices/pci0000:00/0000:00:01.2/0000:02:00.0/0000:03:01.0/0000:04:00.0/nvme/nvme1/nvme1n1
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 nvme1n1p1 -> ../../devices/pci0000:00/0000:00:01.2/0000:02:00.0/0000:03:01.0/0000:04:00.0/nvme/nvme1/nvme1n1/nvme1n1p1
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 sda -> ../../devices/pci0000:00/0000:00:01.2/0000:02:00.0/0000:03:09.0/0000:0b:00.0/ata2/host1/target1:0:0/1:0:0:0/block/sda
+lrwxrwxrwx 1 root root 0 Jul  4 23:05 sda1 -> ../../devices/pci0000:00/0000:00:01.2/0000:02:00.0/0000:03:09.0/0000:0b:00.0/ata2/host1/target1:0:0/1:0:0:0/block/sda/sda1
+```
+
+华3的这篇文档给出了正解  
+https://www.h3c.com/cn/Service/Document_Software/Document_Center/Home/Server/00-Public/Installation/Installation_Manual/H3C_NVMe-789/
+
+它指出, 以下位置的是bus号
+
+![](images/inhN89sry5D7J10zQdWKrIoNufwU5Oxj.png)
+
+但如果只给结论, 没法证明, 那也有理由可以怀疑前面的 ```0000:00:01```, ```0000:02:00.0```, ```0000:03:01.0``` 中的任何一个都可能是bus号.
+
+验证的方法就是 ```lspci -vvs <bus号>```
+
+```
+[root@5950X-node1 ~]# lspci -vvs 0000:04:00.0
+04:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983 (prog-if 02 [NVM Express])
+	Subsystem: Samsung Electronics Co Ltd Device a801
+<更多无关输出省略>
+```
+
+由此可得以对照
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
 
