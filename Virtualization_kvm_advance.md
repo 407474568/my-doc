@@ -432,8 +432,9 @@ https://chubuntu.com/questions/15902/add-physical-disk-to-kvm-virtual-machine.ht
 
 bus 类型除了 ```virtio``` 还有 ```scsi``` 和 ```ide```
 
-很可惜, 实测下来, 除了连续大块IO, ```scsi``` 比 ```virtio``` 有更大的缓存效果以外.  
-小块IO均造成了瓶颈限制, 限制了SSD的性能发挥, 也就是说, 这种方式仅限于并不怎么计较IO性能损失的情景.
+很可惜, 实测下来, 除了连续大块IO, ```scsi``` 比 ```virtio``` 有更大的缓存效果以外,
+无论 ```scsi``` 还是 ```virtio``` 在各种类型的小块IO 上均造成了瓶颈限制, 限制了SSD的性能发挥.   
+也就是说, 这种方式仅限于并不怎么计较IO性能损失的情景.
 
 - PCI-E的SSD使用与显卡相同的透传方式
 
