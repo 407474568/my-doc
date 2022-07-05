@@ -1,4 +1,9 @@
-#### Python时间格式处理
+* [目录](#0)
+  * [Python 时间格式处理](#1)
+  * [Python 常用异常处理](#2)
+
+
+<h3 id="1">Python 时间格式处理</h3>
 https://juejin.cn/post/6844903859257622541  
 https://www.cnblogs.com/xuchunlin/p/5920549.html  
 https://blog.csdn.net/google19890102/article/details/51355282  
@@ -122,4 +127,23 @@ TypeError: unsupported operand type(s) for -: 'time.struct_time' and 'time.struc
 >>> time.strftime("%Y-%m-%d %H:%M:%S", time_format)
 '2021-02-02 11:28:58'
 >>>
+```
+
+
+<h3 id="2">Python 常用异常处理</h3>
+
+https://docs.python.org/3/tutorial/errors.html  
+
+python 内置的错误类型不必多说, 参考相关文档作了解.
+
+以下示例是一个需要捕获的错误理由不在 error类型里, 而是在error详细理由里.
+
+因此, 处理办法仅仅是将此 类对象 转换成 str 类型.
+
+```
+try:
+    self.zbx_obj.send(item)
+except Exception as error_reason:
+    if re.search(r"Network is unreachable", str(error_reason)):
+        print("Zabbix Server 网络不可达, 忽略此错误")
 ```

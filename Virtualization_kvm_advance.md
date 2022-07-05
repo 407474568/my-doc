@@ -397,9 +397,12 @@ BOOT_IMAGE=(hd1,msdos2)/vmlinuz-5.10.90 root=/dev/mapper/rootvg-lvroot ro crashk
 
 问题的确得到了解决, 虚拟机启动不再hang住最后蓝屏
 
-然而这个方案也并不完美, 因为有一个代价是:  
-VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像
+~~然而这个方案也并不完美, 因为有一个代价是:~~
 
+~~VNC连接, 即用作虚拟机显示器用途的, 不再能正常显示图像~~
+
+2022-07-05 更正  
+上述问题并非必然结果, 应是特定bug, KVM宿主机重启后有可能故障解决.
 
 <h3 id="3">磁盘设备直通</h3>
 
@@ -430,7 +433,7 @@ https://chubuntu.com/questions/15902/add-physical-disk-to-kvm-virtual-machine.ht
 bus 类型除了 ```virtio``` 还有 ```scsi``` 和 ```ide```
 
 很可惜, 实测下来, 除了连续大块IO, ```scsi``` 比 ```virtio``` 有更大的缓存效果以外.  
-小块IO均造成了瓶颈限制, 限制了SSD的性能发挥, 也就是说, 这种方式仅限于并不怎么计较IO性能的损失的情景.
+小块IO均造成了瓶颈限制, 限制了SSD的性能发挥, 也就是说, 这种方式仅限于并不怎么计较IO性能损失的情景.
 
 - PCI-E的SSD使用与显卡相同的透传方式
 
@@ -484,6 +487,13 @@ https://www.h3c.com/cn/Service/Document_Software/Document_Center/Home/Server/00-
 ```
 
 由此可得以对照
+
+<font color=red>2022-07-05 实测结果</font>  
+将PCI-E SSD当成 GPU直通 处理, 因为需要更新grub选项且使用 stub语句 排除掉该SSD的通道号,最后   
+```grub2-mkconfig -o /boot/grub2/grub.cfg```  
+然后, 重启无法引导  
+待解
+
 
 <h3 id="4">网卡和硬盘类型改 virtio</h3>
 
