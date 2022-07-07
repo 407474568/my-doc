@@ -303,6 +303,41 @@ esxcfg-volume -m < volume 的UUID >
 ![](images/btkVmdYSOrePFly2zZucGoJhY85w7Ogi.jpg)
 
 
+<font color=red>2022-07-07 增补</font>
+
+上述配置将在下一次 ESXi 重启中丢失  
+显然每次都要手工启动也是无法接受的
+
+想要重启也不丢失的保存
+
+https://www.chenlei.name/%E5%8D%87%E7%BA%A7esxi-6-7-%E6%9B%B4%E6%8D%A2raid%E5%8D%A1%E5%AF%BC%E8%87%B4vmfs3-5%E5%88%86%E5%8C%BA%E4%B8%8D%E8%83%BD%E6%8C%82%E8%BD%BD/  
+
+https://kb.vmware.com/s/article/1012142
+
+其实是vmware 早期的一个命令行工具, 在4.x后 隐藏得更深了
+
+```
+esxcfg-advcfg -s 1 /LVM/EnableResignature
+vmkload_mod -u vmfs3
+vmkload_mod vmfs3
+vmkfstools -V
+esxcfg-advcfg -s 0 /LVM/EnableResignature
+find /vmfs/volumes/ -name esxconsole.vmdk
+```
+
+无脑照敲即可.  
+推测不外乎, /LVM/EnableResignature 是早期的一个工具, 需要首先将其启用.  
+然后触发修复挂载的行为, 使得不能正确挂载的盘, 能重新自动挂载上去.  
+但并非毫无代价, 在 datastore 里的命名发生了变更, 如下示例, 被加上了 ```snap-xxxx``` 的前缀
+
+![](images/rKVAvIxwB5zCxSU8vIYRqyHTsa0Lri1k.png)
+
+进而, 由于datastore 里的命名发生了变更, 我先在ESXi 上将其取消注册, 导致vcenter上未同步此操作, 原来在该磁盘上注册的虚拟机变"孤立的"
+
+![](images/rKVAvIxwB5UCRwJe7BWpXQIzaf2ruT6S.png)
+
+又来逐个清理
+
 <h3 id="4">vcenter websphere 503系列错误</h3>
 
 vcenter websphere client 页面访问, http 报503错误, 原因是各种各样, 其报错信息后方跟的更相信错误代码通常才是问题关键.
