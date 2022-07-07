@@ -4,6 +4,7 @@
 
 
 <h3 id="1">Python 时间格式处理</h3>
+
 https://juejin.cn/post/6844903859257622541  
 https://www.cnblogs.com/xuchunlin/p/5920549.html  
 https://blog.csdn.net/google19890102/article/details/51355282  
@@ -13,6 +14,7 @@ https://blog.csdn.net/mighty13/article/details/78147357
 https://python3-cookbook.readthedocs.io/zh_CN/latest/c03/p15_convert_strings_into_datetimes.html  
 假设日期格式是 YYYY-MM-DD  
 它的意思是让你直接构建datietime格式的数据  
+
 ```
 from datetime import datetime
 def parse_ymd(s):
@@ -22,6 +24,7 @@ def parse_ymd(s):
 
 究竟strptime会比直接构建datietime格式数据的方式慢上多少?  
 以下测试在AMD Ryzen 3700X 处理器上执行, 每个测试项循环100万次
+
 ```
 >>> start_time = time.time()
 >>> a = "2011-09-28 10:00:00"
@@ -104,15 +107,16 @@ time.strftime('%Y-%m-%d %H:%M:%S',x)
 
 <font color=red>数字型的时间戳转为Python内的时间戳格式</font>  
 
-例如: 1612236538  
-用到  
+例如: 1612236538, 用到  
 time.localtime  ---> 把数字转为时间元组
+
 ```
 >>> time.localtime(1612236538)
 time.struct_time(tm_year=2021, tm_mon=2, tm_mday=2, tm_hour=11, tm_min=28, tm_sec=58, tm_wday=1, tm_yday=33, tm_isdst=0)
 ```
 
 时间元组不可做运算
+
 ```
 >> time.localtime(1612236538) - time.localtime(1612236539)
 Traceback (most recent call last):
@@ -122,6 +126,7 @@ TypeError: unsupported operand type(s) for -: 'time.struct_time' and 'time.struc
 ```
 
 如果是再将这个时间戳转到"YYYY-MM-DD HH:MM:SS"格式
+
 ```
 >>> time_format = time.localtime(1612236538)
 >>> time.strftime("%Y-%m-%d %H:%M:%S", time_format)
