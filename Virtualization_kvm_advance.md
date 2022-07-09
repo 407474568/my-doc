@@ -2,10 +2,10 @@
   * [去除虚拟机特征](#1)
   * [GPU直通](#2)
   * [磁盘设备直通](#3)
-  * [网卡和硬盘类型改 virtio](#4)
-  * [添加物理磁盘](#5)
-  * [x86模拟ARM环境](#6)
-  * [内存膨胀](#7)
+  * [PCI设备直通](#4)
+  * [网卡和硬盘类型改 virtio](#5)
+  * [x86模拟ARM环境](#7)
+  * [内存膨胀](#8)
   
 
 <h3 id="1">去除虚拟机特征</h3>
@@ -436,6 +436,28 @@ bus 类型除了 ```virtio``` 还有 ```scsi``` 和 ```ide```
 无论 ```scsi``` 还是 ```virtio``` 在各种类型的小块IO 上均造成了瓶颈限制, 限制了SSD的性能发挥.   
 也就是说, 这种方式仅限于并不怎么计较IO性能损失的情景.
 
+一样的文章还有  
+
+https://blog.acesheep.com/index.php/archives/720/  
+
+引用它的原文
+
+>本段文章  
+2012/10/14: Adding a Physical Disk to a Guest with Libvirt / KVM 
+http://ronaldevers.nl/2012/10/14/adding-a-physical-disk-kvm-libvirt.html  
+使用virt-manager无法做到这一点。据我所知，virt-manager适用于存储池。您可以将磁盘设置为存储池，但不能将现有磁盘直接添加到VM。  
+幸运的是：手动将磁盘添加到域的xml配置文件中。/etc/libvirt/qemu/<your-vm>.xml 在编辑器中打开并在```<devices>```部分添加 ```<disk>```
+
+```
+<disk type='block' device='disk'>
+  <driver name='qemu' type='raw'/>
+  <source dev='/dev/md/storage'/>
+  <target dev='vdb' bus='virtio'/>
+  <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/> #我的配置文件加入了这部分
+</disk>
+```
+
+
 - PCI-E的SSD使用与显卡相同的透传方式
 
 走PCI-E通道的SSD, 例如M.2 / U.2 接口形式或是本身就是PCI-E插卡式的SSD, 那么自然也同样具有PCI-E插槽的通道号等
@@ -496,7 +518,109 @@ https://www.h3c.com/cn/Service/Document_Software/Document_Center/Home/Server/00-
 待解
 
 
-<h3 id="4">网卡和硬盘类型改 virtio</h3>
+<h3 id="4">PCI设备直通</h3>
+
+https://blog.csdn.net/hbuxiaofei/article/details/106589170  
+
+两种典型的做法:
+
+- pci passthrough
+- vfio
+
+pci passthrough 的做法
+
+1) 预先配置:
+  a. 打开bios中的VT-d设置
+  b. kernel引导配置iommu (iommu 的开启方法见GPU直通部分)
+2) 识别设备
+
+```
+# virsh nodedev-list --tree |grep pci
+```
+
+3) 获取设备xml
+
+```
+# virsh nodedev-dumpxml pci_8086_3a6
+```
+
+4) detach设备
+
+```
+# virsh nodedev-dettach pci_8086_3a6c
+```
+
+5) 改动虚拟机xml文件(将dumpxml查询到的bus,slot,function填入）
+
+```
+<devices>
+......
+<hostdev mode='subsystem' type='pci' managed='yes'>
+ <source>
+   <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+ </source>
+</hostdev>
+......
+</devices>
+```
+
+VFIO 的做法
+
+在已打开 iommu 的前提下, vfio 具体操作更为简便, 无需变更宿主机层面.
+
+只需要在虚拟机中加入配置语句
+
+原作者的示例
+
+```
+<devices>
+......
+<hostdev mode='subsystem' type='pci' managed='yes'>
+ <driver name='vfio'/> 
+ <source>
+   <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+ </source>
+ <rom bar='off'/>
+</hostdev>
+......
+</devices>
+```
+
+我的示例, 这里是一张HBA卡
+
+```
+[root@3700X vm]# lspci | grep 2308
+28:00.0 Serial Attached SCSI controller: Broadcom / LSI SAS2308 PCI-Express Fusion-MPT SAS-2 (rev 05)
+```
+
+```
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
+      <source>
+        <address domain='0x0000' bus='0x27' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+    </hostdev>
+```
+
+并且实践下来发现, vfio 的模式与 vmware 有着相近的行为模式.  
+HBA卡上的 SAS 硬盘在没有虚拟机占用时, 会被宿主机系统发现并分配盘符.  
+指定分配给给虚拟机, 且虚拟机开机后, 直通给虚拟机, 宿主机系统取消盘符.  
+虚拟机关机后, 盘符再次回归.  
+具有相同的热插拔效果.  
+
+<font color=red>另外</font>
+
+这也的确是更为精确的获得你设备的通道号的办法, 配置语句都为你已经生成好.
+
+```
+# virsh nodedev-list --tree |grep pci
+
+# virsh nodedev-dumpxml pci_8086_3a6
+
+```
+
+<h3 id="5">网卡和硬盘类型改 virtio</h3>
 
 宿主机上是 三星970 EVO plus 512G 的 NVMe 固态  
 在启用 virtio 前后的虚拟机 使用 Crystaldiskmark 6 测的基准情况对比如下  
@@ -579,29 +703,7 @@ bus 可以参照已有的硬盘内容, 如没有则可以从 0x00 开始尝试
 ```
 
 
-
-<h3 id="5">添加物理磁盘</h3>
-
-https://blog.acesheep.com/index.php/archives/720/  
-
-引用它的原文
-
->本段文章  
-2012/10/14: Adding a Physical Disk to a Guest with Libvirt / KVM 
-http://ronaldevers.nl/2012/10/14/adding-a-physical-disk-kvm-libvirt.html  
-使用virt-manager无法做到这一点。据我所知，virt-manager适用于存储池。您可以将磁盘设置为存储池，但不能将现有磁盘直接添加到VM。  
-幸运的是：手动将磁盘添加到域的xml配置文件中。/etc/libvirt/qemu/<your-vm>.xml 在编辑器中打开并在```<devices>```部分添加 ```<disk>```
-
-```
-<disk type='block' device='disk'>
-  <driver name='qemu' type='raw'/>
-  <source dev='/dev/md/storage'/>
-  <target dev='vdb' bus='virtio'/>
-  <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/> #我的配置文件加入了这部分
-</disk>
-```
-
-<h3 id="6">x86模拟ARM环境</h3>
+<h3 id="7">x86模拟ARM环境</h3>
 
 - 目标是创建受 libvirt 管理的模拟 aarch64 的环境
 - 在已有libvirt, virt-install, virt-manager的前提下
