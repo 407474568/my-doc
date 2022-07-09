@@ -520,7 +520,8 @@ https://www.h3c.com/cn/Service/Document_Software/Document_Center/Home/Server/00-
 
 <h3 id="4">PCI设备直通</h3>
 
-https://blog.csdn.net/hbuxiaofei/article/details/106589170  
+https://blog.csdn.net/hbuxiaofei/article/details/106589170
+
 
 两种典型的做法:
 
@@ -551,7 +552,7 @@ pci passthrough 的做法
 # virsh nodedev-dettach pci_8086_3a6c
 ```
 
-5) 改动虚拟机xml文件(将dumpxml查询到的bus,slot,function填入）
+5) 改动虚拟机xml文件 将dumpxml查询到的bus,slot,function填入
 
 ```
 <devices>
@@ -610,6 +611,7 @@ HBA卡上的 SAS 硬盘在没有虚拟机占用时, 会被宿主机系统发现�
 虚拟机关机后, 盘符再次回归.  
 具有相同的热插拔效果.  
 
+
 <font color=red>另外</font>
 
 这也的确是更为精确的获得你设备的通道号的办法, 配置语句都为你已经生成好.
@@ -618,7 +620,6 @@ HBA卡上的 SAS 硬盘在没有虚拟机占用时, 会被宿主机系统发现�
 # virsh nodedev-list --tree |grep pci
 
 # virsh nodedev-dumpxml pci_8086_3a6
-
 ```
 
 <h3 id="5">网卡和硬盘类型改 virtio</h3>
