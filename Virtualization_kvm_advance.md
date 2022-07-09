@@ -525,8 +525,7 @@ https://blog.csdn.net/hbuxiaofei/article/details/106589170
 
 两种典型的做法:
 
-- pci passthrough
-- vfio
+
 
 pci passthrough 的做法
 
