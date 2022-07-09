@@ -614,15 +614,16 @@ HBA卡上的 SAS 硬盘在没有虚拟机占用时, 会被宿主机系统发现�
 具有相同的热插拔效果.  
 
 
-
+<font color=red>另外</font>  
 
 这也的确是更为精确的获得你设备的通道号的办法, 配置语句都为你已经生成好.
 
 ```
 # virsh nodedev-list --tree |grep pci
-
 # virsh nodedev-dumpxml pci_8086_3a6
 ```
+
+
 
 <h3 id="5">网卡和硬盘类型改 virtio</h3>
 
