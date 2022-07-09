@@ -512,10 +512,11 @@ https://www.h3c.com/cn/Service/Document_Software/Document_Center/Home/Server/00-
 由此可得以对照
 
 <font color=red>2022-07-05 实测结果</font>   
+
 将PCI-E SSD当成 GPU直通 处理, 因为需要更新grub选项且使用 stub语句 排除掉该SSD的通道号,最后   
 ```grub2-mkconfig -o /boot/grub2/grub.cfg```  
 然后, 重启无法引导  
-待解
+待解  
 
 
 <h3 id="4">PCI设备直通</h3>
