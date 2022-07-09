@@ -567,13 +567,13 @@ b. kernel引导配置iommu (iommu 的开启方法见GPU直通部分)
 </devices>
 ```
 
-VFIO 的做法
+VFIO 的做法  
 
-在已打开 iommu 的前提下, vfio 具体操作更为简便, 无需变更宿主机层面.
+在已打开 iommu 的前提下, vfio 具体操作更为简便, 无需变更宿主机层面.  
 
-只需要在虚拟机中加入配置语句
+只需要在虚拟机中加入配置语句  
 
-原作者的示例
+原作者的示例  
 
 ```
 <devices>
@@ -589,7 +589,7 @@ VFIO 的做法
 </devices>
 ```
 
-我的示例, 这里是一张HBA卡
+我的示例, 这里是一张HBA卡  
 
 ```
 [root@3700X vm]# lspci | grep 2308
@@ -626,6 +626,7 @@ HBA卡上的 SAS 硬盘在没有虚拟机占用时, 会被宿主机系统发现�
 
 
 <h3 id="5">网卡和硬盘类型改 virtio</h3>
+
 
 宿主机上是 三星970 EVO plus 512G 的 NVMe 固态  
 在启用 virtio 前后的虚拟机 使用 Crystaldiskmark 6 测的基准情况对比如下  
