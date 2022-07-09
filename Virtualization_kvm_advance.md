@@ -532,6 +532,7 @@ pci passthrough 的做法
 1) 预先配置:
   a. 打开bios中的VT-d设置
   b. kernel引导配置iommu (iommu 的开启方法见GPU直通部分)
+
 2) 识别设备
 
 ```
