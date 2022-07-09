@@ -520,8 +520,6 @@ https://www.h3c.com/cn/Service/Document_Software/Document_Center/Home/Server/00-
 
 <h3 id="4">PCI设备直通</h3>
 
-https://blog.csdn.net/hbuxiaofei/article/details/106589170
-
 
 两种典型的做法:
 
@@ -530,7 +528,65 @@ https://blog.csdn.net/hbuxiaofei/article/details/106589170
 
 pci passthrough 的做法
 
+1) 预先配置:  
 
+a. 打开bios中的VT-d设置  
+
+b. kernel引导配置iommu (iommu 的开启方法见GPU直通部分)
+
+2) 识别设备
+
+```
+# virsh nodedev-list --tree |grep pci
+```
+
+3) 获取设备xml
+
+```
+# virsh nodedev-dumpxml pci_8086_3a6
+```
+
+4) detach设备
+
+```
+# virsh nodedev-dettach pci_8086_3a6c
+```
+
+5) 改动虚拟机xml文件 将dumpxml查询到的bus,slot,function填入
+
+```
+<devices>
+......
+<hostdev mode='subsystem' type='pci' managed='yes'>
+ <source>
+   <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+ </source>
+</hostdev>
+......
+</devices>
+```
+
+VFIO 的做法
+
+在已打开 iommu 的前提下, vfio 具体操作更为简便, 无需变更宿主机层面.
+
+只需要在虚拟机中加入配置语句
+
+原作者的示例
+
+```
+<devices>
+......
+<hostdev mode='subsystem' type='pci' managed='yes'>
+ <driver name='vfio'/> 
+ <source>
+   <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+ </source>
+ <rom bar='off'/>
+</hostdev>
+......
+</devices>
+```
 
 我的示例, 这里是一张HBA卡
 
