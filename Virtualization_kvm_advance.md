@@ -520,6 +520,7 @@ https://www.h3c.com/cn/Service/Document_Software/Document_Center/Home/Server/00-
 
 <h3 id="4">PCI设备直通</h3>
 
+https://blog.csdn.net/hbuxiaofei/article/details/106589170
 
 两种典型的做法:
 
@@ -566,62 +567,7 @@ b. kernel引导配置iommu (iommu 的开启方法见GPU直通部分)
 </devices>
 ```
 
-VFIO 的做法
 
-在已打开 iommu 的前提下, vfio 具体操作更为简便, 无需变更宿主机层面.
-
-只需要在虚拟机中加入配置语句
-
-原作者的示例
-
-```
-<devices>
-......
-<hostdev mode='subsystem' type='pci' managed='yes'>
- <driver name='vfio'/> 
- <source>
-   <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
- </source>
- <rom bar='off'/>
-</hostdev>
-......
-</devices>
-```
-
-我的示例, 这里是一张HBA卡
-
-```
-[root@3700X vm]# lspci | grep 2308
-28:00.0 Serial Attached SCSI controller: Broadcom / LSI SAS2308 PCI-Express Fusion-MPT SAS-2 (rev 05)
-```
-
-```
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
-      <source>
-        <address domain='0x0000' bus='0x27' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
-    </hostdev>
-```
-
-并且实践下来发现, vfio 的模式与 vmware 有着相近的行为模式.  
-
-HBA卡上的 SAS 硬盘在没有虚拟机占用时, 会被宿主机系统发现并分配盘符.  
-指定分配给给虚拟机, 且虚拟机开机后, 直通给虚拟机, 宿主机系统取消盘符.  
-虚拟机关机后, 盘符再次回归.  
-具有相同的热插拔效果.  
-
-
-<font color=red>另外</font>  
-
-这也的确是更为精确的获得你设备的通道号的办法, 配置语句都为你已经生成好.
-
-```
-# virsh nodedev-list --tree |grep pci
-
-# virsh nodedev-dumpxml pci_8086_3a6
-```
 
 <h3 id="5">网卡和硬盘类型改 virtio</h3>
 
