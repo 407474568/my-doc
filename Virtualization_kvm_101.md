@@ -195,6 +195,14 @@ virt-v2v: 虚拟机迁移工具；
 
 <h3 id="4">删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络</h3>
 
+<font color=red>2022-07-10 增补</font>
+
+对 kvm 宿主机上的静态路由作了增删改后, 可能 kvm 虚拟机也需要重启才能获得改动后内容.
+
+即使期间通过 ```brctl show``` 和 ```brctl addif vnet<xxx>``` 动态添加等手段, 可能依然无效, 最后重启得意解决.  
+
+#### 正文
+
 https://bynss.com/linux/591489.html#  
 https://www.liuwg.com/archives/kvm-bridge  
 以下是摘录:  
