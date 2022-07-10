@@ -1,3 +1,53 @@
+#### nmcli 方式下的静态路由
+
+https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-static-routes_configuring-and-managing-networking
+
+https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-a-static-route-using-an-nmcli-command_configuring-static-routes
+
+要添加一个路由：
+
+```
+$ nmcli connection modify connection_name +ipv4.routes "..."
+```
+
+同样，要删除一个特定的路由：
+
+```
+$ nmcli connection modify connection_name -ipv4.routes "..."
+```
+
+红帽的示例:
+
+```
+$ sudo nmcli connection modify example +ipv4.routes "192.0.2.0/24 198.51.100.1"
+```
+
+我的示例:
+
+```
+[root@ansible ~]# nmcli con modify to_3700x +ipv4.routes "172.16.0.6/32 172.16.0.18"
+[root@ansible ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.1.1     0.0.0.0         UG    100    0        0 ens160
+10.0.0.0        0.0.0.0         255.255.255.0   U     101    0        0 ens192
+172.16.0.0      0.0.0.0         255.255.255.0   U     102    0        0 ens224
+172.16.0.0      0.0.0.0         255.255.255.0   U     103    0        0 ens256
+192.168.1.0     0.0.0.0         255.255.255.0   U     100    0        0 ens160
+[root@ansible ~]# nmcli con up to_3700x 
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/11)
+[root@ansible ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.1.1     0.0.0.0         UG    100    0        0 ens160
+10.0.0.0        0.0.0.0         255.255.255.0   U     101    0        0 ens192
+172.16.0.0      0.0.0.0         255.255.255.0   U     102    0        0 ens224
+172.16.0.0      0.0.0.0         255.255.255.0   U     103    0        0 ens256
+172.16.0.6      172.16.0.18     255.255.255.255 UGH   103    0        0 ens256
+192.168.1.0     0.0.0.0         255.255.255.0   U     100    0        0 ens160
+```
+
+
 #### bond的7种模式
 https://blog.csdn.net/watermelonbig/article/details/53127165  
 
