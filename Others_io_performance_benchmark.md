@@ -3,6 +3,7 @@
   * [开始基准测试前的基本概念与术语](#2)
   * [Windows平台上的测试工具](#3)
   * [Linux平台上的测试工具](#4)
+  * [题外话](#5)
 
 
 <h3 id="1">IO性能基准测试的意义</h3>
@@ -17,7 +18,12 @@
 
 而文件系统的存在, 就必然有文件系统自身的开销与损耗, 不同的文件系统, 性能表现的差异也可以很大.
 
+扩展阅读--数据库方向的同学值得了解的文件系统性能对比  
+https://www.cnblogs.com/tommyli/p/3201047.html  
+该文章的中心思想: 没有单个文件系统类型是万能的, 也就是任何场景下都拥有最好的表现.
 
+类似的, 对比xfs 和 ext4 文件系统在数据库应用上的性能
+https://cloud.tencent.com/developer/article/1460643
 
 <h3 id="2">开始基准测试前的基本概念与术语</h3>
 
@@ -68,8 +74,8 @@ Partition Table: loop
 
 其中的 ```Sector size (logical/physical): 512B/512B``` 就分别指明了逻辑扇区和物理扇区大小.
 
-物理扇区 512B 大小是过去多年的唯一规格.
-物理扇区 4096B 大小( 4K扇区, 4K对齐 )是前些年开始逐渐开始普及.
+物理扇区 512B 大小是过去多年的唯一规格.  
+物理扇区 4096B 大小( 4K扇区, 4K对齐 ) 是前些年逐渐开始普及.
 
 #### 队列深度
 
@@ -100,10 +106,128 @@ https://blog.csdn.net/TV8MbnO2Y2RfU/article/details/78103730
 
 ![](images/FefjwUxm4HGTaBR8CvsqyDwV4Edr5Sjp.png)
 
+#### 文件系统的缓存
+
+操作系统上的文件系统都会使用一定量的内存作为 buffer 区域
+
+无论 windows 还是 linux 都有文件IO的 API, 提供给程序进行调用, 对是否使用 buffer 对写操作进行缓存的行为进行自主控制.
+
+如果你无法确定你所使用的测试工具是否经过了文件系统 / 操作系统缓存, 那么测试结果反映的未必是设备的真实性能.
+
+是否绕过文件缓存进行测试, 在支持该功能的工具上, 通常以可选参数的形式存在, 在后面介绍工具时介绍.
+
+#### 反映设备性能优劣的两个维度
+
+- 带宽(读写速度) / IOPS(每秒读写操作次数)
+- 响应时间 / 延迟
+
+由于带宽(读写速度) 和 IOPS(每秒读写操作次数) 之间是可以通过公式换算的概念, 所以属于同一维度.  
+响应时间 (延迟) 反映的是设备在响应IO请求作出反应前所花费的时间, 也是体现设备繁忙程度的一个指标.  
+在本文档内没有对 响应时间 (延迟) 做重点介绍, 会在介绍 Linux 上的 fio 命令时提及.
+
+以SSD为例, 企业级产品与消费级产品最本质的几点区别  
+
+
 <h3 id="3">Windows平台上的测试工具</h3>
+
+- HD Tune ( 不作为首选推荐, 用来查看磁盘硬件信息好用, 但基准测试只能反映硬件层,裸设备,且是连续IO的数据 )
+- AS SSD Benchmark ( 不作为首选推荐, 因为其结果数据有偏离 )
+- CrystalDiskMark ( 我个人最主要使用的选择, 有一定的参数可调 )
+- ATTO Disk Benchmark ( 以非常细分的块大小的跨越范围, 着重反映的是设备的随机性能 )
+
+#### HD Tune
+
+下载地址  
+https://www.pc6.com/softview/SoftView_7967.html
+
+HD Tune 作读取测试可以有文件系统, 写入测试必须未进行文件系统初始化的状态.
+
+HD Tune 用作全盘读写的示例
+
+![](images/FefjwUxm4HEhz9pRP4WjLyMnNr23iFeB.jpg)
+
+![](images/FefjwUxm4Hztmbp8ocZgr2IlHefy4vA1.jpg)
+
+#### AS SSD Benchmark
+
+下载地址:  
+https://soft.3dmgame.com/down/199669.html
+
+![](images/FefjwUxm4HVvSK7xHpJEQhTIFbCZDOWf.png)
+
+#### CrystalDiskMark
+
+文件系统下的测试
+
+下载地址:  
+https://crystalmark.info/en/
+
+![](images/FefjwUxm4HLd0CbGmNAxyo9J5vMZTnf2.png)
+
+![](images/FefjwUxm4HGTaBR8CvsqyDwV4Edr5Sjp.png)
+
+#### ATTO Disk Benchmark
+
+文件系统下的测试
+
+下载地址:  
+https://www.atto.com/disk-benchmark/
+
+![](images/FefjwUxm4H6q2WrbmVEuoOwsCtFgXIf9.png)
 
 
 <h3 id="4">Linux平台上的测试工具</h3>
 
 - 简单,非严谨测试: dd
 - 专业,可调参数丰富: fio
+
+#### dd 命令
+
+一个最基本的dd 命令示例
+
+```
+[root@5950X-node1 ~]# dd if=/dev/random of=/run/test bs=1M count=1024
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB, 1.0 GiB) copied, 2.13412 s, 503 MB/s
+```
+
+更进一步的用法, oflag 指定参数以绕过文件系统缓存.
+
+```
+[root@5950X-node1 ~]# dd if=/dev/random of=/run/test bs=1M count=1024 oflag=sync
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB, 1.0 GiB) copied, 2.09499 s, 513 MB/s
+```
+
+参数解释:
+
+| 参数 | 含义 |  
+| --- | --- |  
+| if=/dev/random | 输入文件, 信息来源, 向输出对象输出什么内容 | 
+| of=/run/test | 输出对象 |
+| bs=1M | block size, 块大小是多大 |
+| count=1024 | 块的数量, 多少个块 |
+| oflag=sync | 输出对象的IO控制参数, sync表示同步写,在help里有可选参数列表及基本解释 |
+
+
+<font color=red>个人观点:</font>
+
+由于我实测得到的结果表明, dd命令即使在加上绕过文件系统缓存的参数的情况下, 依然有数据与设备真实性能不匹配的现象.  
+所以我个人不会将 dd 得到的结果作为我唯一的判断依据.  
+它更适合完成只需要一个基本的, 快速的参考, 而不需要更严谨, 更专业的结果.
+
+#### fio 命令
+
+
+
+<h3 id="5">题外话</h3>
+
+想更多了解消费级产品
+
+- B站up: "然后成为天下第一" 以 M.2 固态为主的SSD评测, 中肯客观, 指标专业度高
+- 笔记本受限于 M.2 接口数量, SATA 接口的 SSD 可能是更多人为了扩展容量退而求其次的选择, 国产长江存储( 零售品牌: 致钛 )已在可靠性,性能指标,价格几个方面和三星, 铠侠(东芝)等一线大厂同台PK的实力
+- 完全不看4K性能 和 唯4K论 是都不可取的两个极端, 抛开价格谈性能不可取, 量力而为.
+- 温度表现的确也是一个需要考虑的指标, 特别是笔记本场景, 但矫枉又切忌过正. 
+- 善用搜索, 不必迷信单一信息来源
