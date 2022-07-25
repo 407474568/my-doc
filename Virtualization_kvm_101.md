@@ -213,6 +213,22 @@ https://www.liuwg.com/archives/kvm-bridge
 需要额外确保 ```net.ipv4.ip_forward = 1```  
 将其写入 /etc/sysctl.conf 中是选择之一
 
+除此之外, 还有arp_ignore 也应确保未被开启
+
+https://blog.csdn.net/sinat_20184565/article/details/81219703
+
+```
+$ sudo sysctl -a | grep -w arp_ignore
+net.ipv4.conf.all.arp_ignore = 0
+net.ipv4.conf.default.arp_ignore = 0
+net.ipv4.conf.eth0.arp_ignore = 0
+
+$ sysctl -a | grep -w arp_filter
+net.ipv4.conf.all.arp_filter = 0
+net.ipv4.conf.default.arp_filter = 0
+net.ipv4.conf.eth0.arp_filter = 0
+```
+
 <br/>
 
 在设置公共桥接网络之前，我们应该禁用 网络过滤器 为了 性能和安全原因. Netfilter 当前默认在网桥上启用。
