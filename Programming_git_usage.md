@@ -180,7 +180,7 @@ cc1: all warnings being treated as errors
 make: *** [<builtin>: fcgiwrap] Error 1
 ```
 
-在这篇帖子的最后一个回复里, 提了一个别的办法
+在这篇帖子的最后一个回复里, 提了一个别的办法  
 https://github.com/gnosek/fcgiwrap/issues/50
 
 其实也是 epel 源安装预编译好的
