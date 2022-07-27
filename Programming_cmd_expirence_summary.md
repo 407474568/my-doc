@@ -1,4 +1,22 @@
 #### 逻辑判断
+
+if 语句里的换行
+
+```
+@echo off
+echo %1
+if "%1"=="ker" ( 
+ echo kernel
+ echo kernel2
+ echo kernel3
+) else (
+ echo dtbc
+ echo dtbc1
+ echo dtbc2
+ echo dtbc3
+)
+```
+
 http://beikeit.com/post-333.html
 
 1、判断驱动器、文件或文件夹是否存在，用 if exist 语句；   
