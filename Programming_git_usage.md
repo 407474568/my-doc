@@ -195,7 +195,7 @@ dnf --enablerepo=epel -y install fcgiwrap
 
 因此, 有关 fcgiwrap 在 /etc/init.d/ 下的服务项,有关执行程序的位置, 需要作对应修改.
 
-<a href="files/git-fcgi" target="_blank">git-fcgi 服务项文件</a>
+<a href="files/git-fcgi" target="_blank">git-fcgi服务项文件</a>
 
 启动后的进程如下
 
