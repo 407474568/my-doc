@@ -189,9 +189,8 @@ https://github.com/gnosek/fcgiwrap/issues/50
 dnf --enablerepo=epel -y install fcgiwrap
 ```
 
-但因为换了安装方法, ```fcgiwrap``` 可执行文件的路径变为了  
+但因为换了安装方法, ```fcgiwrap``` 可执行文件的路径变为了 ```/usr/sbin/fcgiwrap```  
 
-```/usr/sbin/fcgiwrap```
 
 因此, 有关 fcgiwrap 在 /etc/init.d/ 下的服务项,有关执行程序的位置, 需要作对应修改.
 
