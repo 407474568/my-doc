@@ -16,7 +16,18 @@ https://blog.csdn.net/itmyhome1990/article/details/39579099
 
 &nbsp;
 
-#### 使用代理
+
+* [目录](#0)
+  * [使用代理](#1)
+  * [使用ssh的方式连接](#2)
+  * [自建git server -- SSH协议](#3)
+  * [自建git server -- http协议](#4)
+  * [非git命令删除文件后的恢复](#5)
+  * [删除了文件, 并且还commit的情况下的恢复](#6)
+
+
+<h3 id="1">使用代理</h3>
+
 https://gist.github.com/laispace/666dd7b27e9116faece6  
 ```
 git config --global https.proxy http://127.0.0.1:1080
@@ -34,7 +45,7 @@ Linux上的位置
 
 <br/>
 
-#### 使用ssh的方式连接
+<h3 id="2">使用ssh的方式连接</h3>
 
 使用http和https的连接方式,会有以下两种情况  
 下面这个是在push过程中出现, 但通常并不影响操作结果.
@@ -57,7 +68,9 @@ https://blog.csdn.net/w410589502/article/details/53607691
 
 &nbsp;
 
-#### 自建git server
+
+<h3 id="3">自建git server -- SSH协议</h3>
+
 Linux下的server端配置方法:  
 https://www.jianshu.com/p/0f47fa1894e5  
 https://www.liaoxuefeng.com/article/895923490127776  
@@ -118,7 +131,164 @@ To 192.168.1.30:/docker/git/dev
 
 &nbsp;
 
-#### 非git删除文件后的恢复
+<h3 id="4">自建git server -- http协议</h3>
+
+在已有ssh协议的git server基础上, 扩展出 http / https 协议的支持,以便于匿名权限的下载,也即可以clone,不可以push.
+
+有关 git 所支持的4种协议, 这两篇文章已有详尽的阐述
+
+http://dockone.io/article/8534  
+https://blog.51cto.com/u_11990719/3099729
+
+不管apache 还是nginx都需要用到 git-http-backend  
+而 git-http-backend 能正常工作的前提是web服务器的fastcgi功能的支持.  
+apache是内置fastcgi, nginx 还需要额外扩展来支持
+
+实操参考
+
+https://www.yvanz.com/2016/06/01/Git-server-with-http(s)-protocol.html  
+
+首先是 yum 安装, spawn-fcgi 是让fcgiwarp以daemon方式运行的工具
+
+```
+yum -y install fcgi-devel spawn-fcgi
+```
+
+但随后的 fcgiwrap 的编译安装在RHEL 8.5上是要出错的
+
+```
+git clone https://github.com/gnosek/fcgiwrap.git
+cd fcgiwrap
+autoreconf -i
+./configure
+make && make install
+```
+
+错误如下:
+
+```
+[root@docker-node1 fcgiwrap]# make && make install
+cc -std=gnu99 -Wall -Wextra -Werror -pedantic -O2 -g3    fcgiwrap.c  -lfcgi  -o fcgiwrap
+fcgiwrap.c: In function ‘handle_fcgi_request’:
+fcgiwrap.c:581:4: error: this statement may fall through [-Werror=implicit-fallthrough=]
+    cgi_error("502 Bad Gateway", "Cannot execute script", filename);
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fcgiwrap.c:583:3: note: here
+   default: /* parent */
+   ^~~~~~~
+cc1: all warnings being treated as errors
+make: *** [<builtin>: fcgiwrap] Error 1
+```
+
+在这篇帖子的最后一个回复里, 提了一个别的办法
+https://github.com/gnosek/fcgiwrap/issues/50
+
+其实也是 epel 源安装预编译好的
+
+```
+dnf --enablerepo=epel -y install fcgiwrap
+```
+
+但因为换了安装方法, ```fcgiwrap``` 可执行文件的路径变为了  
+```/usr/sbin/fcgiwrap```
+
+因此, 有关 fcgiwrap 在 /etc/init.d/ 下的服务项,有关执行程序的位置, 需要作对应修改.
+
+<a href="files/git-fcgi" target="_blank">git-fcgi 服务项文件</a>
+
+启动后的进程如下
+
+```
+[root@docker-node1 fcgiwrap]# ps axu | grep cgi
+git       440699  0.0  0.0  41820  1996 ?        Ss   12:55   0:00 /usr/sbin/fcgiwrap -f -c 1 -p /usr/libexec/git-core/git-http-backend
+root      440712  0.0  0.0  12116  1096 pts/0    S+   12:55   0:00 grep --color cgi
+```
+
+nginx 有关此站点的配置文件部分
+
+作者原文
+
+```
+#Git nginx conf
+server {
+    listen 80; 
+    server_name yougit.git.com;
+    #return 301 https://$server_name$request_uri;
+    root       /data/git/;
+    error_log  /var/log/nginx/git.error.log  warn;
+    access_log /var/log/nginx/git.access.log main;
+
+    location ~ ^/([^/]+\.git)(/.*|$) {
+        include fastcgi_params;
+        fastcgi_param PATH_INFO           $uri;
+        fastcgi_param REMOTE_USER         $remote_user;
+        fastcgi_param SCRIPT_FILENAME     /usr/libexec/git-core/git-http-backend;
+        fastcgi_param GIT_PROJECT_ROOT    $document_root;
+        fastcgi_param GIT_HTTP_EXPORT_ALL ""; 
+        fastcgi_pass unix:/var/run/git-fcgi.sock;
+    }   
+}
+```
+
+而我因为之前建git仓库时, 并未按照 xxx.git 格式命名文件夹, 所以需要微调.
+
+```
+server {
+    listen 3090;
+    server_name  code.heyday.net.cn;
+    access_log  /etc/nginx/logs/access_code.log;
+    error_log  /etc/nginx/logs/error_code.log;
+    charset utf-8,gbk;
+    root /docker/git;
+
+    location ~ ^/([^/]+)(/.*|$) {
+        include fastcgi_params;
+        fastcgi_param PATH_INFO           $uri;
+        fastcgi_param REMOTE_USER         $remote_user;
+        fastcgi_param SCRIPT_FILENAME     /usr/libexec/git-core/git-http-backend;
+        fastcgi_param GIT_PROJECT_ROOT    $document_root;
+        fastcgi_param GIT_HTTP_EXPORT_ALL ""; 
+        fastcgi_pass unix:/var/run/git-fcgi.sock;
+    } 
+}
+```
+
+其实也就是 nginx 的 localtion 段的正则  
+```location ~ ^/([^/]+\.git)(/.*|$)```  
+需要把 ```\.git``` 去掉
+
+随后重载nginx配置文件生效
+
+```
+[root@temp_linux ~]# git clone http://code.heyday.net.cn:3090/dev/
+Cloning into 'dev'...
+fatal: repository 'http://code.heyday.net.cn:3090/dev/' not found
+[root@temp_linux ~]# git clone http://code.heyday.net.cn:3090/dev/
+Cloning into 'dev'...
+remote: Enumerating objects: 2192, done.
+remote: Counting objects: 100% (2192/2192), done.
+remote: Compressing objects: 100% (1855/1855), done.
+remote: Total 2192 (delta 1353), reused 565 (delta 333), pack-reused 0
+Receiving objects: 100% (2192/2192), 3.42 MiB | 0 bytes/s, done.
+Resolving deltas: 100% (1353/1353), done.
+```
+
+首次 clone 可以采用如上方式, 后续的同步更新, 目前只知道的方式  
+
+```git fetch --all && git reset --hard <repo名>/<分支名> && git pull```
+
+同
+
+```
+git fetch --all
+git reset --hard <repo名>/<分支名>
+git pull local master
+```
+
+&nbsp;
+
+<h3 id="5">非git命令删除文件后的恢复</h3>
+
 https://my.oschina.net/u/2000675/blog/3126116  
 https://www.iteye.com/blog/hbiao68-2213238
 
@@ -195,6 +365,7 @@ Already up to date.
 
 &nbsp;
 
-#### 删除了文件, 并且错误的commit的情况下的恢复
+<h3 id="6">删除了文件, 并且还commit的情况下的恢复</h3>
+
 待补充
 
