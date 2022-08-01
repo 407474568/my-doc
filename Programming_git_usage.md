@@ -295,17 +295,22 @@ https://www.iteye.com/blog/hbiao68-2213238
 如通过操作系统而不是git rm删除文件, 在没有commit前的恢复很容易  
 此时git status 可以看见被删除的文件已被列出  
 通过
+
 ```
 git reset HEAD
 ```
+
 或
+
 ```
 git reset HEAD .
 ```
+
 来使指针指回到删除前的状态  
 测试是删除的多个文件, 所以使用 . 号当前位置来进行指代  
 同理, checkout 也是使用的 . 号  
-接下来git push 一次即可从server端重新拉取被删除的文件  
+接下来git pull 一次即可从server端重新拉取被删除的文件  
+
 ```
 D:\临时存储\dev>git status
 On branch master
