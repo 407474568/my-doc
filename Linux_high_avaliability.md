@@ -4,6 +4,7 @@
   * [关于LVS Nginx HAProxy 对比的文章](#3)
   * [HAProxy](#4)
   * [LVS+keepalived 和 heartbeat都会面临的脑裂问题](#5)
+  * [只使用ipvsadm管理的LVS](#6)
 
 
 <h3 id="1">LVS</h3>
@@ -245,3 +246,140 @@ quorum可以认为是Pacemkaer自带的仲裁机制，集群的所有节点中�
 二是把多个不满足quorum小集群拉到一起，组成一个大的集群，同样适用location限制控制资源的分配的位置。  
 但是如果你有很多双节点集群，找不到那么多用于凑数的节点，又不想把这些双节点集群拉到一起凑成一个大的集群（比如觉得不方便管理）。那么可以考虑第三种方法。  
 第三种方法是配置一个抢占资源，以及服务和这个抢占资源的colocation约束，谁抢到抢占资源谁提供服务。这个抢占资源可以是某个锁服务，比如基于zookeeper包装一个，或者干脆自己从头做一个，就像下面这个例子。这个例子是基于http协议的短连接，更细致的做法是使用长连接心跳检测，这样服务端可以及时检出连接断开而释放锁）但是，一定要同时确保这个抢占资源的高可用，可以把提供抢占资源的服务做成lingyig高可用的，也可以简单点，部署3个服务，双节点上个部署一个，第三个部署在另外一个专门的仲裁节点上，至少获取3个锁中的2个才视为取得了锁。这个仲裁节点可以为很多集群提供仲裁服务（因为一个机器只能部署一个Pacemaker实例，否则可以用部署了N个Pacemaker实例的仲裁节点做同样的事情。但是，如非迫不得已，尽量还是采用前面的方法，即满足Pacemaker法定票数，这种方法更简单，可靠。
+
+
+<h3 id="6">只使用ipvsadm管理的LVS</h3>
+
+keepalive 用于解决单个LVS 的director节点自身的不可靠导致的服务不可用问题.  
+因此, 如果场景是只是期望可以针对后端服务的可用性, 而动态的调整后端服务(加入 / 移除), 只使用 ipvsadm 就可以实现.  
+
+##### 要点归纳:
+
+1) 由LVS原理特性决定, DR模式下, director节点和real server的服务端口号都需要完全一致, 不可不同.因此对可应用的范围有一定的局限.
+2) DR模式下, 虚拟服务IP ( VIP ) 除了director节点需要配置, 同时也需要在挂载在real server, 具体做法是配置在环回接口, 不过广播地址也只有它自己这一个IP,子网4个255.
+   关于这一点是否是唯一的DR模式的实现方法, 还需要再核实.
+3) real server 上也需要启用linux的内核参数 arp_ignore 和 arp_announce
+
+##### 具体流程:
+
+- director节点安装 ipvsadm 工具, 略
+
+- director节点 配置 ipvsadm
+
+```
+ipvsadm -A -t 192.168.1.40:9999 -s wlc
+ipvsadm -a -t 192.168.1.40:9999 -r 192.168.1.27:9999 -w 4 -g
+ipvsadm -a -t 192.168.1.40:9999 -r 192.168.1.28:9999 -w 2 -g
+ipvsadm -a -t 192.168.1.40:9999 -r 192.168.1.29:9999 -w 1 -g
+```
+
+ipvsadm 的语法设计还是有尽量便于人们记忆的痕迹.  
+
+| 参数  | 含义 |
+|-----| ---- |
+| -A | 增加一个服务 |
+| -a | 添加一条后端 real server 的记录 |
+| -t | 服务IP及端口 |
+| -s | LVS算法类型 |
+| -r | 后端real server 的IP及端口 |
+| -w | wlc, 加权全最少连接里的权重 |
+| -g | -g 是DR模式, -m 是NAT模式 |
+
+- director节点 需要开启内核参数的包转发功能
+
+```
+[root@lvs-node1 ~]# grep -v -E "^#" /etc/sysctl.conf 
+net.ipv4.ip_forward = 1
+```
+
+- director节点将服务IP配置到环回网卡上,注意广播地址和子网掩码的特点
+
+在我的示例中: 
+
+```
+VIP=192.168.1.40
+ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up
+
+[root@lvs-node1 ~]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet 192.168.1.40/32 brd 192.168.1.40 scope global lo:0
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+```
+
+- real server 同样配置服务IP配置到环回网卡上
+
+```
+VIP=192.168.1.40
+ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up
+
+[root@app-cluster02-node1 ~]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet 192.168.1.40/32 brd 192.168.1.40 scope global lo:0
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+```
+
+- real server 还需要开启内核参数里的2个arp特性
+
+```
+[root@app-cluster02-node1 ~]# \grep -v -E "^(#|$)" /etc/sysctl.conf
+net.ipv4.conf.lo.arp_ignore = 1
+net.ipv4.conf.all.arp_ignore = 1
+net.ipv4.conf.lo.arp_announce = 2
+net.ipv4.conf.all.arp_announce = 2
+```
+
+有关这两个参数的含义与作用
+
+https://www.jianshu.com/p/a682ecae9693
+
+- 最后,验证服务
+
+##### 有关 wlc 加权全最少连接的计算公式
+
+在查证这一问题时, 发现了与网上大多数搜到的说法不一致, linuxvirtualserver 这样描述到
+
+http://linuxvirtualserver.org/docs/scheduling.html
+
+![](images/tyT9uJORqgMRQtKqglLr0B1NTHivEDs3.png)
+
+linuxvirtualserver 的解释是, 被选中的后端 real server 是由
+
+```LVS统计到的活动连接数 / 权重```, 其中的最小值得出
+
+这与网上比较多的说法是:  
+
+```(LVS统计到的活动连接数*256 + 非活动连接) / 权重```
+
+有了出入
+
+有关这一说法, 比较代表性的是
+
+https://plantegg.github.io/2019/07/19/%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1--%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E5%92%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%9D%87%E8%A1%A1/
+
+```
+static inline int
+ip_vs_dest_conn_overhead(struct ip_vs_dest *dest)
+{
+        /* We think the overhead of processing active connections is 256
+         * times higher than that of inactive connections in average. (This
+         * 256 times might not be accurate, we will change it later) We
+         * use the following formula to estimate the overhead now:
+         *                dest->activeconns*256 + dest->inactconns
+         */
+        return (atomic_read(&dest->activeconns) << 8) +
+                atomic_read(&dest->inactconns);
+}
+```
+
+应该是LVS的源码, 当前最后一个版本是否依然如此, 有待核实.
+
