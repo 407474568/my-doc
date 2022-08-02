@@ -255,9 +255,9 @@ keepalive 用于解决单个LVS 的director节点自身的不可靠导致的服�
 
 ##### 要点归纳:
 
-1) 由LVS原理特性决定, DR模式下, director节点和real server的服务端口号都需要完全一致, 不可不同.因此对可应用的范围有一定的局限.
+1) 由LVS原理特性决定, DR模式下, director节点和real server的服务端口号都需要完全一致, 不可不同.因此对可应用的范围有一定的局限.  
 2) DR模式下, 虚拟服务IP ( VIP ) 除了director节点需要配置, 同时也需要在挂载在real server, 具体做法是配置在环回接口, 不过广播地址也只有它自己这一个IP,子网4个255.
-   关于这一点是否是唯一的DR模式的实现方法, 还需要再核实.
+   关于这一点是否是唯一的DR模式的实现方法, 还需要再核实.  
 3) real server 上也需要启用linux的内核参数 arp_ignore 和 arp_announce
 
 ##### 具体流程:
