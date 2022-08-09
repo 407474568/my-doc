@@ -63,8 +63,8 @@ https://stackoverflow.com/questions/61490702/ansible-debug-msg-throws-error-insi
     register: output
   - debug: msg="{{ output.stdout_lines }}"
     listen: yum_makecache
-
 ```
+
 1) find 按规则查找对象, 参数是path和pattern  
 2) register 存放find查找出的结果列表  
 3) 使用file模块进行删除, 迭代方法使用的with_items的形式, 在playbook里的变量应用形式 ```"{{ need_to_delete.files }}"``` 之所以有.files属性是使用的find模块决定的
