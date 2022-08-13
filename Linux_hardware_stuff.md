@@ -1,6 +1,7 @@
 * [目录](#0)
   * [查看磁盘归属哪张板卡](#1)
   * [smartctl 里的 Background scan](#2)
+  * [by-id 查找与盘符的对应关系](#3)
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
@@ -53,3 +54,52 @@ https://www.reddit.com/r/DataHoarder/comments/e677p1/psa_if_you_have_sas_drives_
 他的核心观点是, ```Background scan``` 在工作时对IO性能的影响有限,   
 而 ```zfs scurb``` 功能只检查有数据的位置, 而没数据的位置由于 ```zfs``` 不做检查, 因此 ```Background scan``` 是个弥补.  
 技术上来说两者功能并不重叠, 并且由于负面影响, 应该处于开启状态.
+
+
+<h3 id="3">by-id 查找与盘符的对应关系</h3> 
+
+在 ```zfs``` 的命令 ```zpool status``` 中, 展现的不是盘符, 而是id, 如下所示
+
+```
+NAME                                          STATE     READ WRITE CKSUM
+SAS-4T-group01                                DEGRADED     0     0     0
+  raidz3-0                                    DEGRADED     0     0     0
+    scsi-35000cca05c22d4d0                    ONLINE       0     0     0
+    scsi-35000cca05c2302a4                    ONLINE       0     0     0
+    scsi-35000cca05c218680                    ONLINE       0     0     0
+    scsi-35000cca03b49d970                    ONLINE       0     0     0
+    scsi-35000cca05c203418                    ONLINE       0     0     0
+    scsi-35000cca03b8c2c20                    ONLINE       0     0     0
+    scsi-35000cca03b8e60b4                    FAULTED      2     0     0  too many errors
+    scsi-35000cca05c2302a8                    ONLINE       0     0     0
+    ata-ST4000DM004-2CV104_ZFN0238P           ONLINE       0     0     0
+    ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8  DEGRADED     0     0   108  too many errors
+    scsi-35000cca05c1e5180                    ONLINE       0     0     0
+    scsi-35000cca05c0f6d24                    ONLINE       0     0     0
+    scsi-35000cca05c1e5200                    ONLINE       0     0     0
+    ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K5EAD4EK  ONLINE       0     0     0
+    ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K2DN7X0E  ONLINE       0     0     0
+```
+
+当需要知晓某块盘 对应系统上哪个盘符, 以便于后续查询其他信息时, 就需要解决这个对应关系转换的问题
+
+https://www.diytechguru.com/2020/11/27/identify-zfs-disks-using-disk-by-id/
+
+命令也很简单
+
+```
+ls -l /dev/disk/by-id/ 
+```
+
+多加个 ```grep``` 也就有想要的答案了
+
+```
+[root@storage-archive ~]# ls -l /dev/disk/by-id/ | grep scsi-35000cca03b8e60b4
+lrwxrwxrwx 1 root root  9 Aug 13 23:13 scsi-35000cca03b8e60b4 -> ../../sdg
+lrwxrwxrwx 1 root root 10 Aug 13 23:13 scsi-35000cca03b8e60b4-part1 -> ../../sdg1
+lrwxrwxrwx 1 root root 10 Aug 13 23:13 scsi-35000cca03b8e60b4-part9 -> ../../sdg9
+[root@storage-archive ~]# ls -l /dev/disk/by-id/ | grep ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8
+lrwxrwxrwx 1 root root  9 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8 -> ../../sdm
+lrwxrwxrwx 1 root root 10 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8-part1 -> ../../sdm1
+lrwxrwxrwx 1 root root 10 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8-part9 -> ../../sdm9
+```
