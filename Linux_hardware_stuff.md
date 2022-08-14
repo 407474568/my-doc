@@ -1,7 +1,8 @@
 * [目录](#0)
   * [查看磁盘归属哪张板卡](#1)
-  * [smartctl 里的 Background scan](#2)
-  * [by-id 查找与盘符的对应关系](#3)
+  * [查看磁盘信息的方式](#1)
+  * [smartctl 里的 Background scan](#3)
+  * [by-id 查找与盘符的对应关系](#4)
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
@@ -29,8 +30,29 @@ ls -ld /sys/block/*/device
 则可以查看每个盘符对应的通道编号, 两者对应上, 则可获知需要的信息  
 但如果是虚拟化平台直通后的, 又会无法确定在宿主机上的对应关系, 因为通道号不同
 
+<h3 id="2">查看磁盘信息的方式</h3> 
 
-<h3 id="2">smartctl 里的 Background scan</h3>
+当磁盘处于重负载下, 使用 ```parted -l``` 命令可能会挂起一直得不到响应.  
+目前尚未确认属于特定条件的个案还是普遍.  
+
+与此同时的 ```smartctl``` ```lsblk``` 则不会有此现象
+
+查看磁盘扇区大小的方式  
+
+https://zdyxry.github.io/2019/06/05/%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E6%89%87%E5%8C%BA%E5%A4%A7%E5%B0%8F/
+
+除了 ```parted -l``` 有所显示以外, ```lsblk``` 同样也可以完成此任务
+
+```
+lsblk -d -o NAME,PHY-SEC,LOG-SEC <设备名>
+```
+
+其中  
+-d 不显示 slave 节点, 也就是此磁盘之上的分区信息不显示出来  
+-o 指定显示哪些列的信息, 其中 PHY-SEC,LOG-SEC 分别代表物理扇区, 逻辑扇区, -h 帮助信息有详细说明
+
+
+<h3 id="3">smartctl 里的 Background scan</h3>
 
 有关此话题的讨论  
 https://www.reddit.com/r/DataHoarder/comments/e677p1/psa_if_you_have_sas_drives_check_the_background/
@@ -56,7 +78,7 @@ https://www.reddit.com/r/DataHoarder/comments/e677p1/psa_if_you_have_sas_drives_
 技术上来说两者功能并不重叠, 并且由于负面影响, 应该处于开启状态.
 
 
-<h3 id="3">by-id 查找与盘符的对应关系</h3> 
+<h3 id="4">by-id 查找与盘符的对应关系</h3> 
 
 在 ```zfs``` 的命令 ```zpool status``` 中, 展现的不是盘符, 而是id, 如下所示
 
@@ -103,3 +125,4 @@ lrwxrwxrwx 1 root root  9 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8 
 lrwxrwxrwx 1 root root 10 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8-part1 -> ../../sdm1
 lrwxrwxrwx 1 root root 10 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8-part9 -> ../../sdm9
 ```
+
