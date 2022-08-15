@@ -3,6 +3,7 @@
   * [查看磁盘信息的方式](#1)
   * [smartctl 里的 Background scan](#3)
   * [by-id 查找与盘符的对应关系](#4)
+  * [查看 PCI-E 设备工作的版本与通道数](#5)
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
@@ -126,3 +127,46 @@ lrwxrwxrwx 1 root root 10 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8-
 lrwxrwxrwx 1 root root 10 Aug 13 23:13 ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0CEHPR8-part9 -> ../../sdm9
 ```
 
+<h3 id="5">查看 PCI-E 设备工作的版本与通道数</h3>
+
+https://www.cnblogs.com/lsgxeva/p/9542975.html
+
+流程共3个步骤
+
+1) lspci 不加参数, 先确认要查找设备的bus号, slot号, function号
+2) lspci -n 按bus号, slot号, function号 进行过滤, 得到 ```Vendor ID + Device ID``` 的组合
+3) lspci -n -d 按 ```Vendor ID + Device ID``` 过滤,得到PCI-E通道的版本和通道数的信息
+
+示例一
+
+```
+[root@5950X-node1 ~]# lspci | grep -i samsung
+01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+04:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
+[root@5950X-node1 ~]# lspci -n | grep 01:00.0
+01:00.0 0108: 144d:a808
+[root@5950X-node1 ~]# lspci -n -d 144d:a808 -vvv | grep --color  Width
+		LnkCap:	Port #0, Speed 8GT/s, Width x4, ASPM L1, Exit Latency L1 <64us
+		LnkSta:	Speed 8GT/s (ok), Width x4 (ok)
+		LnkCap:	Port #0, Speed 8GT/s, Width x4, ASPM not supported
+		LnkSta:	Speed 8GT/s (ok), Width x4 (ok)
+```
+
+示例二
+
+```
+[root@storage-archive ~]# lspci -n -d 15b3:1003 -vvv | grep --color  Width
+		LnkCap:	Port #8, Speed 8GT/s, Width x8, ASPM L0s, Exit Latency L0s unlimited, L1 unlimited
+		LnkSta:	Speed 5GT/s, Width x2, TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+	
+[root@storage-archive ~]# lspci -n -d 1000:0087 -vvv | grep --color  Width
+pcilib: sysfs_read_vpd: read failed: Input/output error
+		LnkCap:	Port #0, Speed 8GT/s, Width x8, ASPM L0s, Exit Latency L0s <64ns, L1 <1us
+		LnkSta:	Speed 5GT/s, Width x8, TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+
+[root@storage-archive ~]# lspci -n -d 1000:0086 -vvv | grep --color  Width
+pcilib: sysfs_read_vpd: read failed: Input/output error
+		LnkCap:	Port #0, Speed 8GT/s, Width x8, ASPM L0s, Exit Latency L0s <64ns, L1 <1us
+		LnkSta:	Speed 5GT/s, Width x2, TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+
+```
