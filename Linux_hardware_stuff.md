@@ -168,5 +168,4 @@ pcilib: sysfs_read_vpd: read failed: Input/output error
 pcilib: sysfs_read_vpd: read failed: Input/output error
 		LnkCap:	Port #0, Speed 8GT/s, Width x8, ASPM L0s, Exit Latency L0s <64ns, L1 <1us
 		LnkSta:	Speed 5GT/s, Width x2, TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-
 ```
