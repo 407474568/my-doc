@@ -133,9 +133,9 @@ https://www.cnblogs.com/lsgxeva/p/9542975.html
 
 流程共3个步骤
 
-1) lspci 不加参数, 先确认要查找设备的bus号, slot号, function号
-2) lspci -n 按bus号, slot号, function号 进行过滤, 得到 ```Vendor ID + Device ID``` 的组合
-3) lspci -n -d 按 ```Vendor ID + Device ID``` 过滤,得到PCI-E通道的版本和通道数的信息
+1) lspci 不加参数, 先确认要查找设备的bus号, slot号, function号  
+2) lspci -n 按bus号, slot号, function号 进行过滤, 得到 ```Vendor ID + Device ID``` 的组合  
+3) lspci -n -d 按 ```Vendor ID + Device ID``` 过滤,得到PCI-E通道的版本和通道数的信息  
 
 示例一
 
