@@ -406,6 +406,62 @@ BOOT_IMAGE=(hd1,msdos2)/vmlinuz-5.10.90 root=/dev/mapper/rootvg-lvroot ro crashk
 
 <h3 id="3">磁盘设备直通</h3>
 
+- 以块设备的方式提供虚拟机使用, 但不使用KVM提供的缓存层
+
+#### 2022-08-17 增补  
+
+综合来看这应该是最灵活的方式
+
+https://www.zywvvd.com/notes/system/linux/kvm/kmv-sata-through/kmv-sata-through/
+
+关键点, KVM虚拟机的配置文件, ```driver``` 一行要多出这两个参数
+
+```
+cache='none' io='native'
+```
+
+当然 io 除了```native``` 还有别的选择,  需要另查
+
+在我的例子中, 如下
+
+```
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='none' io='native'/>
+      <source dev='/dev/sda' index='2'/>
+      <backingStore/>
+      <target dev='vdb' bus='virtio'/>
+      <alias name='virtio-disk1'/>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </disk>
+```
+
+其中  
+```address``` 行 依然是KVM自动生成的, 可以不填.  
+```source```  行 的 ```index='2'``` 也是不需要填的.  
+```<backingStore/>``` 行, 自动生成的.  
+```alias``` 行, 自动生成的.  
+
+
+作为对比测试, 分别使用fio进行 物理机直测, virtio 模式的KVM虚拟机测试, 不使用缓存层的KVM虚拟机测试
+
+
+物理机直测, 如下
+
+![](images/wT1roUFlKm8TREw2MhLdkQ3C6yYJulGD.jpg)
+
+
+virtio 模式的KVM虚拟机测试, 如下
+
+![](images/wT1roUFlKmpAtMgDBS6VKd4cOfo7kyLC.jpg)
+
+不使用缓存层的KVM虚拟机测试, 如下
+
+![](images/wT1roUFlKmIbv6Y3mFEV45KtU7w0fpin.jpg)
+
+可见  
+virtio 模式的KVM虚拟机测试, 跑出了非常离谱的数据, 实际是内存作为缓存的性能的影响  
+不使用缓存层的KVM虚拟机测试, 就与存储本体在物理机上直测的结果非常吻合了.
+
 - 以块设备的方式提供虚拟机使用
 
 这应该只是 kvm 直通磁盘方式的其中一种选择
