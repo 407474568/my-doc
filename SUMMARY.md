@@ -53,4 +53,4 @@
     * [Windows 大杂烩](Others_windows_hotchpotch.md)
     * [远程唤醒计算机](Others_remote_wake_up_computer.md)
     * [Xshell连接使用隧道](Others_xshell_use_tunnel.md)
-    * [菜鸟101](Others_OS_rookie_trainning.md)
+    * [Linux菜鸟101](Others_Linux_rookie_trainning.md)
