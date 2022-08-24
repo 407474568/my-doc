@@ -3,7 +3,8 @@
   * [GPU直通](#2)
   * [磁盘设备直通](#3)
   * [PCI设备直通](#4)
-  * [网卡和硬盘类型改 virtio](#5)
+  * [USB设备直通](#5)
+  * [网卡和硬盘类型改 virtio](#6)
   * [x86模拟ARM环境](#7)
   * [内存膨胀](#8)
   
@@ -681,8 +682,56 @@ HBA卡上的 SAS 硬盘在没有虚拟机占用时, 会被宿主机系统发现�
 ```
 
 
+<h3 id="5">USB设备直通</h3>
 
-<h3 id="5">网卡和硬盘类型改 virtio</h3>
+https://www.modb.pro/db/402347
+
+首先是 ```lsusb``` 命令, 从中找出需要直通的对象
+
+```
+[root@5950X-node1 vm]# lsusb
+Bus 006 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 005 Device 005: ID 0bda:b711 Realtek Semiconductor Corp. RTL8188GU 802.11n WLAN Adapter (After Modeswitch)
+Bus 005 Device 007: ID 0001:0000 Fry's Electronics 
+Bus 005 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 003 Device 002: ID 0b05:18f3 ASUSTek Computer, Inc. 
+Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 003: ID 0e8d:0608 MediaTek Inc. 
+Bus 001 Device 002: ID 05e3:0610 Genesys Logic, Inc. Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+```
+
+在我的示例中, 我的对象是它
+
+```
+Bus 005 Device 007: ID 0001:0000 Fry's Electronics 
+```
+
+在不能确定是哪个的情况下, 也只好通过反复插拔usb设备来确定.
+
+在上面的信息也包括了需要配置到KVM虚拟机配置文件里的内容.
+
+KVM配置文件的示例
+
+```
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source>
+        <vendor id='0x0001'/>
+        <product id='0x0000'/>
+        <address bus='5' device='7'/>
+      </source>
+      <alias name='hostdev0'/>
+      <address type='usb' bus='0' port='2'/>
+    </hostdev>
+```
+
+其中  
+```Bus 005 Device 007``` 对应KVM里的 ```<address bus='5' device='7'/>```  
+```ID 0001:0000``` 对应KVM里的 ```<vendor id='0x0001'/>``` 和 ```<product id='0x0000'/>```
+
+<h3 id="6">网卡和硬盘类型改 virtio</h3>
 
 
 宿主机上是 三星970 EVO plus 512G 的 NVMe 固态  
