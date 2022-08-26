@@ -3,6 +3,7 @@
   * [以链接克隆方式创建vSphere虚拟机](#2)
   * [重新挂载vmfs格式的磁盘](#3)
   * [vcenter websphere 503系列错误](#4)
+  * [ESXi 的命令行](#5)
 
 <h3 id="1">vcenter批量克隆虚拟机</h3>
 
@@ -420,3 +421,31 @@ C:\ProgramData\VMware\vCenterServer\data\vmware-vmon\.svcStats\stats_cis-license
 删除3个文件, 再重启windows, 再观察内存占用增长情况符合以往经验, 基本断定服务恢复.  
 最后确认的确恢复.  
 并且以上3个中, 文件名称中有 license 相关的, 也并未发现因删除操作而重置某个功能的授权.
+
+
+<h3 id="4">ESXi 的命令行</h3>
+
+#### 关机相关的几个命令
+
+https://wp.gxnas.com/10572.html  
+https://www.cnblogs.com/reachos/p/16445259.html
+
+```
+# 获取所有虚拟机的vmid信息, vmid
+vim-cmd vmsvc/getallvms
+
+# 关闭虚拟机(强制下电)：
+vim-cmd vmsvc/power.off <vmid>
+
+# 关闭虚拟机(软关机)：
+vim-cmd vmsvc/power.shutdown <vmid>
+
+# 打开虚拟机：
+vim-cmd vmsvc/power.on <vmid>
+
+# 重启虚拟机：
+vim-cmd vmsvc/power.reset <vmid>
+
+# 获取虚拟机的当前状态：
+vim-cmd vmsvc/power.getstate <vmid>
+```
