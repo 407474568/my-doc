@@ -13,6 +13,7 @@
 <h3 id="1">虚拟机启停等日常命令</h3>
 
 https://bynss.com/linux/520925.html  
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-managing_guest_virtual_machines_with_virsh-shutting_down_rebooting_and_force_shutdown_of_a_guest_virtual_machine
 
 ```
 # 启动虚拟机
@@ -40,7 +41,9 @@ virsh suspend 虚拟机名称
 virsh resume 虚拟机名称
 
 # 停止活动的虚拟机--destroy并不是删除虚拟机
-virsh destroy 虚拟机名称
+virsh shutdown <虚拟机名称> --mode acpi  # 软关机 
+virsh destroy 虚拟机名称  # 强制
+
 
 # 停止活动的虚拟机--等待虚拟机事务自行结束
 virsh destroy 虚拟机名称 --graceful
