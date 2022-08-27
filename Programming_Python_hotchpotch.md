@@ -1,6 +1,7 @@
 * [目录](#0)
   * [Python 时间格式处理](#1)
   * [Python 常用异常处理](#2)
+  * [在 Beautifulsoup 中使用 XPATH 方式捕获对象](#3)
 
 
 <h3 id="1">Python 时间格式处理</h3>
@@ -151,4 +152,81 @@ try:
 except Exception as error_reason:
     if re.search(r"Network is unreachable", str(error_reason)):
         print("Zabbix Server 网络不可达, 忽略此错误")
+```
+
+
+<h3 id="3">在 Beautifulsoup 中使用 XPATH 方式捕获对象</h3>
+
+https://www.geeksforgeeks.org/how-to-use-xpath-with-beautifulsoup/
+
+原文的示例
+
+```
+from bs4 import BeautifulSoup
+from lxml import etree
+import requests
+
+
+URL = "https://en.wikipedia.org/wiki/Nike,_Inc."
+
+HEADERS = ({'User-Agent':
+			'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 \
+			(KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',\
+			'Accept-Language': 'en-US, en;q=0.5'})
+
+webpage = requests.get(URL, headers=HEADERS)
+soup = BeautifulSoup(webpage.content, "html.parser")
+dom = etree.HTML(str(soup))
+print(dom.xpath('//*[@id="firstHeading"]')[0].text)
+```
+
+我的代码片段
+
+```
+    soup = BeautifulSoup(masquerade(url, use_proxy='GFW', proxy_server_ip=proxy_server_ip,
+                                    proxy_server_port=proxy_server_port), 'html.parser')
+    dom = etree.HTML(str(soup))
+    # dom = etree.HTML(soup)
+    # pool_rate = soup.find(name="div", attrs={"class": "options-val"}).get_text()
+    pool_rate = dom.xpath('//*[@id="app"]/div[2]/div/div/div[3]/div[2]/div[1]/div[1]/div[1]')[0].text
+```
+
+注意点:  
+1) 不管用request 还是其他方式请求回来的web页面内容, 不要用```decode()```去解码, 在这个情景下属于画蛇添足.
+2) 经过```etree```处理, 以xpath 提取后的结果是个列表对象, 内容在下标 [0] 里
+
+
+<h3 id="4">获取Python自身的文件名 函数名 代码行</h3>
+
+https://www.modb.pro/db/108025
+
+```
+import sys
+import os
+import traceback
+
+# 获取函数名称
+print('函数名称：', sys._getframe().f_code.co_name)
+
+# 获取函数所在模块文件名
+print('获取函数所在模块文件名：', sys._getframe().f_code.co_filename)
+
+result = traceback.extract_stack()
+caller = result[len(result)-2]
+
+# 获取调用函数的模块文件绝对路径
+file_path_of_caller = str(caller).split(',')[0].lstrip('<FrameSummary file ')
+print('调用函数的模块文件绝对路径：', file_path_of_caller)
+
+# 调用函数的模块文件名
+file_name_of_caller = os.path.basename(file_path_of_caller) # 获取被调用函数所在模块文件名称
+print('调用函数的模块文件名：', file_name_of_caller)
+
+# 获取函数被调用时所处模块的代码行
+# 方法1
+print('函数被调用时所处模块的代码行：', sys._getframe().f_back.f_lineno)
+
+# 方法2
+code_line_when_called = sys._getframe().f_back.f_lineno
+print('函数在被调用时所处代码行数：',code_line_when_called)
 ```
