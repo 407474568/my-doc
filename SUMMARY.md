@@ -36,6 +36,7 @@
 * [服务应用](category_3_service_application.md)
     * [Zabbix 汇总](Service_zabbix.md)
     * [Prometheus 汇总](Service_prometheus.md)
+    * [grafana 汇总](Service_grafana.md)
     * [Redis 管理员手册](Service_redis_admin_manual.md)
     * [nextcloud 管理员手册](Service_nextcloud_admin_manual.md)
 * [数据库](category_4_Database.md)
