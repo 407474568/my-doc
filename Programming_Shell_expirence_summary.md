@@ -38,6 +38,25 @@ https://www.jb51.net/article/157348.htm
 
 <h4 id="01">Shell正则</h4>
 
+<font color=red>函数的后台执行</font>
+
+https://blog.csdn.net/mgxcool/article/details/50715864
+
+核心论点1: shell 代码块的后台执行
+
+```
+{ ....
+
+  ....
+
+} &
+```
+
+核心论点2: 函数也可以加 & 以后台执行
+
+核心论点3: 以后台运行的函数进程, 在函数进程里面通过$$获取到的进程id是错的
+
+
 <font color=red>关于正则表达式分组及后向引用</font>
 
 http://wiki.jikexueyuan.com/project/unix/regular-expressions.html  

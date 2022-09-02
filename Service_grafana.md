@@ -28,6 +28,20 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
 效果图参照以下链接内容进行的对标:  
 https://www.dounaite.com/article/62626709f86aba5c78840ea8.html
 
+其他参考资料:  
+
+Transform data  
+https://grafana.com/docs/grafana/latest/panels/transform-data/
+
+How to best organize your teams and resources in Grafana  
+https://grafana.com/blog/2022/03/14/how-to-best-organize-your-teams-and-resources-in-grafana/
+
+Table Panel  
+https://docs.huihoo.com/grafana/2.6/reference/table_panel/index.html
+
+grafana结合zabbix数据对其他Pannel设置学习  
+http://www.51niux.com/?id=239
+
 最终它的效果图如下:
 
 ![](images/EblWMn6sLfQOdE6L5PNqsc132DKteRzv.png)
