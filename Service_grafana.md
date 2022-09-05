@@ -21,6 +21,7 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
 
 * [目录](#0)
   * [grafana--zabbix数据源--时间戳不一致情景下数据合并](#1)
+  * [grafana--降序的阈值对应不同颜色](#2)
 
   
 <h3 id="1">grafana--zabbix数据源--时间戳不一致情景下数据合并</h3>
@@ -80,3 +81,14 @@ grafana 会因为相同的时间戳, 将字段拼接到一个结果中.
 
 ![](/images/FiwKYRa58ojyGz47kJgaMtrYWcLefvpl.png)
 
+
+<h3 id="2">grafana--降序的阈值对应不同颜色</h3>
+
+升序的阈值对应不同颜色, 很简单, 拿来就用.  
+但如果犯过来, 低于某个值, 就以一种不同的颜色显示, grafana 能否实现和如何实现?
+
+https://github.com/grafana/grafana-polystat-panel/issues/46
+
+答案原来很简单, 其实思维逆向一下就好
+
+<img src="images/s8iglpK3NYNjOVLzHay0wJZSYX3lF7v4.png" style="zoom:70%" />
