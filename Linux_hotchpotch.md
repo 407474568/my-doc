@@ -1,3 +1,75 @@
+#### iftop 监控网卡特定流量
+
+https://huataihuang.gitbooks.io/cloud-atlas/content/network/packet_analysis/utilities/iftop.html
+
+iftop 可以用于监控IP到IP的流量
+
+模式有交互和纯文本输出两种
+
+交互模式用于实时观测变化情况
+
+纯文本可以用于数据提取等操作
+
+
+进入交互模式 -i 指定网卡接口; -B 以Bytes为单位而不是Bit
+在交互模式中  
+按b 是开关顶部的bar, 横条用于表现流量
+按n 是开关是否将主机名转换为IP显示
+
+```
+iftop -i ens160 -B
+```
+
+纯文本的输出模式, 同样以Bytes为单位, 显示为IP, 注意是持续输出, 如下:
+
+```
+iftop -i ens160 -B -N -t
+```
+
+在上述基础上, 收集10秒的样本之后退出, 如下:
+
+```
+[root@storage ~]# iftop -i ens160 -B -N -t -s 10
+interface: ens160
+IP address is: 10.0.0.1
+MAC address is: 00:50:56:9a:d7:cd
+Listening on ens160
+   # Host name (port/service if enabled)            last 2s   last 10s   last 40s cumulative
+--------------------------------------------------------------------------------------------
+   1 storage                                  =>     40.0KB     48.9KB     48.9KB      196KB
+     10.0.0.193                               <=         0B         0B         0B         0B
+--------------------------------------------------------------------------------------------
+Total send rate:                                     40.0KB     48.9KB     48.9KB
+Total receive rate:                                      0B         0B         0B
+Total send and receive rate:                         40.0KB     48.9KB     48.9KB
+--------------------------------------------------------------------------------------------
+Peak rate (sent/received/total):                     57.8KB         0B     57.8KB
+Cumulative (sent/received/total):                     196KB         0B      196KB
+============================================================================================
+```
+
+在上述基础上, 加上过滤器, 以筛选特定的对象, 语法与tcpdump基本相似, 可参考网上用法, 如下:
+
+```
+[root@storage ~]# iftop -i ens160 -B -N -t -f 'host 10.0.0.193' -s 10
+interface: ens160
+IP address is: 10.0.0.1
+MAC address is: 00:50:56:9a:d7:cd
+Listening on ens160
+   # Host name (port/service if enabled)            last 2s   last 10s   last 40s cumulative
+--------------------------------------------------------------------------------------------
+   1 storage                                  =>        64B        86B        86B       688B
+     10.0.0.193                               <=        44B     1.58KB     1.58KB     12.6KB
+--------------------------------------------------------------------------------------------
+Total send rate:                                        64B        86B        86B
+Total receive rate:                                     44B     1.58KB     1.58KB
+Total send and receive rate:                           108B     1.66KB     1.66KB
+--------------------------------------------------------------------------------------------
+Peak rate (sent/received/total):                       236B     6.19KB     6.42KB
+Cumulative (sent/received/total):                      688B     12.6KB     13.3KB
+============================================================================================
+```
+
 #### logrotate 的配置语法
 
 完全引用自:  
