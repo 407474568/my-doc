@@ -103,6 +103,10 @@ time.mktime(time.strptime(a,'%Y-%m-%d %H:%M:%S'))
 x = time.localtime(1317091800.0)
 time.strftime('%Y-%m-%d %H:%M:%S',x)
 >>2011-09-27 10:50:00
+
+# datetime生成的时间格式直接转成数字化的时间戳, 再取个整就好
+>>> datetime.datetime.now().timestamp()
+1662382716.262145
 ```
 
 
