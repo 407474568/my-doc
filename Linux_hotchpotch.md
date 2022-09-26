@@ -1,3 +1,23 @@
+#### 全局禁用IPv6
+
+编辑文件/etc/sysctl.conf，
+```
+vi /etc/sysctl.conf
+```
+
+添加下面的行：
+
+```
+net.ipv6.conf.all.disable_ipv6 =1
+net.ipv6.conf.default.disable_ipv6 =1
+```
+
+使之生效
+
+```
+sysctl -p
+```
+
 #### iftop 监控网卡特定流量
 
 https://huataihuang.gitbooks.io/cloud-atlas/content/network/packet_analysis/utilities/iftop.html
