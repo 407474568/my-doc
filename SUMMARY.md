@@ -7,6 +7,7 @@
     * [CMD经验汇总](Programming_cmd_expirence_summary.md)
     * [Shell经验汇总](Programming_Shell_expirence_summary.md) 
     * [Shell的awk](Programming_Shell_awk.md) 
+    * [Python-运行环境](Programming_Python_runtime_enviroment.md)
     * [Python-进阶技巧](Programming_Python_advance_tricks.md)
     * [Python-杂集](Programming_Python_hotchpotch.md)
 * [Linux](category_2_Linux.md)
