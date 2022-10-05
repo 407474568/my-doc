@@ -22,6 +22,7 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
 * [目录](#0)
   * [grafana--zabbix数据源--时间戳不一致情景下数据合并](#1)
   * [grafana--降序的阈值对应不同颜色](#2)
+  * [grafana--时间范围的两个功能的应用](#3)
 
   
 <h3 id="1">grafana--zabbix数据源--时间戳不一致情景下数据合并</h3>
@@ -92,3 +93,39 @@ https://github.com/grafana/grafana-polystat-panel/issues/46
 答案原来很简单, 其实思维逆向一下就好
 
 <img src="images/s8iglpK3NYNjOVLzHay0wJZSYX3lF7v4.png" style="zoom:70%" />
+
+<h3 id="3">grafana--时间范围的两个功能的应用</h3>
+
+grafana 提供了两个跟时间有关的功能:
+
+- time range 时间范围
+- time shift 时间偏移
+
+在面板右上方的是统一的, 全局的时间范围设置
+
+![](images/8U2wbp9qKIQJE8dIP34kCOqUeBvizb0r.jpg)
+
+可以手动选择5,15,30分钟等  
+也可以手动输入 now-10d 这样的形式
+
+但存在某些希望在同一面板上, 不同的图表, 采用不同的时间范围来呈现的需求.
+
+这个时候需要对单个图表的 time range 做设置, grafana的历史版本如下:
+
+https://blog.csdn.net/qq_35981283/article/details/77427959  
+
+![](images/8U2wbp9qKIhUMrkYEt4oanPJIyRjV2sQ.jfif)
+
+在 grafana 8.x, 9.x 设置的位置如下, 设置 Relative time:
+
+![](images/8U2wbp9qKIsOEgGW0iqS2TvexL9RPDJY.jpg)
+
+最终效果:
+
+![](images/8U2wbp9qKIhXrwSobMkBatLT39Gz2ljF.jpg)
+
+##### time shift 的作用
+
+time shift 时间偏移, 与时间范围呈现时间跨度的调整作用不同, 它是通过对查询数据源设置了偏移量, 来达到更改原本查询时间范围的目的.
+
+例如: 原本显示时间范围最近24小时, 时间偏移设置为了10天, 那么它是取的10天前的, 一天范围内的数据, 但是在图表上呈现的时间, 依然显示为最近24小时.
