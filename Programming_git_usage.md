@@ -24,6 +24,7 @@ https://blog.csdn.net/itmyhome1990/article/details/39579099
   * [自建git server -- http协议](#4)
   * [非git命令删除文件后的恢复](#5)
   * [删除了文件, 并且还commit的情况下的恢复](#6)
+  * [换行符的自动处理](#7)
 
 
 <h3 id="1">使用代理</h3>
@@ -374,3 +375,39 @@ Already up to date.
 
 待补充
 
+<h3 id="7">换行符的自动处理</h3>
+
+https://www.zhihu.com/question/50862500  
+https://blog.csdn.net/qq_35425070/article/details/106883833
+
+你可能会见到的警告信息:
+
+```
+warning: LF will be replaced by CRLF in <file-name>.
+The file will have its original line endings in your working directory.
+```
+
+不同的平台, 适用的换行符不同.  
+Windows的 ```CRLF```  
+Linux的 ```LF```
+
+git 原本自动根据你当前的平台进行处理, 是出于善意  
+存入仓库的始终是 ```LF```  
+在 check out 时 则根据你当前的平台来决定  
+
+但也面临一种尴尬的处境, 例如在Windows平台上编写的 bash shell脚本, 给你换成 ```LF``` 就很不合适.
+
+所以 ```.gitattributes``` 就用来向 git 申明替换的规则
+
+示例:
+
+```
+# Declare files that will always have LF line endings on checkout.
+*.cpp text eol=lf
+*.h text eol=lf
+*.c text eol=lf
+*.hpp text eol=lf
+*.cmake text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+```
