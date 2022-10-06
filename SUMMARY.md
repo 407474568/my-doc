@@ -51,7 +51,7 @@
     * [VMware Workstation汇总](Virtualization_vmware_workstation_summary.md)
 * [其他 / 杂项](category_9_Others.md)
     * [IO性能的基准测试](Others_io_performance_benchmark.md)
-    * [未分类项](Others_unassorted_stuff.md)
+    * [未分类项](Others_unclassed_stuff.md)
     * [Windows 大杂烩](Others_windows_hotchpotch.md)
     * [远程唤醒计算机](Others_remote_wake_up_computer.md)
     * [Xshell连接使用隧道](Others_xshell_use_tunnel.md)

@@ -23,6 +23,7 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
   * [grafana--zabbix数据源--时间戳不一致情景下数据合并](#1)
   * [grafana--降序的阈值对应不同颜色](#2)
   * [grafana--时间范围的两个功能的应用](#3)
+  * [grafana--通过自定义变量实现下拉筛选菜单](#4)
 
   
 <h3 id="1">grafana--zabbix数据源--时间戳不一致情景下数据合并</h3>
@@ -129,3 +130,43 @@ https://blog.csdn.net/qq_35981283/article/details/77427959
 time shift 时间偏移, 与时间范围呈现时间跨度的调整作用不同, 它是通过对查询数据源设置了偏移量, 来达到更改原本查询时间范围的目的.
 
 例如: 原本显示时间范围最近24小时, 时间偏移设置为了10天, 那么它是取的10天前的, 一天范围内的数据, 但是在图表上呈现的时间, 依然显示为最近24小时.
+
+<h3 id="4">grafana--通过自定义变量实现下拉筛选菜单</h3>
+
+先上效果图
+
+![](images/2SDvsgAZCMXJm2v4prTyg08CsNYB5DLz.png)
+
+在顶部出现的几个筛选下拉框就是借由 dashboard 自定义变量实现的.
+
+操作步骤:
+
+http://www.sunrisenan.com/docs/zabbix/zabbix-1b406nmt2s6tm
+
+但稳重的grafana版本应是 7.0 及以前, 在 grafana 8.x 和 9.x 已有变化
+
+https://github.com/alexanderzobnin/grafana-zabbix/issues/1261  
+
+在以上帖子的启发之下,琢磨出正解.
+
+需要在dashboard设置创建以下几个变量, 如下图
+
+![](images/2SDvsgAZCMVd2KsHzeU4nTR3MyjL0WCx.png)
+
+各自的设置依次如下:
+
+![](images/2SDvsgAZCMEfQ7VysN0G31SieRo6Dazn.png)
+
+需要注意的是, 如果"Preview of values" 为 none 则意味着填写存在问题, 导致没有获取到查询结果
+
+![](images/2SDvsgAZCMtoTysl2B8KDRUXw13pmhr6.png)
+
+在 zabbix 里的 application 类别里, 对应 grafana 8.x 和 9.x 也有变化, 是靠 ```item tag``` 去查询的
+
+![](images/2SDvsgAZCMQvqPEiahILrFuglB9TMGCU.png)
+
+![](images/2SDvsgAZCMRITlWf2nOd0jD86SN1tZy3.png)
+
+![](images/2SDvsgAZCMJcWZaExi1RApByXLnvlkSm.png)
+
+最终, 达到的效果就是在 dashboard 的顶部出现了4个下拉筛选框, 一套图表样式, 通过下拉选择可以呈现不同的对象的数据.
