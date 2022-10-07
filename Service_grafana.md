@@ -143,7 +143,7 @@ time shift 时间偏移, 与时间范围呈现时间跨度的调整作用不同,
 
 http://www.sunrisenan.com/docs/zabbix/zabbix-1b406nmt2s6tm
 
-但稳重的grafana版本应是 7.0 及以前, 在 grafana 8.x 和 9.x 已有变化
+但文中的grafana版本应是 7.0 及以前, 在 grafana 8.x 和 9.x 已有变化
 
 https://github.com/alexanderzobnin/grafana-zabbix/issues/1261  
 
