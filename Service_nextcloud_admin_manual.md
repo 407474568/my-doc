@@ -22,6 +22,7 @@ http://www.garfielder.com/post/990cc2cb.html
   * [上传 / 同步时出现413 Request Entity Too Large](#7)
   * [OCC 批量导入文件](#8)
   * [OCC 清理 "files_version" 目录](#9)
+  * [OCC 重建缓存](#10)
 
 
 <h3 id="1">config 可选参数</h3>
@@ -240,3 +241,18 @@ https://help.nextcloud.com/t/how-to-force-delete-of-versions-in-files-versions/8
 Delete versions of   tanhuang
 ```
 
+<h3 id="10">OCC 重建缓存</h3>
+
+https://help.nextcloud.com/t/how-can-i-recreate-regenerate-the-oc-filecache-table-solve-here-is-the-schema-for-oc-filecache/63395
+
+在 nextcloud 存储挂载点有来自其他文件系统, 在我这个示例中是NFS, 并且是只读的, 所以没有"删除文件夹"按钮,如下: 
+
+![](images/kKaoq1DVOYHfPUT9nt6OY21Gxco5liJ3.jpg)
+
+![](images/kKaoq1DVOYWzMnh2t1YVsSp4Dk8JZvEN.jpg)
+
+正确的解决方法 OCC files:scan 同样也能重建, -vvv 显示详细过程
+
+```
+occ files:scan --all -vvv
+```
