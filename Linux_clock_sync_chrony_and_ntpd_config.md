@@ -167,6 +167,8 @@ allow 2001:db8::/32
 
 - 在不配置上级时钟服务器的情况下, 查询时钟偏差值
 
+https://chrony.tuxfamily.org/faq.html
+
 在 ntpdate 命令中, 有```ntpdate -q``` 的用法可以在不把上级时钟服务器写入ntpd 配置文件中就能查询与某个上级时钟服务器的偏差值  
 用法是 ```ntpdate -q <上级时钟服务器的域名或IP>```  
 
