@@ -169,3 +169,89 @@ pcilib: sysfs_read_vpd: read failed: Input/output error
 		LnkCap:	Port #0, Speed 8GT/s, Width x8, ASPM L0s, Exit Latency L0s <64ns, L1 <1us
 		LnkSta:	Speed 5GT/s, Width x2, TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
 ```
+
+#### 在 vmware ESXi 上查看的方法
+
+从 ESXi 5.x 上开始, vmware 移除了 ```lspci -vvv``` 的大部分信息, 不再能显示 PCI-E 通道及版本
+
+能用的命令是 ```esxcli hardware pci list```
+
+https://communities.vmware.com/t5/ESXi-Discussions/What-is-the-ESXi-command-to-obtain-PCI-information-like-DevSta/td-p/947254
+
+它的示例如下:
+
+```
+0000:02:00.1
+   Address: 0000:02:00.1
+   Segment: 0x0000
+   Bus: 0x02
+   Slot: 0x00
+   Function: 0x1
+   VMkernel Name: vmnic5
+   Vendor Name: Intel Corporation
+   Device Name: Ethernet Controller 10 Gigabit X540-AT2
+   Configured Owner: Unknown
+   Current Owner: VMkernel
+   Vendor ID: 0x8086
+   Device ID: 0x1528
+   SubVendor ID: 0x103c
+   SubDevice ID: 0x192d
+   Device Class: 0x0200
+   Device Class Name: Ethernet controller
+   Programming Interface: 0x00
+   Revision ID: 0x01
+   Interrupt Line: 0x0a
+   IRQ: 10
+   Interrupt Vector: 0x32
+   PCI Pin: 0x01
+   Spawned Bus: 0x00
+   Flags: 0x3201
+   Module ID: 4133
+   Module Name: ixgbe
+   Chassis: 0
+   Physical Slot: 2
+   Slot Description: CPU1 SLOT2 PCI-E 3.0 X4 (IN X8 SLOT)
+   Passthru Capable: true
+   Parent Device: PCI 0:0:1:1
+   Dependent Device: PCI 0:2:0:1
+   Reset Method: Function reset
+   FPT Sharable: true
+
+0000:04:00.0
+   Address: 0000:04:00.0
+   Segment: 0x0000
+   Bus: 0x04
+   Slot: 0x00
+   Function: 0x0
+   VMkernel Name: vmhba2
+   Vendor Name: LSI Logic / Symbios Logic
+   Device Name: LSI2308_2
+   Configured Owner: VM Passthru
+   Current Owner: VM Passthru
+   Vendor ID: 0x1000
+   Device ID: 0x0087
+   SubVendor ID: 0x1000
+   SubDevice ID: 0x3020
+   Device Class: 0x0107
+   Device Class Name: Serial Attached SCSI controller
+   Programming Interface: 0x00
+   Revision ID: 0x05
+   Interrupt Line: 0x0b
+   IRQ: 255
+   Interrupt Vector: 0x00
+   PCI Pin: 0x00
+   Spawned Bus: 0x00
+   Flags: 0x3401
+   Module ID: 21
+   Module Name: pciPassthru
+   Chassis: 0
+   Physical Slot: 3
+   Slot Description: CPU1 SLOT3 PCI-E 3.0 X16
+   Passthru Capable: true
+   Parent Device: PCI 0:0:2:0
+   Dependent Device: PCI 0:4:0:0
+   Reset Method: Function reset
+   FPT Sharable: true
+```
+
+其中 ```Slot Description``` 是可以帮助确认的描述信息, 它读取了主板(motherboard)上的标识信息
