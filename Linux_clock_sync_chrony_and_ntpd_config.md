@@ -28,6 +28,7 @@ https://tswblog.com/article/linux/chrony/
 chrony的默认配置文件  
 /etc/chrony.conf  
 内容如下:  
+
 ```
 [root@localhost ~]# cat /etc/chrony.conf 
 # Use public servers from the pool.ntp.org project.
@@ -163,6 +164,51 @@ allow 2001:db8::/32
 &nbsp;
 
 #### 检查客户端的同步状况
+
+- 在不配置上级时钟服务器的情况下, 查询时钟偏差值
+
+在 ntpdate 命令中, 有```ntpdate -q``` 的用法可以在不把上级时钟服务器写入ntpd 配置文件中就能查询与某个上级时钟服务器的偏差值  
+用法是 ```ntpdate -q <上级时钟服务器的域名或IP>```  
+
+而 chrony 也有对等的命令可以实现同样的效果, 即它也可以以ntpdate模式工作  
+具体用法:
+
+```
+chronyd -q 'pool <上级时钟服务器的域名或IP> iburst'
+```
+
+特别的, iburst 参数是有必要存在的, 否则耗时可能就会长很多倍. 示例如下:
+
+```
+[root@5950X-node1 ~]# chronyd -Q 'pool ntp1.aliyun.com iburst'
+2022-10-17T05:13:37Z chronyd version 4.1 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP +SCFILTER +SIGND +ASYNCDNS +NTS +SECHASH +IPV6 +DEBUG)
+2022-10-17T05:13:37Z Disabled control of system clock
+2022-10-17T05:13:43Z System clock wrong by 0.154011 seconds (ignored)
+2022-10-17T05:13:43Z chronyd exiting
+
+
+
+[root@5950X-node1 ~]# time chronyd -Q 'pool ntp1.aliyun.com iburst'
+2022-10-17T05:16:01Z chronyd version 4.1 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP +SCFILTER +SIGND +ASYNCDNS +NTS +SECHASH +IPV6 +DEBUG)
+2022-10-17T05:16:01Z Disabled control of system clock
+2022-10-17T05:16:12Z System clock wrong by 0.156062 seconds (ignored)
+2022-10-17T05:16:12Z chronyd exiting
+
+real	0m10.458s
+user	0m0.001s
+sys	0m0.002s
+
+
+
+[root@5950X-node1 ~]# chronyd -Q 'pool ntp1.aliyun.com'
+2022-10-17T05:14:11Z chronyd version 4.1 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP +SCFILTER +SIGND +ASYNCDNS +NTS +SECHASH +IPV6 +DEBUG)
+2022-10-17T05:14:11Z Disabled control of system clock
+2022-10-17T05:17:26Z System clock wrong by 0.153564 seconds (ignored)
+2022-10-17T05:17:26Z chronyd exiting
+```
+
+由以上可知, 带 iburst 参数花费5-10秒, 不带该参数则花费了3分钟以上.
+
 - chronyc tracking
   
 显示时钟的详细信息
