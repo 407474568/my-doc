@@ -160,10 +160,10 @@ docker run --rm -dit \
 
 <h3 id="5">修改默认网段</h3>
 
-前提:
-1) docker 容器使用桥接模式
-2) 发现从docker宿主机上不通容器的IP (通过 ```docker inspect 容器名/ID``` 可以查询)
-3) 与容器的网关IP 可能是通的 (通过 ```docker inspect 容器名/ID``` 可以查询)
+前提:  
+1) docker 容器使用桥接模式  
+2) 发现从docker宿主机上不通容器的IP (通过 ```docker inspect 容器名/ID``` 可以查询)  
+3) 与容器的网关IP 可能是通的 (通过 ```docker inspect 容器名/ID``` 可以查询)  
 
 具备以上情景就很可能是docker 的桥接口 (构建的NAT网络) 与真实网络环境中的IP网段向重合导致的.
 
