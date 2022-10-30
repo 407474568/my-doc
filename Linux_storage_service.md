@@ -22,6 +22,9 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/ma
 ![](images/UgkV5FHAqz93D4bC21tdSEaQTzkewoHm.png)
 
 
+使用示例  
+http://linux.51yip.com/search/targetcli
+
 <h3 id="2">iscsi 客户端</h3>
 
 https://developer.aliyun.com/article/47365
