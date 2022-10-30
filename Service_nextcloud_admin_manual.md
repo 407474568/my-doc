@@ -280,6 +280,6 @@ http://sinoll.com/blog/view?id=132
 
 按照文章介绍的3步操作即解决问题:
 
-1) occ maintenance:mode --on  将nextcloud进入维护模式
-2) 从nextcloud所在数据库删除锁记录 ```DELETE FROM oc_file_locks WHERE 1```
-3) occ maintenance:mode --off 退出维护模式
+1) occ maintenance:mode --on  将nextcloud进入维护模式  
+2) 从nextcloud所在数据库删除锁记录 ```DELETE FROM oc_file_locks WHERE 1```  
+3) occ maintenance:mode --off 退出维护模式  
