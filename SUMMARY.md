@@ -27,6 +27,7 @@
     * [firewalld和iptables](Linux_firewalld_and_iptables.md)  
     * [内核编译安装](Linux_kernel_compile_install.md)  
     * [硬件相关](Linux_hardware_stuff.md)  
+    * [存储相关服务](Linux_storage_service.md) 
     * [磁盘管理](Linux_disk_management.md) 
     * [yum配置](Linux_yum_config.md) 
     * [gcc的升级操作](Linux_gcc_upgrade.md)
