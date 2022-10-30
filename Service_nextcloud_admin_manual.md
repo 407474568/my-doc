@@ -23,6 +23,7 @@ http://www.garfielder.com/post/990cc2cb.html
   * [OCC 批量导入文件](#8)
   * [OCC 清理 "files_version" 目录](#9)
   * [OCC 重建缓存](#10)
+  * [无法删除/移动文件或文件夹的情况的处理](#11)
 
 
 <h3 id="1">config 可选参数</h3>
@@ -256,3 +257,29 @@ https://help.nextcloud.com/t/how-can-i-recreate-regenerate-the-oc-filecache-tabl
 ```
 occ files:scan --all -vvv
 ```
+
+
+<h3 id="11">无法删除/移动文件或文件夹的情况的处理</h3>
+
+http://sinoll.com/blog/view?id=132
+
+浏览器页面右上角 错误提示如下: 
+
+![](images/UgkV5FHAqzcKRYmjrGdnWQz3eT42yagB.png)
+
+文件权限问题已排除, 同时也不涉及 ```mount -bind``` 挂载方式的问题.
+
+仅使用 ```occ files:scan``` 也不能解决问题
+
+在我的案例中为数据库中用于记录文件锁的表有相应记录导致
+
+查询可知确实有大量记录存在, 如下所示
+
+![](images/UgkV5FHAqzdYiSG2je6fZ8vAbpnoQJcN.jpg)
+
+
+按照文章介绍的3步操作即解决问题:
+
+1) occ maintenance:mode --on  将nextcloud进入维护模式
+2) 从nextcloud所在数据库删除锁记录 ```DELETE FROM oc_file_locks WHERE 1```
+3) occ maintenance:mode --off 退出维护模式
