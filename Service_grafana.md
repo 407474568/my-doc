@@ -24,7 +24,7 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
   * [grafana--降序的阈值对应不同颜色](#2)
   * [grafana--时间范围的两个功能的应用](#3)
   * [grafana--通过自定义变量实现下拉筛选菜单](#4)
-  * [grafana--计算项](#4)
+  * [grafana--计算项](#5)
 
 
 <h3 id="1">grafana--zabbix数据源--时间戳不一致情景下数据合并</h3>
