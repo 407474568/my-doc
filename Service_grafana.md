@@ -24,8 +24,9 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
   * [grafana--降序的阈值对应不同颜色](#2)
   * [grafana--时间范围的两个功能的应用](#3)
   * [grafana--通过自定义变量实现下拉筛选菜单](#4)
+  * [grafana--计算项](#4)
 
-  
+
 <h3 id="1">grafana--zabbix数据源--时间戳不一致情景下数据合并</h3>
 
 效果图参照以下链接内容进行的对标:  
@@ -170,3 +171,29 @@ https://github.com/alexanderzobnin/grafana-zabbix/issues/1261
 ![](images/2SDvsgAZCMJcWZaExi1RApByXLnvlkSm.png)
 
 最终, 达到的效果就是在 dashboard 的顶部出现了4个下拉筛选框, 一套图表样式, 通过下拉选择可以呈现不同的对象的数据.
+
+
+<h3 id="5">grafana--计算项</h3>
+
+适用于不需要保留结果的展现项目
+
+后端不管是zabbix 或 prometheus , 同样也支持自动计算得到的结果, 但需要入库存放.  
+而如果是仅有实时呈现的需求, 而没有保留的需求, 使用grafana 的计算项则可以免除存放数据带来的开销问题.
+
+https://blog.csdn.net/weixin_48421114/article/details/109455178
+
+1 在Transform项中选取add field from calculation，可用做后面运算（±*/）
+
+![](images/UgkV5FHAqzDmQa3ALzV6H42EC5b81Yly.png)
+
+<br>
+
+2 我因为是算成功率和失败率，即需使用/运算。失败率和成功率如下选择添加
+
+![](images/UgkV5FHAqzo9YJrXKG3TEU2CzMcDeyLH.png)
+
+<br>
+
+3 可添加项选择filter by name，然后勾选你实际想要的换算后的新列名
+
+![](images/UgkV5FHAqz8P3XmLkONpnAWCrgET9she.png)
