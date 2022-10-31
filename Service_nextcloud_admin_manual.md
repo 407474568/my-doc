@@ -5,6 +5,7 @@ https://nextcloud.com/install/#
 ### 官方手册
 https://docs.nextcloud.com/server/latest/user_manual/en/  
 https://docs.nextcloud.com/server/latest/user_manual/zh_CN/  
+https://doc.owncloud.com/server/next/admin_manual/configuration/server/occ_command.html  
 
 ### 入门手册  
 https://support.websoft9.com/docs/nextcloud/zh/  
