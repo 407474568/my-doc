@@ -7,7 +7,7 @@
   * [KVM虚拟机控制台连接的方式](#6)
   * [KVM克隆虚拟机](#7)
   * [qemu-img 的转换与回收空间](#8)
-  * [开机状态下的弹出/插入光驱](#9)
+  * [开机状态下的弹出/插入光驱相关](#9)
   
 
 <h3 id="1">虚拟机启停等日常命令</h3>
@@ -633,7 +633,9 @@ qemu-img convert -c -O qcow2 /vm/games_pt_03.qcow2 vm/games_pt_03_new.qcow2
 ```
 
 
-<h3 id="9">开机状态下的弹出/插入光驱</h3>  
+<h3 id="9">光驱相关</h3>  
+
+#### 开机状态下的弹出/插入光驱
 
 https://www.ndchost.com/wiki/libvirt/change-media  
 
@@ -646,4 +648,24 @@ virsh change-media --eject 虚拟机名称 盘符
 
 # 插入光驱
 virsh change-media 虚拟机名称 盘符 媒体文件 --insert 
+```
+
+#### 增加一个光驱的配置示例
+
+```
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/vm/iso/统信_uniontechos-server-20-1050e-arm64.iso'/>
+      <target dev='sda' bus='scsi'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+```
+
+#### 改为光驱启动
+
+在 <os> 标签内有 ```boot``` 项
+
+```
+<boot dev='cdrom'/>
 ```
