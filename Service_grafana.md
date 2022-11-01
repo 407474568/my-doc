@@ -20,14 +20,19 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
 <br>
 
 * [目录](#0)
-  * [grafana--zabbix数据源--时间戳不一致情景下数据合并](#1)
-  * [grafana--降序的阈值对应不同颜色](#2)
-  * [grafana--时间范围的两个功能的应用](#3)
-  * [grafana--通过自定义变量实现下拉筛选菜单](#4)
-  * [grafana--计算项](#5)
+  * [grafana--样式参考](#1)
+  * [grafana--zabbix数据源--时间戳不一致情景下数据合并](#2)
+  * [grafana--降序的阈值对应不同颜色](#3)
+  * [grafana--时间范围的两个功能的应用](#4)
+  * [grafana--通过自定义变量实现下拉筛选菜单](#5)
+  * [grafana--计算项](#6)
 
 
-<h3 id="1">grafana--zabbix数据源--时间戳不一致情景下数据合并</h3>
+<h3 id="1">grafana--样式参考</h3>
+
+![](images/T0mb5LMNZ6esw8vymkF0Kx4Y1carOtX7.png)
+
+<h3 id="2">grafana--zabbix数据源--时间戳不一致情景下数据合并</h3>
 
 效果图参照以下链接内容进行的对标:  
 https://www.dounaite.com/article/62626709f86aba5c78840ea8.html
@@ -85,7 +90,7 @@ grafana 会因为相同的时间戳, 将字段拼接到一个结果中.
 ![](/images/FiwKYRa58ojyGz47kJgaMtrYWcLefvpl.png)
 
 
-<h3 id="2">grafana--降序的阈值对应不同颜色</h3>
+<h3 id="3">grafana--降序的阈值对应不同颜色</h3>
 
 升序的阈值对应不同颜色, 很简单, 拿来就用.  
 但如果犯过来, 低于某个值, 就以一种不同的颜色显示, grafana 能否实现和如何实现?
@@ -96,7 +101,7 @@ https://github.com/grafana/grafana-polystat-panel/issues/46
 
 <img src="images/s8iglpK3NYNjOVLzHay0wJZSYX3lF7v4.png" style="zoom:70%" />
 
-<h3 id="3">grafana--时间范围的两个功能的应用</h3>
+<h3 id="4">grafana--时间范围的两个功能的应用</h3>
 
 grafana 提供了两个跟时间有关的功能:
 
@@ -132,7 +137,7 @@ time shift 时间偏移, 与时间范围呈现时间跨度的调整作用不同,
 
 例如: 原本显示时间范围最近24小时, 时间偏移设置为了10天, 那么它是取的10天前的, 一天范围内的数据, 但是在图表上呈现的时间, 依然显示为最近24小时.
 
-<h3 id="4">grafana--通过自定义变量实现下拉筛选菜单</h3>
+<h3 id="5">grafana--通过自定义变量实现下拉筛选菜单</h3>
 
 先上效果图
 
@@ -173,7 +178,7 @@ https://github.com/alexanderzobnin/grafana-zabbix/issues/1261
 最终, 达到的效果就是在 dashboard 的顶部出现了4个下拉筛选框, 一套图表样式, 通过下拉选择可以呈现不同的对象的数据.
 
 
-<h3 id="5">grafana--计算项</h3>
+<h3 id="6">grafana--计算项</h3>
 
 适用于不需要保留结果的展现项目
 
