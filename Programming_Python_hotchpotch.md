@@ -293,3 +293,12 @@ https://www.jianshu.com/p/13302948dbe6
 ![](images/EkPFT8hOvd9Sr0P3MURndOfYB1JQWyFZ.png)
 
 ![](images/EkPFT8hOvdOBbiIknX0VW4czAupHYZt2.png)
+
+
+示例中的用于创建服务的库函数
+
+<a href="files/SMWinservice.py" target="_blank">附件</a>
+
+用于业务逻辑的代码
+
+<a href="files/EkPFT8hOvddFCPbk69mJXQi0t3qHvgL4.py" target="_blank">附件</a>
