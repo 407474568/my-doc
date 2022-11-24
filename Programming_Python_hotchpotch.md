@@ -2,6 +2,7 @@
   * [Python 时间格式处理](#1)
   * [Python 常用异常处理](#2)
   * [在 Beautifulsoup 中使用 XPATH 方式捕获对象](#3)
+  * [Python代码创建系统服务的形式运行](#4)
 
 
 <h3 id="1">Python 时间格式处理</h3>
@@ -234,3 +235,61 @@ print('函数被调用时所处模块的代码行：', sys._getframe().f_back.f_
 code_line_when_called = sys._getframe().f_back.f_lineno
 print('函数在被调用时所处代码行数：',code_line_when_called)
 ```
+
+
+<h3 id="4">Python代码创建系统服务的形式运行</h3>
+
+在 Linux 上没多大障碍, 以下是 systemctl 服务项的创建模板
+
+```
+service_name=infrastructure_service_monitor
+command_full="/usr/bin/python3 /Code/private/dev/infrastructure_service_monitor.py"
+
+
+
+cat > /usr/lib/systemd/system/"$service_name".service << EOF
+[Unit]
+Description=$service_name
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/var/run/"$service_name".pid
+ExecStart=$command_full
+ExecReload=/bin/kill -HUP 
+Restart=on-failure
+RestartSec=5s
+StartLimitBurst=0
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
+
+systemctl daemon-reload
+
+systemctl enable "$service_name" --now
+```
+
+Windows 就诸多问题了
+
+sc 创建服务  
+https://blog.csdn.net/weixin_38570967/article/details/82689242
+
+Python 代码使用 pywin32 模块创建服务  
+https://www.jianshu.com/p/13302948dbe6
+
+这两个方法都能把 Windows 服务创建成功, 但启动失败
+
+其中使用 pywin32 创建服务, 在启动时的错误.
+
+未解
+
+![](images/EkPFT8hOvd0kOoMn56CLhemYx2FKp391.png)
+
+![](images/EkPFT8hOvdfRrLQGXdNmHFI9kbv0Owp2.png)
+
+![](images/EkPFT8hOvd9Sr0P3MURndOfYB1JQWyFZ.png)
+
+![](images/EkPFT8hOvdOBbiIknX0VW4czAupHYZt2.png)
