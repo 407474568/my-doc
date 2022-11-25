@@ -3,6 +3,7 @@
   * [Python 常用异常处理](#2)
   * [在 Beautifulsoup 中使用 XPATH 方式捕获对象](#3)
   * [Python代码创建系统服务的形式运行](#4)
+  * [字典选择第一个、最后一个元素的key或value](#5)
 
 
 <h3 id="1">Python 时间格式处理</h3>
@@ -302,3 +303,28 @@ https://www.jianshu.com/p/13302948dbe6
 用于业务逻辑的代码
 
 <a href="files/EkPFT8hOvddFCPbk69mJXQi0t3qHvgL4.py" target="_blank">附件</a>
+
+
+<h3 id="5">字典选择第一个、最后一个元素的key或value</h3>
+
+https://blog.csdn.net/weixin_35757704/article/details/120368004
+
+选取第一个元素
+
+```
+my_dict = {
+    "first_key": 'first_value',
+    "second_key": "second_value",
+    "third_key": "third_value",
+}
+
+print("first key : ", next(iter(my_dict)))
+print("first value : ", my_dict.get(next(iter(my_dict))))
+```
+
+选取最后一个元素
+
+```
+print("last key : ", list(my_dict.keys())[-1])
+print("last value : ", my_dict.get(list(my_dict.keys())[-1]))
+```
