@@ -449,3 +449,38 @@ vim-cmd vmsvc/power.reset <vmid>
 # 获取虚拟机的当前状态：
 vim-cmd vmsvc/power.getstate <vmid>
 ```
+
+#### dd 复制系统盘以及报错处理
+
+https://www.qzkyl.cn/post-570.html
+
+先通过以下两个, 确定到系统盘所属的对象
+
+```
+ls -l /dev/disks/
+ls -l /vmfs/volumes
+```
+
+注意最后尾部冒号 ":" 及后面的数字代表的是分区
+
+当需要全盘克隆时, 是要整盘克隆而不是单个分区
+
+然后可以就在 ESXi 下使用 dd 命令克隆, 只不过可能会遇到该错误
+
+```
+[root@localhost:~] dd if=/dev/disks/t10.ATA_____GLOWAY_STK240GS32DS7_____________________202106032587________ of=/dev/disks/t10.ATA_____ST31000528AS________________________________________5VP6DC2C
+dd: can't open '/dev/disks/t10.ATA_____ST31000528AS________________________________________5VP6DC2C': Function not implemented
+[root@localhost:~] dd if=/dev/disks/t10.ATA_____GLOWAY_STK240GS32DS7_____________________202106032587________ of=/dev/disks/t10.ATA_____ST31000528AS________________________________________5VP6DC2C:1
+dd: can't open '/dev/disks/t10.ATA_____ST31000528AS________________________________________5VP6DC2C:1': Function not implemented
+```
+
+看似是不能读取目标盘, 实则是vmware的一个保护策略
+
+https://storagemonk.blogspot.com/2016/02/running-dd-on-esx.html?sc=1669454333262#c7466184443748048261
+
+解决方法就是加参数, ```conv=notrunc```
+
+```
+[root@localhost:~] dd if=/dev/disks/t10.ATA_____GLOWAY_STK240GS32DS7_____________________202106032587________ of=/dev/disks/t10.ATA_____ST31000528AS________________________________________5VP6DC2C:1
+ conv=notrunc
+```
