@@ -423,7 +423,7 @@ C:\ProgramData\VMware\vCenterServer\data\vmware-vmon\.svcStats\stats_cis-license
 并且以上3个中, 文件名称中有 license 相关的, 也并未发现因删除操作而重置某个功能的授权.
 
 
-<h3 id="4">ESXi 的命令行</h3>
+<h3 id="5">ESXi 的命令行</h3>
 
 #### 关机相关的几个命令
 
