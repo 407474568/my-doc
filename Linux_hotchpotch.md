@@ -1,3 +1,25 @@
+#### wget 递归下载
+
+https://www.jianshu.com/p/ac9c6a529d3d  
+https://www.cnblogs.com/pied/archive/2013/01/30/2883082.html
+
+```
+示例1
+wget -c -r -np -nc -L -p ftp://ftp-trace.ncbi.nlm.nih.gov
+
+示例2
+wget -r -np --reject=html www.download.example
+```
+
+| 参数 | 含义 |
+| :------| :------ |
+| -r | 表示递归下载当前页面所有（子）链接 |
+| -np | 表示不去遍历父目录下内容 |
+| --reject=html | 不接受扩展名为html的文件 |
+| --accept=iso,c,h | 表示只接受以此结尾的文件，分隔符为逗号（comma-separated） |
+
+
+
 #### 不明的磁盘空间占用问题
 
 通常的现象就是 ```du``` 和 ```df``` 两个命令统计得到的结果不一致

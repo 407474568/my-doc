@@ -8,6 +8,53 @@
 
 <h4 id="05">杂项</h4>
 
+<font color=red>sed 跟行号有关的操作</font>
+
+https://www.linuxprobe.com/sed-find-replace.html  
+https://blog.csdn.net/weixin_30360497/article/details/96741192  
+https://www.runoob.com/linux/linux-comm-sed.html
+
+```
+# 在特定的行号搜索和替换模式
+sed '3 s/unix/linux/' sed-test.txt
+
+# 在特定范围行号间搜索和替换模式
+sed '1,3 s/unix/linux/' sed-test.txt
+```
+
+
+```
+# 示例数据
+$cat aaa
+<instrumentation
+android:name="aaa"
+android:name="aaa"
+android:name="aaa"
+android:targetPackage="bbbb" />
+<application
+<uses-library android:name="ccc" />
+<uses-library android:name="ccc" />
+<uses-library android:name="ccc" />
+</application>
+<application
+<uses-library android:name="ccc" />
+</application>
+<application
+<uses-library android:name="ccc" />
+</application>
+
+
+# 如何查找和修改最后一行的模式
+sed '$ s/Linux/Unix/' sed-test.txt
+
+#根据 匹配，行号 范围执行替换：
+sed '/instr/,5 s/"[^"]*"/"999"/' aaa
+
+根据 匹配，相对匹配行号 范围执行替换：
+sed '/<appli/,+1 s/"[^"]*"/"999"/' aaa
+```
+
+
 <font color=red>函数的后台执行</font>
 
 https://blog.csdn.net/mgxcool/article/details/50715864
