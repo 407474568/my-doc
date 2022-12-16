@@ -942,7 +942,7 @@ memory 8G, currentMemory 6G, Win10 guestOS 开机内存占用 3.xG
 memory 8G, currentMemory 8G, Win10 guestOS 开机内存占用 1.8G (物理机的合理值)  
 
 
-<h3 id="8">禁用不需要的启动项</h3>
+<h3 id="9">禁用不需要的启动项</h3>
 
 kvm 的 ipxe 启动
 
