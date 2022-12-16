@@ -7,6 +7,7 @@
   * [网卡和硬盘类型改 virtio](#6)
   * [x86模拟ARM环境](#7)
   * [内存膨胀](#8)
+  * [禁用不需要的启动项](#9)
   
 
 <h3 id="1">去除虚拟机特征</h3>
@@ -939,3 +940,20 @@ memory 8G, currentMemory 2G, Win10 guestOS 开机内存占用 7.5G
 memory 8G, currentMemory 4G, Win10 guestOS 开机内存占用 4.xG  
 memory 8G, currentMemory 6G, Win10 guestOS 开机内存占用 3.xG  
 memory 8G, currentMemory 8G, Win10 guestOS 开机内存占用 1.8G (物理机的合理值)  
+
+
+<h3 id="8">禁用不需要的启动项</h3>
+
+kvm 的 ipxe 启动
+
+https://askubuntu.com/questions/190929/how-do-i-disable-unwanted-ipxe-boot-attempt-in-libvirt-qemu-kvm
+
+你可能并不需要它的ipxe启动, 延长vm的开机过程  
+在此帖子中讨论了很多, 各种方式都有, 有宿主机层面的(全局性), 也有永久性的改变(取消libvirt对那几个rom的访问权限等)  
+
+以下摘录的方式是对虚拟机的配置xml, 影响最小, 但缺点就是量大的时候就工作量大.
+
+![](images/gnsDhBaVfRFmgnrO2QuZI9wC1VqpaTRv.png)
+
+文档出处:  
+https://libvirt.org/formatdomain.html#elementsNICSROM
