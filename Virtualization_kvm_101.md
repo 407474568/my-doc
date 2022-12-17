@@ -680,6 +680,9 @@ https://blog.51cto.com/tryingstuff/1954531
 
 文章说到把 virtio 的 iso驱动安装文件以软驱介质加载, 因为有些情景下有问题.(问题未知)
 
-实测把 Windows 安装介质加载到第一个光驱(如,sda)
-把 virtio 驱动iso加载到第二个光驱(如,sdb)
+实测把 Windows 安装介质加载到第一个光驱(如,sda)  
+把 virtio 驱动iso加载到第二个光驱(如,sdb)  
 可在 windows 安装过程中手动加载驱动以识别硬盘.
+
+需要注意, 在 virt-install 阶段指定两个 cdrom 的方式会出现找不到可启动的设备的情况.  
+应该是在 virt-install 创建虚拟机后在编辑 xml 文件添加第2个光驱.
