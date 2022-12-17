@@ -8,6 +8,7 @@
   * [KVM克隆虚拟机](#7)
   * [qemu-img 的转换与回收空间](#8)
   * [光驱相关](#9)
+  * [virtio 模式下安装Windows操作系统](#10)
   
 
 <h3 id="1">虚拟机启停等日常命令</h3>
@@ -669,3 +670,16 @@ virsh change-media 虚拟机名称 盘符 媒体文件 --insert
 ```
 <boot dev='cdrom'/>
 ```
+
+
+<h3 id="10">virtio 模式下安装Windows操作系统</h3>
+
+https://blog.51cto.com/tryingstuff/1954531
+
+磁盘 bus 类型选为 virtio 的在 Windows 安装介质下会识别不到硬盘
+
+文章说到把 virtio 的 iso驱动安装文件以软驱介质加载, 因为有些情景下有问题.(问题未知)
+
+实测把 Windows 安装介质加载到第一个光驱(如,sda)
+把 virtio 驱动iso加载到第二个光驱(如,sdb)
+可在 windows 安装过程中手动加载驱动以识别硬盘.

@@ -957,3 +957,14 @@ https://askubuntu.com/questions/190929/how-do-i-disable-unwanted-ipxe-boot-attem
 
 文档出处:  
 https://libvirt.org/formatdomain.html#elementsNICSROM
+
+
+<h3 id="10">嵌套虚拟化</h3>
+
+https://blog.csdn.net/Linuxprobe18/article/details/78944974
+
+实测,在 Rocky Linux 8.7 加 6.0.10 的内核下, 虚拟化嵌套的开关已打开
+
+```
+cat /sys/module/kvm_intel/parameters/nested
+```
