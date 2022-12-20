@@ -685,4 +685,22 @@ https://blog.51cto.com/tryingstuff/1954531
 可在 windows 安装过程中手动加载驱动以识别硬盘.
 
 需要注意, 在 virt-install 阶段指定两个 cdrom 的方式会出现找不到可启动的设备的情况.  
-应该是在 virt-install 创建虚拟机后在编辑 xml 文件添加第2个光驱.
+应该是在 virt-install 创建虚拟机后在编辑 xml 文件添加第2个光驱.  
+注意 光驱cdrom 在 address项里的 unit 编号
+
+```
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/share/ISO/Linux/rhel-server-baseos-9.1-x86_64-virtio-win-1.9.30.iso'/>
+      <target dev='sda' bus='sata'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/share/ISO/Linux/rhel-server-baseos-9.1-x86_64-virtio-win-1.9.30.iso'/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+    </disk>
+```
