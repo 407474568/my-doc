@@ -47,6 +47,22 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 192.168.1.0     0.0.0.0         255.255.255.0   U     100    0        0 ens160
 ```
 
+#### 静态路由带优先级
+
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-static-routes_configuring-and-managing-networking
+
+语法格式:
+
+```
+nmcli connection modify connection_name ipv4.routes "ip[/prefix] [next_hop] [metric] [attribute=value] [attribute=value] ..."
+```
+
+示例
+
+```
+nmcli connection modify br2 -ipv4.routes "172.16.0.9/32 172.16.0.4"
+nmcli connection modify br2 +ipv4.routes "172.16.0.9/32 172.16.0.4 400"
+```
 
 #### bond的7种模式
 https://blog.csdn.net/watermelonbig/article/details/53127165  
