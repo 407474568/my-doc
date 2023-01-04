@@ -25,6 +25,7 @@ http://www.garfielder.com/post/990cc2cb.html
   * [OCC 清理 "files_version" 目录](#9)
   * [OCC 重建缓存](#10)
   * [无法删除/移动文件或文件夹的情况的处理](#11)
+  * [误报存储满的问题](#12)
 
 
 <h3 id="1">config 可选参数</h3>
@@ -284,3 +285,42 @@ http://sinoll.com/blog/view?id=132
 1) occ maintenance:mode --on  将nextcloud进入维护模式  
 2) 从nextcloud所在数据库删除锁记录 ```DELETE FROM oc_file_locks WHERE 1```  
 3) occ maintenance:mode --off 退出维护模式  
+
+
+<h3 id="12">误报存储满的问题</h3>
+
+https://www.coder17.com/posts/nextcloud-storage-full/
+
+帖子原文
+
+> 在 Nextcloud 数据目录下 mount 其他位置的存储时，会误报存储已满。
+
+> 问题原因在于统计文件大小时会将外部存储和被共享文件全部计入，而统计总容量时不计算外部存储和 mount 的其他位置。
+
+找到 nextcloud 的 config/config.php,
+
+默认位置是:  
+/var/www/html/config/config.php
+
+
+添加的参数
+
+```
+  'quota_include_external_storage' => true,
+```
+
+片段示例
+
+```
+  'installed' => true,
+  'defaultapp' => 'files',
+  'loglevel' => 0,
+  'maintenance' => false,
+  'quota_include_external_storage' => true,
+```
+
+帖子原文
+
+> 设置后当前用户不再提示存储满，但如果此用户分享文件给其他用户，则被分享用户访问时仍会提醒文件 owner 的存储满。
+
+> 此外，即使 UI 上不提示，但 Nextcloud 内部的判定依然是存储满，因此 File Versioning 会因为空间不足而不工作，目前没有找到解决方法。因此不推荐层叠 mount 方式存储。
