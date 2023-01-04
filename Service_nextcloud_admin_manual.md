@@ -126,9 +126,9 @@ https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/rever
 https://ld246.com/article/1631157051782  
 
 以下场景限定:
-1) nextcloud 自身没有启用 https 功能
-2) nextcloud 前端有一个nginx 的反向代理, 使用证书启用https (其他web服务器原理也相同)
-3) web页面访问nextcloud 服务正常, 但PC端会提示"尽管登录url以https开头,但轮询url中没有"
+1) nextcloud 自身没有启用 https 功能  
+2) nextcloud 前端有一个nginx 的反向代理, 使用证书启用https (其他web服务器原理也相同)  
+3) web页面访问nextcloud 服务正常, 但PC端会提示"尽管登录url以https开头,但轮询url中没有"  
 
 之所以web页面能正常访问,因为之前 config.php 有配置
 
