@@ -606,6 +606,12 @@ Subsystem 是说 ssh 的子模块 这里启用的即为 sftp 模块，我们使�
 
 ![](/images/b6be90b3gy1gj2w73meosj20yc08tdfy.jpg)
 
+扩展: 其他特殊字符在 /etc/fstab 的处理
+
+在 ASCII 对照表中查找到对应字符  
+ASCII 对照表中使用的是十进制, 写入 /etc/fstab 的是八进制  
+空格在 ASCII 对照表中是 32, 转换成八进制之后是 \040  
+以此类推
 
 #### wget下载目录
 
