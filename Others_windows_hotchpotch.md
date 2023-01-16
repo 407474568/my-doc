@@ -1,6 +1,7 @@
 * [目录](#0)
   * [IPSec实现防火墙功能](#1)
   * [注册Windows服务项](#2)
+  * [mstsc 指定显示器](#3)
 
 
 
@@ -85,3 +86,27 @@ nssm.exe stop %serviceName%
 nssm.exe remove %serviceName%
 pause
 ```
+
+<h3 id="3">mstsc 指定显示器</h3>
+
+https://www.cnblogs.com/wuhailong/p/16420263.html
+
+从 mstsc 编辑会话框上另存出一个会话来, ```.rdp``` 的文件
+
+![](images/FyG1lejZrq8CONtLkYfHdyuXFmTA5gjR.png)
+
+用文本编辑器编辑该rdp文件
+
+增加一个语句行
+
+```
+# 表示第1,2个显示器
+selectedmonitors:s:1,2
+
+# 表示第1个显示器
+selectedmonitors:s:1
+```
+
+以此类推
+
+![](images/FyG1lejZrqxUhPJAM2oeIOQlZWG5FmYb.png)
