@@ -1,4 +1,13 @@
-#### 逻辑判断
+* 目录
+    * [逻辑判断](#1) 
+    * [变量赋值](#2)  
+    * [if语句中执行多条命令](#3)  
+    * [cmd输出空行与后台执行](#4)  
+    * [cmd计算时间差](#5)  
+    * [输出时间格式](#6)  
+
+
+<h4 id="1">逻辑判断</h4>
 
 if 语句里的换行
 
@@ -53,7 +62,8 @@ if 条件表达式 (语句1) else (语句2)
 
 if语句还有一个精简格式：if 条件表达式 语句，它的含义是：如果条件表达式成立，将执行语句，否则，什么也不做
 
-#### 变量赋值
+<h4 id="2">变量赋值</h4>
+
 http://blog.csdn.net/wuqinfei_cs/article/details/9331869
 
 参看set /?的帮助即可
@@ -66,12 +76,15 @@ http://blog.csdn.net/wuqinfei_cs/article/details/9331869
 /A 命令行开关指定等号右边的字符串为被评估的数字表达式。  
 /P 命令行开关允许将变量数值设成用户输入的一行输入。读取输入行之前，显示指定的 promptString。promptString 可以是空的。 
 
-#### if语句中执行多条命令
+<h4 id="3">if语句中执行多条命令</h4>
+
 在if语句的那一行后打左括号，后面换行来分割多条命令
 
 ![](images/rHe7cNI3lddgwPGKTISOrVM5usvebWDC.png)
 
-#### cmd输出空行与后台执行
+
+<h4 id="4">cmd输出空行与后台执行</h4>
+
 后台执行  
 start /b  
 采用此方式，cmd窗口可继续执行其他命令，同时有回显的会显示出来，但cmd窗口关闭后，程序会终止
@@ -79,6 +92,7 @@ start /b
 echo输出空行  
 http://www.jb51.net/article/30987.htm  
 用echo输出空行至少有十种方法：  
+
 ```
 echo= 
 echo, 
@@ -94,9 +108,12 @@ echo.
 echo\ 
 pause 
 ```
+
 这十种方法可以分为三组，每组的效率依次递减
 
-#### cmd计算时间差
+
+<h4 id="5">cmd计算时间差</h4>
+
 http://conducer.blog.51cto.com/841262/1377650
 
 ```
@@ -127,4 +144,17 @@ set /a s=%ts%%%60
 echo 耗时%h%小时%m%分%s%秒
 pause >nul
 exit 
+```
+
+<h4 id="6">输出时间格式</h4>
+
+```
+取年份： echo %date:~0,4% 
+取月份： echo %date:~5,2% 
+取日期： echo %date:~8,2% 
+取星期： echo %date:~10,6% 
+取小时： echo %time:~0,2% 
+取分钟： echo %time:~3,2% 
+取秒  ： echo %time:~6,2% 
+取毫秒： echo %time:~9,2%
 ```

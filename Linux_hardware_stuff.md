@@ -4,6 +4,7 @@
   * [smartctl 里的 Background scan](#3)
   * [by-id 查找与盘符的对应关系](#4)
   * [查看 PCI-E 设备工作的版本与通道数](#5)
+  * [盘符上限问题](#6)
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
@@ -255,3 +256,16 @@ https://communities.vmware.com/t5/ESXi-Discussions/What-is-the-ESXi-command-to-o
 ```
 
 其中 ```Slot Description``` 是可以帮助确认的描述信息, 它读取了主板(motherboard)上的标识信息
+
+
+<h3 id="6">盘符上限问题</h3>  
+
+有关盘符上限问题  
+
+https://access.redhat.com/solutions/70913
+
+阅读全文需要红帽订阅权限的帐号
+
+离线版本
+
+<a href="files/What is the theoretical maximum number.pdf" target="_blank">附件</a>
