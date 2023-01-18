@@ -22,7 +22,7 @@ https://www.cnblogs.com/RXDXB/p/12605529.html
 vcpus超过物理cpu cores  
 虚机所在的宿主机的CPU太忙或磁盘IO太高  
 虚机的的CPU太忙或磁盘IO太高  
-VM网卡驱动存在bug，处理高水位流量时存在bug导致CPU死锁
+VM网卡驱动存在bug，处理高水位流量时存在bug导致CPU死锁  
 
 虚拟机建议先从宿主机的负载检查起
 
