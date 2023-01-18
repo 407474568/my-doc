@@ -4,6 +4,7 @@
 
 
 <h3 id="1">控制台上出现错误消息：NMI watchdog BUG soft lockup - CPU stuck for XXs</h3>
+
 红帽和SuSE的文档  
 https://access.redhat.com/solutions/1503333  
 https://www.suse.com/support/kb/doc/?id=000018705  
