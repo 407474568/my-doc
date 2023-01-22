@@ -75,11 +75,15 @@ https://hub.docker.com/search?q=
 sudo vim /etc/docker/daemon.json
 ```
 
+示例1
+
 ```
 {
   "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn"]
 }
 ```
+
+示例2
 
 ```
 {
