@@ -7,9 +7,9 @@
   * [docker 的几种网络模式](#6)
 
 
-<h3 id="2">环境安装</h3>
+<h3 id="1">环境安装</h3>
 
-docker-ce 在 centos 7 的安装  
+#### docker-ce 在 centos 7 的安装  
 https://docs.docker.com/engine/install/centos/  
 
 移除可能存在的旧版  
@@ -36,6 +36,23 @@ yum-config-manager \
 yum -y install docker-ce docker-ce-cli containerd.io
 ```
 
+
+#### 在 RHEL 8 上的安装
+
+https://help.hcltechsw.com/bigfix/10.0/mcm/MCM/Install/install_docker_ce_docker_compose_on_rhel_8.html
+
+https://www.linuxtechi.com/install-docker-ce-centos-8-rhel-8/
+
+以上两篇帖子覆盖了所需的必要内容  
+在 RHEL 8 上使用 yum源安装之所以会出现一些冲突提示, 根源还是红帽是在力推自己的podman, 因为预装的包就与docker所使用的```container-io```有了冲突
+
+以下是我安装成功的示例
+
+```
+wget -c https://download.docker.com/linux/centos/8/x86_64/stable/Packages/containerd.io-1.6.9-3.1.el8.x86_64.rpm
+yum -y install ./containerd.io-1.6.9-3.1.el8.x86_64.rpm --allowerasing
+dnf install --nobest docker-ce
+```
 
 <h3 id="2">改国内镜像</h3>
 
