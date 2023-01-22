@@ -34,17 +34,14 @@ http://linux.51yip.com/search/targetcli
 
 https://developer.aliyun.com/article/47365
 
-红帽系上的软件包名称:   
+红帽系上的软件包名称: ```iscsi-initiator-utils```
 
-```iscsi-initiator-utils```
-
-通过 yum 安装可能会附带的安装  
-
-```iscsi-initiator-utils-devel```
+通过 yum 安装可能会附带的安装 ```iscsi-initiator-utils-devel```  
 
 initiator名称用来唯一标识一个iSCSI Initiator端。保存此名称的配置文件为
 
 ```/etc/iscsi/initiatorname.iscsi```
+
 
 ```
 # vi /etc/iscsi/initiatorname.iscsi
