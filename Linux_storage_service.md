@@ -14,7 +14,12 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/ma
 #### targetcli 命令
 
 在 targetcli 中分为2个部分  
-一个是"后端存储"(backstore) , 类型有 block(直接使用块存储存放数据), fileio(使用文件存放数据), pscsi(直接使用SCSI盘存放数据), ramdisk(使用内存作块存储设备存放数据)  
+一个是"后端存储"(backstore) , 类型有  
+- block(直接使用块存储存放数据)  
+- fileio(使用文件存放数据)  
+- pscsi(直接使用SCSI盘存放数据)  
+- ramdisk(使用内存作块存储设备存放数据)  
+
 一个是"iscsi", 是对外提供服务的部分. 其中包括ACL规则等
 
 
@@ -30,12 +35,15 @@ http://linux.51yip.com/search/targetcli
 https://developer.aliyun.com/article/47365
 
 红帽系上的软件包名称:   
+
 ```iscsi-initiator-utils```
 
 通过 yum 安装可能会附带的安装  
+
 ```iscsi-initiator-utils-devel```
 
-initiator名称用来唯一标识一个iSCSI Initiator端。保存此名称的配置文件为  
+initiator名称用来唯一标识一个iSCSI Initiator端。保存此名称的配置文件为
+
 ```/etc/iscsi/initiatorname.iscsi```
 
 ```
