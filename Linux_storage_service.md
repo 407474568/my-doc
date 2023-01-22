@@ -38,9 +38,7 @@ https://developer.aliyun.com/article/47365
 
 通过 yum 安装可能会附带的安装 ```iscsi-initiator-utils-devel```  
 
-initiator名称用来唯一标识一个iSCSI Initiator端。保存此名称的配置文件为
-
-```/etc/iscsi/initiatorname.iscsi```
+initiator名称用来唯一标识一个iSCSI Initiator端。保存此名称的配置文件为 ```/etc/iscsi/initiatorname.iscsi```
 
 
 ```
