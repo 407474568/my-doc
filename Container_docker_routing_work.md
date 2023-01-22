@@ -81,6 +81,16 @@ sudo vim /etc/docker/daemon.json
 }
 ```
 
+```
+{
+  "registry-mirrors": [
+    "https://hub-mirror.c.163.com",
+    "https://registry.docker-cn.com",
+    "https://mirror.baidubce.com"
+  ]
+}
+```
+
 使配置文件生效  
 
 ```
