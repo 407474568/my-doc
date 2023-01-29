@@ -6,7 +6,7 @@
   * [创建NAT类型网桥](#5)
   * [KVM虚拟机控制台连接的方式](#6)
   * [KVM克隆虚拟机](#7)
-  * [qemu-img 的转换与回收空间](#8)
+  * [qemu-img 的几个相关用法](#8)
   * [光驱相关](#9)
   * [virtio 模式下安装Windows操作系统](#10)
   
@@ -615,7 +615,9 @@ virt-clone \
 但既然都要编辑xml文件,还不如用方法1
 
 
-<h3 id="8">qemu-img 的转换与回收空间</h3>
+<h3 id="8">qemu-img 的几个相关用法</h3>
+
+#### 转换与回收空间
 
 虚拟化都存在虚拟机磁盘文件膨胀后未能自动回收情况, 原理分析网上足够多, 主要是trim 指令是否支持以及文件系统决定.  
 
@@ -633,6 +635,30 @@ qemu-img convert -c -O <格式> <源文件> <输出文件>
 qemu-img convert -c -O qcow2 /vm/games_pt_03.qcow2 vm/games_pt_03_new.qcow2
 ```
 
+#### 创建磁盘
+
+https://www.cnblogs.com/weihua2020/p/13718916.html
+
+英文原文在```man qemu-img``` 有
+
+不过man手册没解释的细节
+
+> 其中的 preallocation解释如下：  
+off模式：缺省预分配策略，即不使用预分配策略  
+metadata模式：分配qcow2的元数据(metadata)，预分配后的虚拟磁盘仍然属于稀疏映像类型(allocates qcow2 metadata, and it's still a sparse image.)  
+full模式：分配所有磁盘空间并置零，预分配后的虚拟磁盘属于非稀疏映像类型(allocates zeroes and makes a non-sparse image)  
+falloc模式：使用posix_fallocate()函数分配文件的块并标示它们的状态为未初始化，相对full模式来说，创建虚拟磁盘的速度要快很多(which uses posix_fallocate() to "allocate blocks and marking them as uninitialized", and is relatively faster than writing out zeroes to a file)
+
+一般性而言, 最实用的分配方式是 ```preallocation=falloc``` 或 ```preallocation=metedata```
+
+```
+[root@X9DR3-F pm983]# qemu-img create -f qcow2 -o preallocation=falloc /vm/pm983/chia-miner-02-data01.qcow2 300G
+Formatting '/vm/pm983/chia-miner-02-data01.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off preallocation=falloc compression_type=zlib size=322122547200 lazy_refcounts=off refcount_bits=16
+```
+
+原因是```falloc``` 和 ```metadata``` 都要分配元数据,  
+并且metadata方式在磁盘容量增长时有更快的响应速度--这是man里的原文  
+```full``` 由于在分配时置0, 它更适用于的场景是类似于公有云租用模式, 避免读取到前一个租户的磁盘数据.
 
 <h3 id="9">光驱相关</h3>  
 
