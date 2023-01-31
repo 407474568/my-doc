@@ -373,7 +373,48 @@ Already up to date.
 
 <h3 id="6">删除了文件, 并且还commit的情况下的恢复</h3>
 
-待补充
+几个示例  
+https://cloud.tencent.com/developer/article/1355227  
+https://blog.csdn.net/logan_LG/article/details/81531796  
+https://blog.51cto.com/u_15069479/4126022  
+
+删除, 且commit了的操作, 实际上git依然有迹可循.  
+类似于oracle flashback 闪回技术, 在git里提交了的删除, 文件虽被移除, 但其历史记录与历史版本依然在commit history内  
+
+恢复的核心关键在于找到合适的 commit id, 并恢复到该commit事件之前的状态.
+
+恢复到指定commit id 之前的操作  
+```git reset --hard <commit id>```
+
+只筛选删除操作的方法, 适用于你也并不知道什么时候执行的删除的情况  
+```git log --diff-filter=D --summary```
+
+当你明确知道你删除的文件名时, 可使用  
+```git log --all --full-history -- <path-to-file>```
+
+另外几个  
+```
+# see the changes of a file, works even 
+# if the file was deleted
+git log -- [file_path]
+
+# limit the output of Git log to the 
+# last commit, i.e. the commit which delete the file
+# -1 to see only the last commit
+# use 2 to see the last 2 commits etc
+git log -1 -- [file_path]
+
+# include stat parameter to see
+# some statics, e.g., how many files were 
+# deleted
+git log -1 --stat -- [file_path] 
+```
+
+当删除的文件名也不明确时--暂不确定是否有模糊匹配的方式
+
+git 的head 操作的历史记录  
+```git reflog```
+
 
 <h3 id="7">换行符的自动处理</h3>
 
