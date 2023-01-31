@@ -392,6 +392,11 @@ https://blog.51cto.com/u_15069479/4126022
 当你明确知道你删除的文件名时, 可使用  
 ```git log --all --full-history -- <path-to-file>```
 
+恢复指定文件的操作  
+```git checkout <commit id>~1 filename```
+
+![](images/j4eBdInxDGuyL2hedDWPz73iQGTwg9OZ.png)
+
 另外几个  
 ```
 # see the changes of a file, works even 
