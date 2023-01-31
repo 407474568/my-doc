@@ -114,7 +114,8 @@ C:\WINDOWS\SysWOW64\instsrv.exe <自定义的服务名称> C:\WINDOWS\SysWOW64\s
 C:\WINDOWS\SysWOW64\instsrv.exe <自定义的服务名称> remove
 ```
 
-其后在注册表的服务项下添加 ```parameters```, 其位置位于  
+其后在注册表的服务项下添加 ```parameters```, 其位置位于 
+
 ```HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services```
 
 
