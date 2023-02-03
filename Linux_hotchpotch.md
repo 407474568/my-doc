@@ -1,5 +1,6 @@
 * [目录](#0)
   * [ASCII对照表](#1)
+  * [进程的运行时间](#2)
 
 <h3 id="1">ASCII对照表</h3>  
 
@@ -54,6 +55,62 @@
 | HT 横向列表 | DC4 设备控制4 | US 单元分隔符 |
 | LF 换行 | NAK 否定 | DEL 删除 |
 
+
+<h3 id="2">进程的运行时间</h3>  
+
+https://blog.csdn.net/wudiyi815/article/details/8438983
+
+```
+pid=$1
+JIFFIES=$(cut -d" " -f22 /proc/"$pid"/stat)
+UPTIME=$(grep btime /proc/stat | cut -d" " -f2)
+START_SEC=$((UPTIME + JIFFIES / 100))
+current_timestamp=$(date '+%s')
+running_time=$((current_timestamp-START_SEC))
+```
+
+通过对 ```/proc/<pid>/stat``` 内的信息进行计算  
+jiffies 是 Linux 内核对定时器的取值定义(Technically jiffy in computer parlance is the duration of 1 tick of the system timer interrupt), 其值随内核版本和CPU架构是可变的.
+
+https://www.linkedin.com/pulse/linux-kernel-system-timer-jiffies-mohamed-yasser
+
+https://man7.org/linux/man-pages/man7/time.7.html
+
+```
+   The software clock, HZ, and jiffies
+       The accuracy of various system calls that set timeouts, (e.g.,
+       select(2), sigtimedwait(2)) and measure CPU time (e.g.,
+       getrusage(2)) is limited by the resolution of the software clock,
+       a clock maintained by the kernel which measures time in jiffies.
+       The size of a jiffy is determined by the value of the kernel
+       constant HZ.
+
+       The value of HZ varies across kernel versions and hardware
+       platforms.  On i386 the situation is as follows: on kernels up to
+       and including 2.4.x, HZ was 100, giving a jiffy value of 0.01
+       seconds; starting with 2.6.0, HZ was raised to 1000, giving a
+       jiffy of 0.001 seconds.  Since kernel 2.6.13, the HZ value is a
+       kernel configuration parameter and can be 100, 250 (the default)
+       or 1000, yielding a jiffies value of, respectively, 0.01, 0.004,
+       or 0.001 seconds.  Since kernel 2.6.20, a further frequency is
+       available: 300, a number that divides evenly for the common video
+       frame rates (PAL, 25 HZ; NTSC, 30 HZ).
+
+       The times(2) system call is a special case.  It reports times
+       with a granularity defined by the kernel constant USER_HZ.  User-
+       space applications can determine the value of this constant using
+       sysconf(_SC_CLK_TCK).
+```
+
+这篇帖子也有一些有价值的讨论
+
+https://superuser.com/questions/88820/how-to-obtain-the-current-number-of-jiffies-since-reboot-in-linux
+
+获取系统当前 jiffies 的值  
+```getconf CLK_TCK```
+
+https://unix.stackexchange.com/questions/240541/what-is-a-resolution-of-jiffie-in-linux-kernel  
+https://stackoverflow.com/questions/73952719/how-to-use-jiffies-in-linux
 
 #### wget 递归下载
 
