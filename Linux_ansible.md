@@ -14,6 +14,7 @@ https://micorochio.github.io/2017/05/31/ansible-learning-01/
   * [playbook 加速执行的几个技巧](#6)
   * [为playbook 增加一个显示执行时间的插件](#7)
   * [ansible配置文件ansible.cfg参数含义](#8)
+  * [有关 playbook 里的 handler](#9)
 
 <h3 id="1">免密连接受控端</h3>
 
@@ -292,7 +293,7 @@ ssh_args = -o ControlMaster=auto -o ControlPersist=60s
 scp_if_ssh=False
 ```
 
-<h3 id="9">有关 playbook 里的 handler </h3>
+<h3 id="9">有关 playbook 里的 handler</h3>
 
 https://blog.csdn.net/qq_25599925/article/details/122170883
 
