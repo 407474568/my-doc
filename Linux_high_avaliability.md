@@ -21,6 +21,14 @@ https://blog.51cto.com/beyondhdf/1331874
 https://blog.csdn.net/u012852986/article/details/52386306  
 https://blog.csdn.net/u012852986/article/details/52412174  
 
+#### DR模式 和 NAT模式的对比
+
+| 类型 | 优势 | 劣势                             |
+| ---- |----|--------------------------------|
+| DR | 不需要后端(backend)将自己的网关指向LVS节点 | 端口需要与VIP的端口保持一致                |
+| NAT | 端口无需与VIP端口保持一致 | 需要将自己的网关指向LVS节点<br>性能瓶颈在LVS节点上 | 
+
+
 有关LVS的4种模式---NAT, DR, tunnel 加上后出现的Full-NAT: 
 - NAT适用于有端口转换(映射)需求的场景,NAT模式下的Director 成为real_server的网关,real_server将自己的gateway指向Director , 同时流入的请求包与从real_server应答包都由NAT模式的Director 进出.
 - DR模式只处理流入的请求包,real_server应答包直接返回给来源.不可转换端口.Director 和 real_server需要在同一vlan下,且不可由一台机器同时扮演Director 和 real_server
@@ -30,10 +38,13 @@ https://blog.csdn.net/u012852986/article/details/52412174
 
 加权最少连接优先wlc是默认算法,其余算法介绍已足够详细
 
+#### 参数命令
+
 ipvsadm是LVS配置管理工具  
 ipvsadm -ln 列出当前工作的条目  
 ipvsadm -C 清除当前配置  
 ipvsadm -S 用于列出当前配置,其内容可以重定向写入文件中,用于ipvsadm启动时的恢复设置所用  
+其他参数在透彻理解原理的基础上参考 ```ipvsadm --help``` 即可
 
 
 #### 单实例的LVS负载均衡
