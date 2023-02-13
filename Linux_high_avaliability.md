@@ -81,6 +81,19 @@ VIP=192.168.1.40
 ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up
 ```
 
+#### NAT模式
+
+https://blog.csdn.net/liupeifeng3514/article/details/79038553
+https://cloud.tencent.com/developer/article/1328828
+https://blog.51cto.com/keep11/2650751
+
+记一个不成功的尝试  
+网上多篇文章都指向一个共同的特点: LVS节点上有内网和外网两个地址, 外网地址被用当作VIP  
+RealServer 把自己的网关指向的是LVS节点的内网地址.  
+而在我自己的环境中正巧没有这样场景, 我的LVS节点的RIP和VIP都是同一个网段的地址.  
+目前还未确认是否这一原因就是不成功的根源.  
+但原理上应当就是如此, NAT 模式下的LVS就是要承当一个路由器全部职责, 所以负载压力也全部集中于它身上.
+
 <h3 id="2">keepalived</h3>
 
 官网和手册( 实际上也就是man里的内容,比较欠缺实例结合 )  
