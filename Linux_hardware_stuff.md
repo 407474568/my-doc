@@ -5,6 +5,7 @@
   * [by-id 查找与盘符的对应关系](#4)
   * [查看 PCI-E 设备工作的版本与通道数](#5)
   * [盘符上限问题](#6)
+  * [移动设备挂载与Winodws分区表错误修复](#6)
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
@@ -269,3 +270,111 @@ https://access.redhat.com/solutions/70913
 离线版本
 
 <a href="files/What is the theoretical maximum number.pdf" target="_blank">附件</a>
+
+
+<h3 id="7">移动设备挂载与Winodws分区表错误修复</h3>  
+
+在Linux上挂载 NTFS格式的移动硬盘, 即使是GPT格式的分区表, 使用的软件包是 ```ntfs-3g``` 这个是正确无误的
+
+可能会遇到的错误情况, parted命令提示如下:
+
+```
+Error: The primary GPT table is corrupt, but the backup appears OK, so that will
+be used.
+OK/Cancel?                                                                
+OK/Cancel? ok                                                             
+Model: External USB 3.0 (scsi)
+Disk /dev/sdb: 4001GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start   End     Size    File system  Name                  Flags
+ 1      1049kB  4001GB  4001GB  ntfs         Basic data partition  msftdata
+```
+
+挂载出现:
+
+```
+[root@5950X-node1 ~]# mount /dev/sdb /mnt/usb-disk -t ntfs-3g
+NTFS signature is missing.
+Failed to mount '/dev/sdb': Invalid argument
+The device '/dev/sdb' doesn't seem to have a valid NTFS.
+Maybe the wrong device is used? Or the whole disk instead of a
+partition (e.g. /dev/sda, not /dev/sda1)? Or the other way around?
+```
+
+不过既然 ```parted``` 命令有提示 GPT 主分区表损坏, 备份分区表可用, 那么大概率可以修复
+
+修复过程:
+
+https://blog.csdn.net/isinstance/article/details/78966829
+
+```
+gdisk <设备, 如: /dev/sdb>
+```
+
+完整过程:
+
+```
+[root@5950X-node1 ~]# gdisk /dev/sdb
+GPT fdisk (gdisk) version 1.0.3
+
+Caution! After loading partitions, the CRC doesn't check out!
+Warning! Main partition table CRC mismatch! Loaded backup partition table
+instead of main partition table!
+
+Warning! One or more CRCs don't match. You should repair the disk!
+
+Partition table scan:
+  MBR: protective
+  BSD: not present
+  APM: not present
+  GPT: damaged
+
+****************************************************************************
+Caution: Found protective or hybrid MBR and corrupt GPT. Using GPT, but disk
+verification and recovery are STRONGLY recommended.
+****************************************************************************
+
+Command (? for help): r
+
+Recovery/transformation command (? for help): ?
+b	use backup GPT header (rebuilding main)
+c	load backup partition table from disk (rebuilding main)
+d	use main GPT header (rebuilding backup)
+e	load main partition table from disk (rebuilding backup)
+f	load MBR and build fresh GPT from it
+g	convert GPT into MBR and exit
+h	make hybrid MBR
+i	show detailed information on a partition
+l	load partition data from a backup file
+m	return to main menu
+o	print protective MBR data
+p	print the partition table
+q	quit without saving changes
+t	transform BSD disklabel partition
+v	verify disk
+w	write table to disk and exit
+x	extra functionality (experts only)
+?	print this menu
+
+Recovery/transformation command (? for help): b
+
+Recovery/transformation command (? for help): w
+
+Final checks complete. About to write GPT data. THIS WILL OVERWRITE EXISTING
+PARTITIONS!!
+
+Do you want to proceed? (Y/N): y
+OK; writing new GUID partition table (GPT) to /dev/sdb.
+The operation has completed successfully.
+```
+
+第一个交互问题, 按 r 即 recovery, 修复
+第二个交互问题, 按 ? 显示帮助菜单
+在本例中, 选择 b 使用备份分区表头, 重建主分区表
+执行后无输出
+第四个交互问题, 按 w 将操作写入磁盘并退出
+
+此时, parted 命令不再有错误提示, 挂载亦恢复正常.
