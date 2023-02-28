@@ -371,10 +371,10 @@ OK; writing new GUID partition table (GPT) to /dev/sdb.
 The operation has completed successfully.
 ```
 
-第一个交互问题, 按 r 即 recovery, 修复
-第二个交互问题, 按 ? 显示帮助菜单
-在本例中, 选择 b 使用备份分区表头, 重建主分区表
-执行后无输出
+第一个交互问题, 按 r 即 recovery, 修复  
+第二个交互问题, 按 ? 显示帮助菜单  
+在本例中, 选择 b 使用备份分区表头, 重建主分区表  
+执行后无输出  
 第四个交互问题, 按 w 将操作写入磁盘并退出
 
 此时, parted 命令不再有错误提示, 挂载亦恢复正常.
