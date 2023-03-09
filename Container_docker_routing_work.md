@@ -5,6 +5,7 @@
   * [卷挂载的几种选择](#4)
   * [修改默认网段](#5)
   * [docker 的几种网络模式](#6)
+  * [docker 的 save 与 export 以及 load 和 import 的区别](#7)
 
 
 <h3 id="1">环境安装</h3>
@@ -251,3 +252,14 @@ bridge模式
 其他容器（container）模式
 
 ![](/images/2121520-20210209101500011-79014329.png)
+
+
+<h3 id="7">docker save 与 export 区别</h3>
+
+https://jingsam.github.io/2017/08/26/docker-save-and-docker-export.html
+
+引用原作者的总结:
+
+> docker save保存的是镜像（image），docker export保存的是容器（container）；  
+docker load用来载入镜像包，docker import用来载入容器包，但两者都会恢复为镜像；  
+docker load不能对载入的镜像重命名，而docker import可以为镜像指定新名称。

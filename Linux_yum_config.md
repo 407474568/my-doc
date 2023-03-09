@@ -1,3 +1,17 @@
+#### 离线源的新增补充
+
+在 rhel 8 的环境上, createrepo可能会遇到新的错误类型  
+
+```
+Error: No available modular metadata for modular package
+```
+
+https://www.codeleading.com/article/28455311531/
+
+猜测是由于新的 ```dnf``` 对 ```yum``` 的替代引起的变化.  
+解决办法就是帖子中的使用第三方工具生成新的 metadata 数据
+
+
 #### yum里的变量
 在yum里的URL一项取值会见到  
 $releasever  
