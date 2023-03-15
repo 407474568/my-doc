@@ -69,7 +69,9 @@ http://mirrors.coreix.net/elrepo-archive-archive/kernel/el9/x86_64/RPMS/
 
 引用其原文
 
->首先从如下链接选择内核版本 http://mirrors.coreix.net/elrepo-archive-archive/kernel/el7/x86_64/RPMS/，然后通过rpm -ivh xx进行安装。
+>首先从如下链接选择内核版本  
+> http://mirrors.coreix.net/elrepo-archive-archive/kernel/el7/x86_64/RPMS/  
+> 然后通过rpm -ivh xx进行安装。
 
 >下面通过我需要的kernel-lt-4.4.249-1.el7.elrepo.x86_64来举例
 
