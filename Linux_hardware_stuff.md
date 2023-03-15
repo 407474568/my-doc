@@ -270,8 +270,10 @@ https://access.redhat.com/solutions/70913
 
 离线版本
 
-简而言之就是
+<a href="files/What is the theoretical maximum number.pdf" target="_blank">附件</a>
 
+
+简而言之就是
 
 > 盘符总共可用3位字母  
 1） sda ~ sdz : 26  
@@ -294,7 +296,6 @@ RHEL7: default limit is 16,383
 > QLogic controllers support a maximum of 65,535 LUNs. The default is set to 65,535  
 > see current limit: cat /sys/module/qla2xxx/parameters/ql2xmaxlun
 
-<a href="files/What is the theoretical maximum number.pdf" target="_blank">附件</a>
 
 
 <h3 id="7">移动设备挂载与Winodws分区表错误修复</h3>  
