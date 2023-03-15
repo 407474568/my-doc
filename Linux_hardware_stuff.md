@@ -6,6 +6,7 @@
   * [查看 PCI-E 设备工作的版本与通道数](#5)
   * [盘符上限问题](#6)
   * [移动设备挂载与Winodws分区表错误修复](#6)
+  * [固化网卡命名](#7)
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
@@ -378,3 +379,29 @@ The operation has completed successfully.
 第四个交互问题, 按 w 将操作写入磁盘并退出
 
 此时, parted 命令不再有错误提示, 挂载亦恢复正常.
+
+
+<h3 id="7">固化网卡命名</h3>  
+
+对红帽7以后的 udev 命名规则的解读  
+https://www.aikaiyuan.com/12535.html
+
+验证可行的操作步骤  
+https://tinychen.com/20201024-centos8-modify-eth-name/
+
+与早年间Oracle场景下的配置人员偏好于指定成想指定的网络接口命名略有区别.  
+对于系统管理员来说, ifname 如果经常变化非常头疼, 因为在 nmcli 里是要指定 ifname 的.  
+ifname 一旦变化, 就导致原本的IP配置失效, 网络不通.  
+
+固化的原则也不同于早年Oracle基于其他设备编号, 我在这里使用网卡MAC地址作为锚定条件, 因为MAC地址写在网卡固件里, 不容易变化.  
+即可达到我希望 ifname 不要因为主板上的PCIE通道号等可能变化的情况下也跟随变化.  
+
+示例也很简单:
+
+```
+# 修改下面的这个配置文件，如果没有就新建一个，然后写入对应的mac地址和网卡名字，最后重启机器即可
+[root@tiny-dpvs ~]# cat /etc/udev/rules.d/70-persistent-net.rules
+SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="11:22:33:44:55:66", NAME="eth0"
+SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="11:22:33:44:55:77", NAME="eth1"
+SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="11:22:33:44:55:88", NAME="eth2"
+```
