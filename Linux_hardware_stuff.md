@@ -270,6 +270,30 @@ https://access.redhat.com/solutions/70913
 
 离线版本
 
+简而言之就是
+
+
+> 盘符总共可用3位字母  
+1） sda ~ sdz : 26  
+2） sdaa ~ sdzz : 26x26=676  
+3） sdaaa ~ sdzzz: 26x26x26=17576  
+4） total=26+26x26+26x26x26=18278
+
+> 来自 SCSI 的"本地盘"  
+> 
+> RHEL6: default limit is 511  
+RHEL7: default limit is 16,383  
+查看当前限制: cat /sys/module/scsi_mod/parameters/max_report_luns
+
+
+> 来自存储划分的 "LUN"  
+> 
+> Emulex controllers support a maximum of 65,535 LUNs. The default is set to 255.  
+> 查看当前限制: cat /sys/module/lpfc/parameters/lpfc_max_luns
+> 
+> QLogic controllers support a maximum of 65,535 LUNs. The default is set to 65,535  
+> see current limit: cat /sys/module/qla2xxx/parameters/ql2xmaxlun
+
 <a href="files/What is the theoretical maximum number.pdf" target="_blank">附件</a>
 
 
