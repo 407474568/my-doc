@@ -6,12 +6,117 @@
 
 参考资料
 
+非原始内核版本下的kdump服务无法运行,常规处理思路
+https://blog.csdn.net/realmardrid/article/details/123394122
+
+makedumpfile 编译安装的过程错误处理  
+https://www.jianshu.com/p/c52c21c25dac
 
 
-红帽文档: 
+红帽文档:  
 Why does kdump fails to start after updating to kexec-tools-2.0.20-34.el8.x86_64 with error makedumpfile parameter 
 check failed?  
 https://access.redhat.com/solutions/5608211
+
+常规处理思路  
+实际就是kernel的版本高了, 原本为其配套的 kexec-tools 并不适配, 需要自行手动编译一个.  
+编译过程中又各种出错  
+
+源码包涉及到两个:  
+1) kexec-tools  
+https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kexec/
+
+2) makedumpfile  
+https://sourceforge.net/projects/makedumpfile/files/
+
+
+#### 编译 makedumpfile 过程中的出错
+
+make 一开始就会遇到错误, 但在源码包目录下README解释得非常有帮助
+
+```
+* REQUIREMENTS
+  Please download the following library file and install it exactly as below;
+  do NOT use "make install".
+  - elfutils-0.144.tar.gz
+    The "make install" of elfutils installs some commands (ld, readelf, etc.),
+    and compiling problems sometimes happen due to using the installed
+    commands. To install only the library & header files, use the following
+    method:
+     # tar -zxvf elfutils-0.144.tar.gz
+     # cd elfutils-0.144
+     # ./configure
+     # make
+     #
+     # mkdir /usr/local/include/elfutils/
+     # cp ./libdw/libdw.h   /usr/local/include/elfutils/libdw.h
+     # cp ./libdw/dwarf.h   /usr/local/include/dwarf.h
+     # cp ./libelf/libelf.h /usr/local/include/libelf.h
+     # cp ./libelf/gelf.h   /usr/local/include/gelf.h
+     #
+     # cp ./libelf/libelf.a /usr/local/lib/libelf.a
+     # cp ./libdw/libdw.a   /usr/local/lib/libdw.a
+     # cp ./libasm/libasm.a /usr/local/lib/libasm.a
+     # cp ./libebl/libebl.a /usr/local/lib/libebl.a
+     #
+
+* BUILD & INSTALL
+  1.Get the latest makedumpfile from the following site:
+    https://sourceforge.net/projects/makedumpfile/
+  2.Uncompress the tar file:
+    # tar -zxvf makedumpfile-x.y.z.tar.gz
+  3.Enter the makedumpfile subdirectory:
+    # cd makedumpfile-x.y.z
+  4.Build, and install:
+    # make; make install
+  5.Build for a different architecture than the host :
+    # make TARGET=<arch> ; make install
+    where <arch> is the 'uname -m' of the target architecture. 
+    The user has to set the environment variable CC to appropriate
+    compiler for the target architecture.
+  6.Build with lzo support:
+    # make USELZO=on ; make install
+    The user has to prepare lzo library.
+  7.Build with snappy support:
+    # make USESNAPPY=on ; make install
+    The user has to prepare snappy library.
+  8.Build the extension module for --eppic option.
+    # make eppic_makedumpfile.so
+    The user has to prepare eppic library from the following site:
+    http://code.google.com/p/eppic/
+```
+
+错误:
+
+```
+makedumpfile.h:30:10: fatal error: zlib.h: No such file or directory
+ #include <zlib.h>
+          ^~~~~~~~
+compilation terminated.
+make: *** [Makefile:90: elf_info.o] Error 1
+```
+
+解决办法:
+
+```
+yum -y install zlib-devel
+```
+
+错误:
+
+```
+/usr/bin/ld: cannot find -lbz2
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:97: makedumpfile] Error 1
+```
+
+解决办法:
+
+```
+yum -y install bzip2-devel
+```
+
+#### kdump 服务启动的报错
 
 ```/usr/bin/kdumpctl```是脚本文件,通过加 -x 的调试方法来查看执行过程
 
