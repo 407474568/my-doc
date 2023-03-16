@@ -27,6 +27,7 @@
     * [时钟同步](Linux_clock_sync_chrony_and_ntpd_config.md)
     * [firewalld和iptables](Linux_firewalld_and_iptables.md)  
     * [内核编译安装](Linux_kernel_compile_install.md)  
+    * [kdump相关](Linux_kdump_related.md)  
     * [硬件相关](Linux_hardware_stuff.md)  
     * [磁盘管理](Linux_disk_management.md) 
     * [yum配置](Linux_yum_config.md) 
