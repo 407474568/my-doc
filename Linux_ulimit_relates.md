@@ -34,12 +34,42 @@ session required /lib/security/$ISA/pam_limits.so
 
 4) 最后,不要在其他文件写死了ulimit，比如:ulimit -n 65535
 
+
+#### 2023-03-17 增补
+
+红帽7 及以后或者说使用 systemctl 作为服务管理项的发行版  
+而该服务项/进程本身并非使用 systemctl 进行管理的对象  
+一个场景示例:  
+openssh 使用源码包openssh 编译升级后, 由于选择的是 openssh 源码包里提供的 旧版本(红帽6及以下)的服务管理方式(即 SysV), 因此它不受systemctl 服务项配置的值的影响.  
+
+基于此, 对systemd 下的 service 增加如```LimitNOFILE=xxx``` 的语句并不能使之得到预期的结果
+
+目前暂时有的替代解决办法如下:
+
+https://superuser.com/questions/1200539/cannot-increase-open-file-limit-past-4096-ubuntu
+
+```
+$ grep DefaultLimitNOFILE /etc/systemd/system.conf
+DefaultLimitNOFILE=65535
+
+
+or better here:
+
+
+$ grep NOFILE /etc/systemd/system.conf.d/limits.conf
+DefaultLimitNOFILE=65535
+```
+
+缺点:
+1) 修改对象就不再仅限于该服务, 而是系统上的全部服务项
+2) 需要重启操作系统才能生效
+
 #### 2021-11-06 增补  
 https://bbs.huaweicloud.com/blogs/108323  
 受systemd 管理的服务进程的配置方式  
-该场景仅针对被systemd管理的进程（也就是可以通过systemctl来控制的进程）生效.  
-可以通过修改该进程的service文件（通常在/etc/systemd/system/目录下）.  
-在“[Service]”下面添加“LimitNOFILE=20480000”来实现.  
+该场景仅针对被systemd管理的进程（也就是可以通过systemctl来控制的进程）生效.    
+可以通过修改该进程的service文件（通常在/etc/systemd/system/目录下）.   
+在“[Service]”下面添加“LimitNOFILE=20480000”来实现.   
 修改完成之后需要执行"systemctl daemon-reload"来使该配置生效。
 
 inotify达到上限  
