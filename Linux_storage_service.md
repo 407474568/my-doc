@@ -1,6 +1,7 @@
 * [目录](#0)
   * [iscsi 服务端](#1)
   * [iscsi 客户端](#2)
+  * [bcache 的使用](#3)
 
 
 <h3 id="1">iscsi 服务端</h3>
@@ -76,3 +77,56 @@ iscsiadm -m node -T iqn.2000-01.com.synology:themain-3rd.ittest -p 172.29.88.62 
 
 如果出现某些错误, 希望清理 initiator 的缓存信息, 可以删除以下目录
 ```/var/lib/iscsi/nodes/<server端名称的目录>```
+
+
+<h3 id="3">bcache 的使用</h3>
+
+#### 基本操作
+
+常用命令  
+https://cloud.tencent.com/developer/article/1987561
+
+```
+# 创建后端(backend)磁盘, 创建后的设备通常如: /dev/bcache0
+make-bcache -B <设备,如:/dev/sdc>
+
+
+# 创建缓存(cache)磁盘
+make-bcache -C <设备,如:/dev/sdc>
+
+
+# 将前后端的关联关系建立,字符串是cset.uuid
+echo "d0079bae-b749-468b-ad0c-6fedbbc742f4" >/sys/block/bcache0/bcache/attach 
+
+
+# 查看设备的bcache信息
+bcache-super-show <bcache格式化过的设备,如:/dev/sdc>
+
+
+# 一条命令的创建方法
+make-bcache -B <设备,如:/dev/sdc> -C <设备,如:/dev/sdc>
+
+
+# 如果原本该磁盘上有文件系统信息, 则需要 wipefs 来擦除
+wipefs -a <设备,如:/dev/sdc>
+
+
+# 如果原本该磁盘上有bcache信息, 则会有提示, 带参数可以直接擦除
+make-bcache -B <设备,如:/dev/sdc> -C <设备,如:/dev/sdc> --wipe-bcache
+
+
+# 脱离缓存状态, bcache会将脏数据落到后端盘再脱离关联关系,字符串是cset.uuid
+echo "d0079bae-b749-468b-ad0c-6fedbbc742f4" >/sys/block/bcache0/bcache/detach
+
+# 注销缓存盘, 即该盘不再是bcache格式化过的磁盘,字符串是cset.uuid
+echo 1>/sys/fs/bcache/d0079bae-b749-468b-ad0c-6fedbbc742f4/unregister 
+```
+
+#### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
+
+https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-devices-with-bcache
+
+由以上帖子讨论内容得出.  
+虽然其中有人提到开发者文档提到, 在未来的版本中, 会有多个cache可以以镜像mirror的形式组合以提升容错率, 但实际情况是 bcache
+已多年未更新过代码
+
