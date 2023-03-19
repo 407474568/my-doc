@@ -191,7 +191,27 @@ makedumpfile 编译安装错误:
 /usr/bin/ld: cannot find -lc
 ```
 
+解决办法:
 
+makedumpfile 里的 Makefile, 第55行的 ```-static``` 删掉, 使其从动态链接库寻找
+
+```
+     53 LIBS = -ldw -lbz2 -ldl -lelf -lz
+     54 ifneq ($(LINKTYPE), dynamic)
+     55 LIBS := -static $(LIBS)
+     56 endif
+     57 
+```
+
+改为:
+
+```
+     53 LIBS = -ldw -lbz2 -ldl -lelf -lz
+     54 ifneq ($(LINKTYPE), dynamic)
+     55 LIBS := $(LIBS)
+     56 endif
+     57 
+```
 
 #### kdump 服务启动的报错
 
