@@ -291,11 +291,12 @@ Mar 16 09:25:54 localhost.localdomain kdumpctl[2827]: kdump: Starting kdump: [OK
 Mar 16 09:25:54 localhost.localdomain systemd[1]: Started Crash recovery kernel arming.
 ```
 
-不过此时用  
+~~不过此时用~~  
 ```echo c > /proc/sysrq-trigger```  
-触发系统panic以后, 依然会kdump生成失败而转入 emergence 下的 shell.  
+~~触发系统panic以后, 依然会kdump生成失败而转入 emergence 下的 shell.~~  
 
-继而手动调试 makedumpfile 验证,发现
+~~继而手动调试 makedumpfile 验证,发现~~
+
 ```
 [root@localhost ~]# makedumpfile -c --message-level 7 -d 31 /boot/initramfs-5.4.236-1.el8.elrepo.x86_64.img 123
 check_elf_format: Can't get valid ehdr.
@@ -303,7 +304,9 @@ check_elf_format: Can't get valid ehdr.
 makedumpfile Failed.
 ```
 
-<red>此问题待解</red>
+此处有误, 即使正确能工作的kdump主机, 使用该 makedumpfile 命令加参数, 也出现同样的报错
+
+不能正确生成 kdump 文件, 因为
 
 
 <h3 id="2">配置crash工具集环境</h3>  
