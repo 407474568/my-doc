@@ -4,10 +4,18 @@
 
 <h3 id="1">非原始内核版本下的kdump服务</h3>  
 
-参考资料
+##### 参考资料
+
+以下示例在 ```Rocky Linux 8.7``` 发行版基础上完成. 
 
 非原始内核版本下的kdump服务无法运行,常规处理思路
-https://blog.csdn.net/realmardrid/article/details/123394122
+https://blog.csdn.net/realmardrid/article/details/123394122  
+需注意, 文章中提到的:
+>在kexec-tools-2.0.19/kexec/arch/i386/x86-linux-setup.c 添加下列宏，不然编译报错。  
+>#define VIDEO_CAPABILITY_64BIT_BASE (1 << 1) /* Frame buffer base is 64-bit */
+
+实测发现, 即使不定义这个宏, 也并未遇到报错
+
 
 makedumpfile 编译安装的过程错误处理  
 https://www.jianshu.com/p/c52c21c25dac
@@ -19,13 +27,13 @@ check failed?
 https://access.redhat.com/solutions/5608211
 
 常规处理思路  
-以下示例在 ```Rocky Linux 8.7``` 发行版基础上完成.  
 实际就是kernel的版本高了, 原本为其配套的 kexec-tools 并不适配, 需要自行手动编译一个.  
 编译过程中又各种出错  
 
 源码包涉及到两个:  
 1) kexec-tools  
 https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kexec/
+
 
 2) makedumpfile  
 https://sourceforge.net/projects/makedumpfile/files/
