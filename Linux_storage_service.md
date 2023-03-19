@@ -76,7 +76,10 @@ iscsiadm -m node -T iqn.2000-01.com.synology:themain-3rd.ittest -p 172.29.88.62 
 登录目标节点成功后，即建立了initiator与target之间的会话（session），同时target提供的存储设备也挂载到主机中，在/dev目录下生成一个新的设备文件类似于sdb、sdc等。使用iscsiadm -m session -P 3（与service iscsi status相同）来查看连接会话信息。
 
 如果出现某些错误, 希望清理 initiator 的缓存信息, 可以删除以下目录
-```/var/lib/iscsi/nodes/<server端名称的目录>```
+
+```
+/var/lib/iscsi/nodes/<server端名称的目录>
+```
 
 
 <h3 id="3">bcache 的使用</h3>
