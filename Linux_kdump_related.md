@@ -117,13 +117,13 @@ make[1]: Leaving directory '/root/kexec-tools/elfutils-0.144'
 make: *** [Makefile:261: all] Error 2
 ```
 
-改用
+~~改用~~
 
 ```
 make CFLAGS='-Wno-implicit-fallthrough'
 ```
 
-此时, 再次编译应该会出现以下错误:
+~~此时, 再次编译应该会出现以下错误:~~
 
 ```
 dwarf_siblingof.c: In function ‘dwarf_siblingof’:
