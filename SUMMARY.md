@@ -26,7 +26,7 @@
     * [vsftpd和sftp的chroot设置](Linux_sftp_and_vsftp_config_chroot.md)
     * [时钟同步](Linux_clock_sync_chrony_and_ntpd_config.md)
     * [firewalld和iptables](Linux_firewalld_and_iptables.md)  
-    * [内核编译安装](Linux_kernel_compile_install.md)  
+    * [内核升级](Linux_kernel_upgrade.md)  
     * [kdump相关](Linux_kdump_related.md)  
     * [硬件相关](Linux_hardware_stuff.md)  
     * [磁盘管理](Linux_disk_management.md) 
