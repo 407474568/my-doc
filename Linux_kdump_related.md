@@ -19,6 +19,7 @@ check failed?
 https://access.redhat.com/solutions/5608211
 
 常规处理思路  
+以下示例在 ```Rocky Linux 8.7``` 发行版基础上完成.  
 实际就是kernel的版本高了, 原本为其配套的 kexec-tools 并不适配, 需要自行手动编译一个.  
 编译过程中又各种出错  
 
@@ -86,7 +87,71 @@ make 一开始就会遇到错误, 但在源码包目录下README解释得非常�
     http://code.google.com/p/eppic/
 ```
 
-错误:
+elfutils 编译安装错误:
+
+```
+dwfl_report_elf.c:187:12: error: this statement may fall through [-Werror=implicit-fallthrough=]
+       base = 0;
+       ~~~~~^~~
+dwfl_report_elf.c:189:5: note: here
+     case ET_DYN:
+     ^~~~
+```
+
+解决办法:
+
+```
+make CFLAGS='-Wno-implicit-fallthrough -Wno-nonnull-compare -Wno-unused-but-set-variable -Wno-implicit-function-declaration -Wno-sizeof-array-argument -Wno-sizeof-pointer-memaccess'
+```
+
+此时, 再次编译应该会出现以下错误:
+
+```
+i386_parse.y:1110:3: error: #error "bogus NMNES value"
+ # error "bogus NMNES value"
+   ^~~~~
+make[2]: *** [Makefile:293: i386_parse.o] Error 1
+make[2]: Leaving directory '/root/kexec-tools/elfutils-0.144/libcpu'
+make[1]: *** [Makefile:347: all-recursive] Error 1
+make[1]: Leaving directory '/root/kexec-tools/elfutils-0.144'
+make: *** [Makefile:261: all] Error 2
+```
+
+改用
+
+```
+make CFLAGS='-Wno-implicit-fallthrough'
+```
+
+此时, 再次编译应该会出现以下错误:
+
+```
+dwarf_siblingof.c: In function ‘dwarf_siblingof’:
+dwarf_siblingof.c:69:6: error: nonnull argument ‘result’ compared to NULL [-Werror=nonnull-compare]
+   if (result == NULL)
+      ^
+cc1: all warnings being treated as errors
+```
+
+但实际上所需的库文件已生成, 可以按照 makedumpfile 源码包的 README 提示进行复制操作
+
+```
+mkdir /usr/local/include/elfutils/
+\cp -f  ./libdw/libdw.h   /usr/local/include/elfutils/libdw.h
+\cp -f ./libdw/dwarf.h   /usr/local/include/dwarf.h
+\cp -f ./libelf/libelf.h /usr/local/include/libelf.h
+\cp -f ./libelf/gelf.h   /usr/local/include/gelf.h
+
+\cp -f ./libelf/libelf.a /usr/local/lib/libelf.a
+\cp -f ./libdw/libdw.a   /usr/local/lib/libdw.a
+\cp -f ./libasm/libasm.a /usr/local/lib/libasm.a
+\cp -f ./libebl/libebl.a /usr/local/lib/libebl.a
+
+\cp -f ./libdwfl/libdwfl.h /usr/local/include/elfutils/
+```
+
+
+makedumpfile 编译安装错误:
 
 ```
 makedumpfile.h:30:10: fatal error: zlib.h: No such file or directory
@@ -102,7 +167,7 @@ make: *** [Makefile:90: elf_info.o] Error 1
 yum -y install zlib-devel
 ```
 
-错误:
+makedumpfile 编译安装错误:
 
 ```
 /usr/bin/ld: cannot find -lbz2
@@ -115,6 +180,18 @@ make: *** [Makefile:97: makedumpfile] Error 1
 ```
 yum -y install bzip2-devel
 ```
+
+makedumpfile 编译安装错误:
+
+```
+/usr/bin/ld: cannot find -lpthread
+/usr/bin/ld: cannot find -lbz2
+/usr/bin/ld: cannot find -ldl
+/usr/bin/ld: cannot find -lz
+/usr/bin/ld: cannot find -lc
+```
+
+
 
 #### kdump 服务启动的报错
 
