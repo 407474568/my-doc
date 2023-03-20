@@ -1,8 +1,10 @@
 * [目录](#0)
   * [非原始内核版本下的kdump服务](#1)
   * [配置crash工具集环境](#2)
+  * [kdump需要保留多少内存](#3)
 
 <h3 id="1">非原始内核版本下的kdump服务</h3>  
+
 
 ##### 参考资料
 
@@ -367,3 +369,58 @@ So  for example if a system has 1TB of memory 224 MB is the minimum (160 + 64 MB
 >
 >After adding the crashkernel parameter the system must be rebooted for the crashkernel memory to be reserved for 
 > use by kdump.
+
+
+<h3 id="3">kdump需要保留多少内存</h3>  
+
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/kernel_administration_guide/kernel_crash_dump_guide
+
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/kernel_administration_guide/kernel_crash_dump_guide#sect-kdump-memory-requirements
+
+原文引用
+
+> For example, on the x86_64 architecture, the amount of reserved memory is 160 MB + 2 bits for every 4 KB of RAM
+
+在x86架构CPU上:  
+160 MB 是基数不变  
+每4KB内存需要2个bits  
+因此 1TB 内存:  
+1024 * 1024 * 1024 = 1,073,741,824 KiloBytes  
+1,073,741,824 / 4 = 268,435,456 (个4K页)  
+每个4K页 占用 2个 比特位bits 268,435,456 * 2 = 536870912
+536870912 / 1024 / 1024 = 512  
+但这512还是比特位bits, 需要转换成字节Bytes, 还需要除8, 512 / 8 = 64MB  
+这也就是文中 1TB 内存需要的保留内存为 160+64=224MB 的由来  
+因此, 常见的如256G内存的机型等, crashkernel 都在 256MB 覆盖范围内.
+
+另附原文中的不同架构CPU的保留内存大小表格
+
+<table>
+    <tr>
+        <th>CPU architecture</th><th>Available memory</th><th>Crash memory automatically reserved</th>
+    </tr>
+    <tr>
+        <td>AMD64 and Intel 64 (x86_64)</td><td>2 GB and more</td><td>161 MB + 64 MB per 1 TB</td>
+    </tr>
+    <tr>
+        <td>64-bit ARM architecture (arm64)</td><td>2 GB and more</td><td>512 MB</td>
+    </tr>
+    <tr>
+        <td rowspan="5">IBM POWER ppc64/ppc64le</td><td>2 GB to 4 GB</td><td>384 MB</td>
+    </tr>
+    <tr>
+        <td>4 GB to 16 GB</td><td>512 MB</td>
+    </tr>
+    <tr>
+        <td>16 GB to 64 GB</td><td>1 GB</td>
+    </tr>
+    <tr>
+        <td>64 GB to 128 GB</td><td>2 GB</td>
+    </tr>
+    <tr>
+        <td>128 GB and more</td><td>4 GB</td>
+    </tr>
+    <tr>
+        <td>IBM Z (s390x)</td><td>4 GB and more</td><td>161 MB + 64 MB per 1 TB<br>[1] 160 MB on RHEL-ALT-7.6</td>
+    </tr>
+</table>

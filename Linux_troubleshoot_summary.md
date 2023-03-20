@@ -1,6 +1,7 @@
 * [目录](#0)
   * [CPU stuck for XXs](#1)
   * [查看被系统缓存的文件](#2)
+  * [系统内核文件丢失](#3)
 
 
 <h3 id="1">控制台上出现错误消息：NMI watchdog BUG soft lockup - CPU stuck for XXs</h3>
@@ -93,3 +94,15 @@ ln -sf /usr/local/bin/linux-fincore /usr/sbin/linux-fincore
 待补全
 ```
 
+
+<h3 id="3">系统内核文件丢失</h3>
+
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-verifying_the_initial_ram_disk_image
+
+存在有时发现系统内核文件丢失的情况, 即 /boot/initxxxx.img 的文件不知所踪
+
+在当前系统还可用的前提下, 其实有补救措施.
+
+```
+dracut "initramfs-$(uname -r).img" $(uname -r)
+```
