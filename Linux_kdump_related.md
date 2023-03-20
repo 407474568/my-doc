@@ -5,6 +5,142 @@
 
 <h3 id="1">非原始内核版本下的kdump服务</h3>  
 
+#### 可行的操作方法
+
+##### kdump 的使用手册  
+https://www.kernel.org/doc/Documentation/kdump/kdump.txt  
+
+备用链接  
+<a href="files/kdump.txt" target="_blank">kdump 的使用手册</a>
+
+
+非原始内核版本--需要自行升级内核的情形, 又需要保持kdump的正常可用.  
+已验证的可行选择: 源码编译安装 kernel 版本
+
+其中, 在```kdump 的使用手册```中已包含了需要设置/检查的内核编译参数.  
+实际上, 更为简便的途径从rocky(也许红帽系都一样)上的 ```config-xxx``` 复制来的基础上修改即可  
+
+```
+cd <kernel 源码包的解压目录>
+cp /boot/config-$(uname -r) ./.config
+```
+
+在 Rocky Linux 8.7 上已确认, 所有都满足```kdump 的使用手册```的描述.  
+除了以下一条:  
+在 "Dump-capture kernel config options (Arch Dependent, i386 and x86_64)" 一节中的  
+第2点:
+
+> If CONFIG_SMP=y, then specify maxcpus=1 on the kernel command line
+   when loading the dump-capture kernel, see section "Load the Dump-capture
+   Kernel". 
+
+此项不满足, 但实际验证, 也并未影响.  
+换言之, 如果没有别的模块启用需求, 此 config 已可用
+
+执行编译流程,随后即算完成
+
+真正的关键之处在于, ```kdump 的使用手册``` 解答了两问题:  
+1) 系统内核的内存映像文件, 与kdump所用到的内存映像文件, 可以是各自独立的, 也可以是共用的.
+2) 红帽(可能其他发行厂商也是如此) 通常的做法都是各自独立的, 在/boot目录下的 initramfs-xxxx,  initrd-xxxx, 通常kdump用到的,
+名称带有kdump字样
+3) 如果使用共用的方式, 则内核在编译安装前需要编译参数明确指出
+4) 使用 rocky 8 上复制得来的 config 中, 指定了"保留内存"的起始物理地址.
+所以在内核启动的参数应当需要明确给出, 否则是造成kdump服务不正常工作的原因.
+即原本的```crashkernel=auto```有必要变更为```crashkernel=256M@16M```
+
+其中的 ```@16M``` 是由以下内核编译参数决定的:
+
+```
+CONFIG_PHYSICAL_START=0x1000000
+```
+
+此点在```kdump 的使用手册```已有明确解释
+
+运行的示例
+
+```
+[root@localhost ~]# systemctl status kdump.service 
+● kdump.service - Crash recovery kernel arming
+   Loaded: loaded (/usr/lib/systemd/system/kdump.service; enabled; vendor preset: enabled)
+   Active: active (exited) since Mon 2023-03-20 11:15:35 EDT; 11min ago
+  Process: 1382 ExecStart=/usr/bin/kdumpctl start (code=exited, status=0/SUCCESS)
+ Main PID: 1382 (code=exited, status=0/SUCCESS)
+
+Mar 20 11:15:34 localhost.localdomain systemd[1]: Starting Crash recovery kernel arming...
+Mar 20 11:15:35 localhost.localdomain kdumpctl[1400]: kdump: kexec: loaded kdump kernel
+Mar 20 11:15:35 localhost.localdomain kdumpctl[1400]: kdump: Starting kdump: [OK]
+Mar 20 11:15:35 localhost.localdomain systemd[1]: Started Crash recovery kernel arming.
+[root@localhost ~]# 
+[root@localhost ~]# 
+[root@localhost ~]# uname -r
+6.1.20
+[root@localhost ~]# 
+[root@localhost ~]# modprobe bcache
+[root@localhost ~]# lsmod | grep -i bcache
+bcache                339968  0
+crc64                  20480  1 bcache
+[root@localhost ~]# ll /var/crash
+total 0
+drwxr-xr-x 2 root root 67 Mar 20 11:15 127.0.0.1-2023-03-20-11:15:16
+
+
+[root@localhost ~]# crash /lib/modules/6.1.20/build/vmlinux /var/crash/127.0.0.1-2023-03-20-11\:15\:16/vmcore
+
+crash 7.3.2-2.el8
+Copyright (C) 2002-2022  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+GNU gdb (GDB) 7.6
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-unknown-linux-gnu"...
+
+WARNING: kernel relocated [226MB]: patching 137180 gdb minimal_symbol values
+
+      KERNEL: /lib/modules/6.1.20/build/vmlinux                        
+    DUMPFILE: /var/crash/127.0.0.1-2023-03-20-11:15:16/vmcore  [PARTIAL DUMP]
+        CPUS: 24
+        DATE: Mon Mar 20 11:15:11 EDT 2023
+      UPTIME: 00:01:31
+LOAD AVERAGE: 0.61, 0.36, 0.14
+       TASKS: 387
+    NODENAME: localhost.localdomain
+     RELEASE: 6.1.20
+     VERSION: #1 SMP PREEMPT_DYNAMIC Mon Mar 20 04:29:28 EDT 2023
+     MACHINE: x86_64  (3400 Mhz)
+      MEMORY: 8 GB
+       PANIC: "Kernel panic - not syncing: sysrq triggered crash"
+         PID: 1660
+     COMMAND: "bash"
+        TASK: ffff9d8d83788000  [THREAD_INFO: ffff9d8d83788000]
+         CPU: 3
+       STATE: TASK_RUNNING (PANIC)
+
+crash> 
+crash> quit
+```
+
+同时, crash 读取系统 core dump 所需的全部套件也都编译安装上.  
+除 crash 自行yum安装即可, 其余都无需额外安装.  
+注意此时的 crash 运行所需的 vmlinux 所在的位置.如果没找到, 在crash不加参数的情况也应该会自动生成提示.  
+```/lib/modules/6.1.20/build/vmlinux ```  
+
+
+
+#### 以下内容属于路径错误, 或者也可能能实现, 但不知从何获取正确的资源
 
 ##### 参考资料
 
@@ -228,7 +364,9 @@ makedumpfile 里的 Makefile, 第55行的 ```-static``` 删掉, 使其从动态�
 
 #### kdump 服务启动的报错
 
-```/usr/bin/kdumpctl```是脚本文件,通过加 -x 的调试方法来查看执行过程
+<font color=red>以下均属错误言论</font>
+
+~~```/usr/bin/kdumpctl```是脚本文件,通过加 -x 的调试方法来查看执行过程~~
 
 ```
 + '[' -f /boot/initramfs-5.4.236-1.el8.elrepo.x86_64kdump.img ']'
@@ -238,7 +376,6 @@ makedumpfile 里的 Makefile, 第55行的 ```-static``` 删掉, 使其从动态�
 + return 1
 ```
 
-<font color=red>以下均属错误言论</font>
 
 ~~从输出可见, 它使用 -f 探测的文件有了错误  
 原本应为 ```/boot/initramfs-5.4.236-1.el8.elrepo.x86_64k.img```  
