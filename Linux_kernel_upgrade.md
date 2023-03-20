@@ -97,7 +97,7 @@ yum remove $(rpm -qa | grep kernel | grep -v $(uname -r))
 
 >我的目的是为了安装 kubernetes，我发现超过 4.4版本的内核在开启 ipvs 的时候会出现问题，所以我选择的是 4.4版本的最新内核。
 
-<h3 id="2">红帽8 升级 5.10</h3>
+<h3 id="2">在 rocky 8 (红帽 8) 编译升级 5.x 6.x</h3>
 
 绝大部分步骤参考此文档即可  
 https://blog.51cto.com/u_3436241/4750925  
@@ -118,8 +118,8 @@ uname -r
 cp /boot/config-$(uname -r) ./.config
 ```
 
-在.config文件中找到 ```CONFIG_SYSTEM_TRUSTED_KEYS```，```CONFIG_DEBUG_INFO_BTF```这两行，并将这两行注释。
-
+在.config文件中找到 ```CONFIG_SYSTEM_TRUSTED_KEYS```，```CONFIG_DEBUG_INFO_BTF```这两行，并将这两行注释。  
+额外的, 如果我
 
 接下来执行 make menuconfig  
 进入UI界面，参数不用改，切换到save直接保存，尔后按两下Esc退出。  
@@ -132,7 +132,11 @@ make menuconfig
 
 ```
 # 手动修改为自己的逻辑CPU总线程, 以获得最快完成速度
-make -j8
+make -j$(nproc)
+
+# nproc 为获取os逻辑cpu个数的命令, 返回值就是个数
+# 以下3个make, 不可使用 -j 多线程并发
+
 make modules
 make modules_install
 make install
