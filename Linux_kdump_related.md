@@ -11,8 +11,11 @@
 非原始内核版本下的kdump服务无法运行,常规处理思路
 https://blog.csdn.net/realmardrid/article/details/123394122  
 需注意, 文章中提到的:
->在kexec-tools-2.0.19/kexec/arch/i386/x86-linux-setup.c 添加下列宏，不然编译报错。  
->#define VIDEO_CAPABILITY_64BIT_BASE (1 << 1) /* Frame buffer base is 64-bit */
+
+```
+在kexec-tools-2.0.19/kexec/arch/i386/x86-linux-setup.c 添加下列宏，不然编译报错。  
+#define VIDEO_CAPABILITY_64BIT_BASE (1 << 1) /* Frame buffer base is 64-bit */
+```
 
 实测发现, 即使不定义这个宏, 也并未遇到报错
 
