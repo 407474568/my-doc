@@ -119,7 +119,12 @@ cp /boot/config-$(uname -r) ./.config
 ```
 
 在.config文件中找到 ```CONFIG_SYSTEM_TRUSTED_KEYS```，```CONFIG_DEBUG_INFO_BTF```这两行，并将这两行注释。  
-额外的, 如果我
+额外的, 如果有启用其他模块的需求, 如:  
+debug 用途的 ```CONFIG_DEBUG_INFO```  
+用于缓存用途的 ```CONFIG_BCACHE```  
+也是通过编辑 ./config 文件来启用  
+查询内核模块名称的网站  
+https://www.kernelconfig.io/
 
 接下来执行 make menuconfig  
 进入UI界面，参数不用改，切换到save直接保存，尔后按两下Esc退出。  
