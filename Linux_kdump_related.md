@@ -8,7 +8,7 @@
 
 以下示例在 ```Rocky Linux 8.7``` 发行版基础上完成. 
 
-非原始内核版本下的kdump服务无法运行,常规处理思路
+非原始内核版本下的kdump服务无法运行,常规处理思路  
 https://blog.csdn.net/realmardrid/article/details/123394122  
 需注意, 文章中提到的:
 
