@@ -140,9 +140,10 @@ make menuconfig
 make -j$(nproc)
 
 # nproc 为获取os逻辑cpu个数的命令, 返回值就是个数
-# 以下3个make, 不可使用 -j 多线程并发
+# 以下4个make, 不要使用 -j 多线程并发
 
 make modules
+make bzImage
 make modules_install
 make install
 ```
@@ -166,7 +167,7 @@ grubby --set-default=/boot/vmlinuz-5.10.90
 ```
 
 
-执行make阶段的错误
+#### 执行 make 阶段的错误
 
 ```
   LD [M]  arch/x86/kvm/kvm.o
@@ -181,6 +182,8 @@ make: *** [Makefile:2012: .] Error 2
 此错误需要检查前文中提到的 ```CONFIG_SYSTEM_TRUSTED_KEYS``` 是否已被注释
 
 
+#### 执行 make modules_install 阶段的错误
+
 ```
   INSTALL /lib/modules/6.1.20/kernel/virt/lib/irqbypass.ko
   SIGN    /lib/modules/6.1.20/kernel/virt/lib/irqbypass.ko
@@ -188,9 +191,26 @@ make: *** [Makefile:2012: .] Error 2
 Warning: modules_install: missing 'System.map' file. Skipping depmod.
 ```
 
+https://stackoverflow.com/questions/49397856/linux-compilation-error-missing-file-arch-x86-boot-bzimage
+
+正确答案: 少了```make bzImage```一步
+
+> The creation of bzImage is missing in your script. Before modules_install you should type:  
+> make bzImage
+
+如下: 
+
 ```
-[root@localhost linux-6.1.20]# rpm -qa kernel
-kernel-4.18.0-425.3.1.el8.x86_64
-[root@localhost linux-6.1.20]# rpm -qa kernel-headers
-kernel-headers-4.18.0-425.13.1.el8_7.x86_64
+make -j$(nproc)
+make modules
+make bzImage
+make modules_install
+make install
 ```
+
+#### 执行 make bzImage 阶段的错误
+
+其中有错误, 且提示你可以选择禁用 ```CONFIG_DEBUG_INFO_BTF```  
+也即注释该项, 或```CONFIG_DEBUG_INFO_BTF=n```  
+通过此操作, 可正确通过  
+但 ```CONFIG_DEBUG_INFO_BTF``` 选择禁用, 具体损失的功能, 待核实
