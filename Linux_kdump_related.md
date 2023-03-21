@@ -35,6 +35,8 @@ cp /boot/config-$(uname -r) ./.config
    Kernel". 
 
 此项不满足, 但实际验证, 也并未影响.  
+你也可以直接将```CONFIG_SMP=y```改为```CONFIG_SMP=n``` 
+
 换言之, 如果没有别的模块启用需求, 此 config 已可用
 
 执行编译流程,随后即算完成
@@ -447,9 +449,6 @@ makedumpfile Failed.
 ```
 
 此处有误, 即使正确能工作的kdump主机, 使用该 makedumpfile 命令加参数, 也出现同样的报错
-
-不能正确生成 kdump 文件, 因为
-
 
 <h3 id="2">配置crash工具集环境</h3>  
 

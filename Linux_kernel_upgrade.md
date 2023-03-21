@@ -164,3 +164,33 @@ grubby --info=ALL | grep ^kernel
 通过命令 grubby --set-default=可以设置你的默认启动内核
 grubby --set-default=/boot/vmlinuz-5.10.90
 ```
+
+
+执行make阶段的错误
+
+```
+  LD [M]  arch/x86/kvm/kvm.o
+  AS [M]  arch/x86/kvm/vmx/vmenter.o
+  AS [M]  arch/x86/kvm/svm/vmenter.o
+  LD [M]  arch/x86/kvm/kvm-intel.o
+  LD [M]  arch/x86/kvm/kvm-amd.o
+  CC [M]  kernel/kheaders.o
+make: *** [Makefile:2012: .] Error 2
+```
+
+此错误需要检查前文中提到的 ```CONFIG_SYSTEM_TRUSTED_KEYS``` 是否已被注释
+
+
+```
+  INSTALL /lib/modules/6.1.20/kernel/virt/lib/irqbypass.ko
+  SIGN    /lib/modules/6.1.20/kernel/virt/lib/irqbypass.ko
+  DEPMOD  /lib/modules/6.1.20
+Warning: modules_install: missing 'System.map' file. Skipping depmod.
+```
+
+```
+[root@localhost linux-6.1.20]# rpm -qa kernel
+kernel-4.18.0-425.3.1.el8.x86_64
+[root@localhost linux-6.1.20]# rpm -qa kernel-headers
+kernel-headers-4.18.0-425.13.1.el8_7.x86_64
+```
