@@ -208,6 +208,18 @@ make modules_install
 make install
 ```
 
+根源来自执行 make 阶段, 原本该有以下
+
+```
+  BUILD   arch/x86/boot/bzImage
+Kernel: arch/x86/boot/bzImage is ready  (#1)
+```
+
+但还不确定是否因为多线程编译, -j 的关系导致, 并非每次都一定能生成```bzImage```
+
+因此, 如果没有生成, 则执行```make modules_install```必然报该错误  
+需要在```make modules_install```之前就执行```make bzImage```才能得到正确结果
+
 #### 执行 make bzImage 阶段的错误
 
 其中有错误, 且提示你可以选择禁用 ```CONFIG_DEBUG_INFO_BTF```  
