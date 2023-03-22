@@ -457,7 +457,7 @@ makedumpfile Failed.
 https://access.redhat.com/solutions/916043
 
 Configuring crashkernel on RHEL7.0 (and later) kernels
-crashkernel is configured in the GRUB_CMDLINE_LINUX line in /etc/default/grub:
+crashkernel is configured in the GRUB_CMDLINE_LINUX line in ```/etc/default/grub```
 
 ```
 GRUB_TIMEOUT=5
