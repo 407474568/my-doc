@@ -21,6 +21,22 @@ extract_data | awk 'NR<3{print $0;next}{print $0| "sort -r"}'
 alias dockerimage="docker image ls | awk 'NR<2{print \$0;next}{print \$0| \"sort\"}'"
 ```
 
+第2个例子, 同样是利用 awk 的 if...else 语句:
+
+https://www.v2ex.com/t/612650
+
+```goodlucky37``` 的回答
+
+> 这个我想到的方法时可以通过 awk 的"if-else"或条件语句实现：  
+command | awk 'NR==1 {print $0};NR!=1 {print $0 | "sort xxx"}'  
+eg：  
+ps -fxo user,ppid,pid,pgid,command | awk 'NR==1 {print $0};NR!=1 {print $0 | "sort -k4,4nr"}'
+
+我的示例
+
+```
+\df -T -B 1G | grep -v -E -e "^(dev)?tmpfs" -e "\boverlay\b"  | awk 'NR==1 {print $0};NR!=1 {print $0 | "sort -k 7"}'
+```
 
 #### awk 筛选数据输出
 针对数据文件，利用awk 判断符合条件的数据，并筛选出结果数据，输入到对应的文件中。
