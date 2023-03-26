@@ -268,7 +268,7 @@ Delete versions of   tanhuang
 docker exec -u 33 -it my_nextcloud /var/www/html/occ trashbin:cleanup tanhuang
 ```
 
-nextcloud 的参数里设置自动清理
+#### nextcloud 的参数里设置自动清理
 
 https://blog.csdn.net/weixin_43598457/article/details/117367623
 
@@ -289,6 +289,15 @@ $CONFIG = array (
 ```
 
 其中最后一条的 ```'trashbin_retention_obligation' => 'auto,60',``` 是新添加的
+
+同理, file_version 也设置自动清理
+
+https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/file_versioning.html
+
+```
+  'trashbin_retention_obligation' => 'auto,60',
+  'versions_retention_obligation' => 'auto,60',
+```
 
 <h3 id="10">OCC 重建缓存</h3>
 
