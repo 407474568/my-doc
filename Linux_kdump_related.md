@@ -2,7 +2,7 @@
   * [非原始内核版本下的kdump服务](#1)
   * [配置crash工具集环境](#2)
   * [kdump需要保留多少内存](#3)
-  * [设置了crashkernel的大小, 依然报错的情况](#4)
+  * [设置了crashkernel的大小, kdump服务依然报错的情况](#4)
 
 <h3 id="1">非原始内核版本下的kdump服务</h3>  
 
@@ -563,7 +563,7 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/ke
 </table>
 
 
-<h3 id="4">设置了crashkernel的大小, 依然报错的情况</h3>  
+<h3 id="4">设置了crashkernel的大小, kdump服务依然报错的情况</h3>  
 
 根据本文介绍的, 设置了 crashkernel=256M@16M, 然而```kdump```服务依旧告诉你你没有保留内存
 
@@ -599,3 +599,49 @@ dmesg 的报错内容
 总之, 对于此类情况的处理办法:
 - 取消 256M@16M 中的 @16M
 - 尝试增大 16M 的大小
+
+
+经过更改后的 dmesg 内容可知, 系统保留的内存是自```2784 MB```开始
+
+```
+[Sun Apr  2 18:41:55 2023] Command line: BOOT_IMAGE=(mduuid/09130a4a9a5219308af89a0cd8ad0e0b)/vmlinuz-6.1.20 root=UUID=efd8306f-d3a5-4be6-b70c-273dc67f4095 ro crashkernel=256M rd.md.uuid=c73334c8:9da98fe8:be443e65:43c976e2 rd.md.uuid=09130a4a:9a521930:8af89a0c:d8ad0e0b rhgb quiet
+[Sun Apr  2 18:41:55 2023] Reserving 256MB of memory at 2784MB for crashkernel (System RAM: 130960MB)
+[Sun Apr  2 18:41:55 2023] Kernel command line: BOOT_IMAGE=(mduuid/09130a4a9a5219308af89a0cd8ad0e0b)/vmlinuz-6.1.20 root=UUID=efd8306f-d3a5-4be6-b70c-273dc67f4095 ro crashkernel=256M rd.md.uuid=c73334c8:9da98fe8:be443e65:43c976e2 rd.md.uuid=09130a4a:9a521930:8af89a0c:d8ad0e0b rhgb quiet
+```
+
+
+<h3 id="4">kdump服务正常, vmcore未正常生成</h3>  
+
+https://gitee.com/src-openeuler/kernel/issues/I3EAS1?_from=gitee_search
+
+> 当前定位原因：第二个内核启动过程中会触发设备复位(reset_devices)操作，但设备复位操作后MegaRAID控制器或磁盘状态故障，导致访问MegaRAID卡下挂的磁盘报错(vmcore文件需要写入这些磁盘保存)；  
+影响：带有该MegaRAID卡的机器上kdump触发启动第二个内核过程中一直报磁盘访问错误，导致第二个内核启动过程中生成vmcore失败；  
+规避措施：1.linux上游社区主线版本也有同样问题；2.在物理机/etc/sysconfig/kdump文件中将第二个内核启动默认参数中的reset_devices去掉，可以成功生成vmcore，即可规避该问题；
+
+原本以为 openeuler 社区就是正解, 因为正巧我虽然不是硬件raid卡, 但板载raid也即软raid, 怀疑也是kdump试图写文件但不成功.
+
+然而实践检验的结果并非如此.
+
+https://bugzilla.openanolis.cn/show_bug.cgi?id=1360
+
+> 原因：
+> crashkernel参数配置，预留内存过小导致kdump无法正常运行。
+>
+> 实例使用的是8G内存，crashkernel配置如下：
+> crashkernel=0M-2G:0M,2G-8G:192M,8G-:256M
+>
+> 将该参数修改为:
+> crashkernel=0M-2G:0M,2G-8G:256M,8G-:512M
+>
+> 如此，在预留256M内存的情况下，可以正常生成vmcore
+
+原本是对这个说法不以为然的, 因为根据kdump手册的介绍, 256M已可支持1TB内存的物理机.
+
+然而实践的结果确实是从256M 调大到512M解决了问题.  
+物理机的内存为128G.  
+修改后的 /proc/cmdline
+
+```
+[root@5950x-node1 ~]# cat /proc/cmdline 
+BOOT_IMAGE=(mduuid/09130a4a9a5219308af89a0cd8ad0e0b)/vmlinuz-6.1.20 root=UUID=efd8306f-d3a5-4be6-b70c-273dc67f4095 ro crashkernel=0M-2G:0M,2G-8G:256M,8G-:512M rd.md.uuid=c73334c8:9da98fe8:be443e65:43c976e2 rd.md.uuid=09130a4a:9a521930:8af89a0c:d8ad0e0b rhgb quiet
+```
