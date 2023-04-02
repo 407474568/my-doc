@@ -3,6 +3,7 @@
   * [配置crash工具集环境](#2)
   * [kdump需要保留多少内存](#3)
   * [设置了crashkernel的大小, kdump服务依然报错的情况](#4)
+  * [kdump服务正常, vmcore未正常生成](#5)
 
 <h3 id="1">非原始内核版本下的kdump服务</h3>  
 
@@ -610,7 +611,7 @@ dmesg 的报错内容
 ```
 
 
-<h3 id="4">kdump服务正常, vmcore未正常生成</h3>  
+<h3 id="5">kdump服务正常, vmcore未正常生成</h3>  
 
 https://gitee.com/src-openeuler/kernel/issues/I3EAS1?_from=gitee_search
 
