@@ -2,6 +2,7 @@
   * [非原始内核版本下的kdump服务](#1)
   * [配置crash工具集环境](#2)
   * [kdump需要保留多少内存](#3)
+  * [设置了crashkernel的大小, 依然报错的情况](#4)
 
 <h3 id="1">非原始内核版本下的kdump服务</h3>  
 
@@ -560,3 +561,41 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/ke
         <td>IBM Z (s390x)</td><td>4 GB and more</td><td>161 MB + 64 MB per 1 TB<br>[1] 160 MB on RHEL-ALT-7.6</td>
     </tr>
 </table>
+
+
+<h3 id="4">设置了crashkernel的大小, 依然报错的情况</h3>  
+
+根据本文介绍的, 设置了 crashkernel=256M@16M, 然而```kdump```服务依旧告诉你你没有保留内存
+
+```
+[root@5950x-node1 ~]# systemctl status kdump.service
+● kdump.service - Crash recovery kernel arming
+   Loaded: loaded (/usr/lib/systemd/system/kdump.service; enabled; vendor preset: enabled)
+   Active: failed (Result: exit-code) since Sun 2023-04-02 17:56:04 CST; 5s ago
+  Process: 2037 ExecStart=/usr/bin/kdumpctl start (code=exited, status=1/FAILURE)
+ Main PID: 2037 (code=exited, status=1/FAILURE)
+
+Apr 02 17:56:04 5950x-node1 systemd[1]: Starting Crash recovery kernel arming...
+Apr 02 17:56:04 5950x-node1 kdumpctl[2039]: kdump: No memory reserved for crash kernel
+Apr 02 17:56:04 5950x-node1 kdumpctl[2039]: kdump: Starting kdump: [FAILED]
+Apr 02 17:56:04 5950x-node1 systemd[1]: kdump.service: Main process exited, code=exited, status=1/FAILURE
+Apr 02 17:56:04 5950x-node1 systemd[1]: kdump.service: Failed with result 'exit-code'.
+Apr 02 17:56:04 5950x-node1 systemd[1]: Failed to start Crash recovery kernel arming.
+```
+
+dmesg 的报错内容
+
+```
+[root@5950x-node1 ~]# dmesg -T | grep crash
+[Sun Apr  2 18:10:34 2023] Command line: BOOT_IMAGE=(mduuid/09130a4a9a5219308af89a0cd8ad0e0b)/vmlinuz-6.1.20 root=UUID=efd8306f-d3a5-4be6-b70c-273dc67f4095 ro crashkernel=256M@16M rd.md.uuid=c73334c8:9da98fe8:be443e65:43c976e2 rd.md.uuid=09130a4a:9a521930:8af89a0c:d8ad0e0b rhgb quiet
+[Sun Apr  2 18:10:34 2023] crashkernel reservation failed - memory is in use.
+[Sun Apr  2 18:10:34 2023] Kernel command line: BOOT_IMAGE=(mduuid/09130a4a9a5219308af89a0cd8ad0e0b)/vmlinuz-6.1.20 root=UUID=efd8306f-d3a5-4be6-b70c-273dc67f4095 ro crashkernel=256M@16M rd.md.uuid=c73334c8:9da98fe8:be443e65:43c976e2 rd.md.uuid=09130a4a:9a521930:8af89a0c:d8ad0e0b rhgb quiet
+```
+
+由以上可见, 它是试图使用自16M开始的内存地址, 却发现已在使用中.  
+这一情况出现在物理机上, 与虚拟机上还有确定.  
+不确定是否是与传统BIOS(legacy bios) 和 启用了UEFI 的BIOS 的区别.  
+例如在我的主板上是双BIOS, 且未发现仅使用传统BIOS的选项. 但系统其实是以传统BIOS模式启动的.  
+总之, 对于此类情况的处理办法:
+- 取消 256M@16M 中的 @16M
+- 尝试增大 16M 的大小
