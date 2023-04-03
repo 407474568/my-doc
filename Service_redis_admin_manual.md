@@ -12,7 +12,8 @@ https://www.w3cschool.cn/redis_all_about/redis_all_about-sfc726u6.html
 
 * [目录](#0)
   * [只安装redis-cli](#1)
-
+  * [redis-cli info 含义解释](#2)
+  * [redis-cli cluster nodes 含义解释](#3)
 
 
 <h3 id="1">只安装redis-cli</h3>
@@ -28,7 +29,7 @@ sudo cp src/redis-cli /usr/local/bin/
 redis-cli -h 127.0.0.1 -p 6379 ping
 ```
 
-<h3 id="1">redis-cli info 含义解释</h3>
+<h3 id="2">redis-cli info 含义解释</h3>
 
 手册  
 https://redis.io/commands/info/
@@ -57,3 +58,12 @@ Redis提供了info指令，它会返回关于Redis服务器的各种信息和统
 - default: 值返回默认设置的信息  
 
 如果没有使用任何参数时，默认为default，返回所有的信息。
+
+
+<h3 id="3">redis-cli cluster nodes 含义解释</h3>
+
+https://cloud.tencent.com/developer/section/1374002
+
+```
+<id> <ip:port> <flags> <master> <ping-sent> <pong-recv> <config-epoch> <link-state> <slot> <slot> ... <slot>
+```
