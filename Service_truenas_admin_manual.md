@@ -10,10 +10,36 @@ https://post.smzdm.com/p/a6d8m6vg/
 
 
 * [目录](#0)
-  * [NFS客户端不能chmod的问题](#1)
+  * [初始化配置IP地址](#1)
+  * [NFS客户端不能chmod的问题](#2)
 
 
-<h3 id="1">NFS客户端不能chmod的问题</h3>
+<h3 id="1">初始化配置IP地址</h3>
+
+网上一大堆说废话的, 要么是DHCP获取的, 要么就是不同版本的,菜单略有不同, 且通过命令行配置的.
+
+这里提及的安装介质为  
+```TrueNAS-SCALE-22.02.4.iso```
+
+系统安装完成以后, 配置静态IP有两个菜单要进入:
+
+![](images/J5HlaTfmicC6V7qY5ihHOQWyxklbJTn0.png)
+
+第一个是设置IP, 注意是有掩码
+
+![](images/J5HlaTfmic5Rxfa6HgD9SshljPmYJKeM.png)
+
+只需要在 aliases处 填入IP, state.aliases 是自动生成的
+
+![](images/J5HlaTfmicZTVeY9PKaFSUXmtyd67G4J.png)
+
+第二个是配置网关
+
+![](images/J5HlaTfmicluVznqI5psYdRJLM6XQT09.png)
+
+此后即完成, IP已可使用
+
+<h3 id="2">NFS客户端不能chmod的问题</h3>
 
 https://www.truenas.com/community/threads/cannot-chmod-nfs-operation-not-permitted.97247/
 
