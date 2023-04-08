@@ -159,10 +159,10 @@ https://www.cnblogs.com/wuhailong/p/16420263.html
 增加一个语句行
 
 ```
-# 表示第1,2个显示器
+表示第1,2个显示器
 selectedmonitors:s:1,2
 
-# 表示第1个显示器
+表示第1个显示器
 selectedmonitors:s:1
 ```
 
