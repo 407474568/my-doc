@@ -116,12 +116,14 @@ C:\WINDOWS\SysWOW64\instsrv.exe <自定义的服务名称> remove
 
 其后在注册表的服务项下添加 ```parameters```, 其位置位于 
 
-```HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services```
+```
+HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services
+```
 
 
 > 名称 Application 值：你要作为服务运行的程序地址。  
-名称 AppDirectory 值：你要作为服务运行的程序所在文件夹路径。  
-名称 AppParameters 值：你要作为服务运行的程序启动所需要的参数。
+> 名称 AppDirectory 值：你要作为服务运行的程序所在文件夹路径。  
+> 名称 AppParameters 值：你要作为服务运行的程序启动所需要的参数。
 
 一个完整的注册表项的导出
 
