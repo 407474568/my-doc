@@ -2,7 +2,7 @@
   * [IPSec实现防火墙功能](#1)
   * [注册Windows服务项](#2)
   * [mstsc 指定显示器](#3)
-
+  * [清理arp条目](#4)
 
 
 <h3 id="1">IPSec实现防火墙功能</h3>
@@ -169,3 +169,23 @@ selectedmonitors:s:1
 以此类推
 
 ![](images/FyG1lejZrqxUhPJAM2oeIOQlZWG5FmYb.png)
+
+
+<h3 id="4">清理arp条目</h3>
+
+https://www.yundongfang.com/Yun68558.html
+
+Windows上arp命令的几个相关用法
+
+```
+# 查看arp缓存
+arp -a
+# 也可以
+arp -a <IP地址>
+
+# 清理全部arp缓存
+netsh interface IP delete arpcache
+
+# 删除特定arp条目
+arp -d <IP地址>
+```
