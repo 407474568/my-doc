@@ -178,14 +178,14 @@ https://www.yundongfang.com/Yun68558.html
 Windows上arp命令的几个相关用法
 
 ```
-# 查看arp缓存
+查看arp缓存
 arp -a
-# 也可以
+也可以
 arp -a <IP地址>
 
-# 清理全部arp缓存
+清理全部arp缓存
 netsh interface IP delete arpcache
 
-# 删除特定arp条目
+删除特定arp条目
 arp -d <IP地址>
 ```
