@@ -150,6 +150,8 @@ Windows Registry Editor Version 5.00
 
 <h3 id="3">mstsc 指定显示器</h3>
 
+当终端是多个显示器时, 希望指定mstsc的显示窗口运行在哪个显示器上
+
 https://www.cnblogs.com/wuhailong/p/16420263.html
 
 从 mstsc 编辑会话框上另存出一个会话来, ```.rdp``` 的文件
