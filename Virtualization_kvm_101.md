@@ -655,7 +655,7 @@ falloc模式：使用posix_fallocate()函数分配文件的块并标示它们的
 一般性而言, 最实用的分配方式是 ```preallocation=falloc``` 或 ```preallocation=metedata```
 
 ```
-[root@X9DR3-F pm983]# qemu-img create -f qcow2 -o preallocation=falloc /vm/pm983/chia-miner-02-data01.qcow2 300G
+[root@X9DR3-F pm983]# qemu-img create -f qcow2 -o preallocation=metadata /vm/pm983/chia-miner-02-data01.qcow2 300G
 Formatting '/vm/pm983/chia-miner-02-data01.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off preallocation=falloc compression_type=zlib size=322122547200 lazy_refcounts=off refcount_bits=16
 ```
 
