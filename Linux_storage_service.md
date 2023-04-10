@@ -47,6 +47,29 @@ initiator名称用来唯一标识一个iSCSI Initiator端。保存此名称的�
 InitiatorName=iqn.2000-01.com.synology:themain-3rd.ittest
 ```
 
+**有关 iSCSI qualified name 命名规范**
+
+https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.storage.doc/GUID-686D92B6-A2B2-4944-8718-F1B74F6A2C53.html
+
+> iSCSI Qualified Name Format
+> The iSCSI Qualified Name (IQN) format takes the form iqn.yyyy-mm.naming-authority:unique name, where:
+>
+> yyyy-mm is the year and month when the naming authority was established.
+> 
+> naming-authority is the reverse syntax of the Internet domain name of the naming authority. For example, the iscsi.
+> 
+> vmware.com naming authority can have the iSCSI qualified name form of iqn.1998-01.com.vmware.iscsi. The name 
+> indicates that the vmware.com domain name was registered in January of 1998, and iscsi is a subdomain, maintained 
+> by vmware.com.
+> 
+> unique name is any name you want to use, for example, the name of your host. The naming authority must make sure 
+> that any names assigned following the colon are unique, such as:  
+iqn.1998-01.com.vmware.iscsi:name1   
+iqn.1998-01.com.vmware.iscsi:name2  
+iqn.1998-01.com.vmware.iscsi:name999  
+
+
+
 CHAP认证 -- 可选项
 
 ```
