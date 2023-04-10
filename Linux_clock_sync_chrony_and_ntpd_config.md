@@ -142,6 +142,7 @@ Chrony 会根据实际时间计算修正值，并将补偿参数记录在该指�
 Optionally specify a host, subnet, or network from which to allow NTP connections to a machine acting as NTP server. The default is not to allow connections.  
 Examples:    
 Use this form to specify a particular host, by its host name, to be allowed access.
+
 ```
 allow server1.example.com
 ```
@@ -180,6 +181,7 @@ chronyd -Q 'pool <上级时钟服务器的域名或IP> iburst'
 ```
 
 <font color=red>注意:</font>  
+
 是大Q  
 是大Q  
 是大Q  
