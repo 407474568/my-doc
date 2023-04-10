@@ -68,7 +68,23 @@ iqn.1998-01.com.vmware.iscsi:name1
 iqn.1998-01.com.vmware.iscsi:name2  
 iqn.1998-01.com.vmware.iscsi:name999  
 
+https://blog.csdn.net/Mickeywaugh/article/details/119103075
 
+> 一、可以包含的字符  
+> 最长223个字符，不能使用大写字母，可以使用的字符是：字母（a～z）、数字（0～9）、点（.）、冒号（:）和连字符（-）
+> 
+> 二、遵循以下两种编码方式
+> 1．iqn(iSCSI qualified name)：  
+类型  
+日期（拥有组织名的日期）  
+组织名  
+组织内部唯一的标志符  
+实例：iqn.2001-04.com.h3c:storage.tape1.sys1.xyz
+> 
+> 2．eui（Extended Unique Identifier，主要用于FC设备接入iSCSI网络）  
+类型  
+EUI-64 标识符（如果是FC设备，那么就是FC的WWN）  
+实例：eui.02004567A425678D
 
 CHAP认证 -- 可选项
 
