@@ -176,7 +176,22 @@ https://chrony.tuxfamily.org/faq.html
 具体用法:
 
 ```
-chronyd -q 'pool <上级时钟服务器的域名或IP> iburst'
+chronyd -Q 'pool <上级时钟服务器的域名或IP> iburst'
+```
+
+<font color=red>注意:</font>  
+是大Q  
+是大Q  
+是大Q  
+
+大Q 和 小Q 的区别很大, 注意操作不当, 引发不可接受的程度的后果的可能性.
+
+```
+-q
+    When run in this mode, chronyd will set the system clock once and exit. It will not detach from the terminal.
+
+-Q
+    This option is similar to the -q option, except it only prints the offset without making any corrections of the clock and it allows chronyd to be started without root privileges.
 ```
 
 特别的, iburst 参数是有必要存在的, 否则耗时可能就会长很多倍. 示例如下:
