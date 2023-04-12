@@ -6,6 +6,7 @@
   * [修改默认网段](#5)
   * [docker 的几种网络模式](#6)
   * [docker 的 save 与 export 以及 load 和 import 的区别](#7)
+  * [容器的DNS的指派](#8)
 
 
 <h3 id="1">环境安装</h3>
@@ -263,3 +264,38 @@ https://jingsam.github.io/2017/08/26/docker-save-and-docker-export.html
 > docker save保存的是镜像（image），docker export保存的是容器（container）；  
 docker load用来载入镜像包，docker import用来载入容器包，但两者都会恢复为镜像；  
 docker load不能对载入的镜像重命名，而docker import可以为镜像指定新名称。
+
+<h3 id="8">容器的DNS的指派</h3>
+
+https://docs.docker.com/config/containers/container-networking/
+
+https://gdevillele.github.io/engine/userguide/networking/default_network/configure-dns/
+
+当希望 container 的DNS服务器是使用自己指定的时候, 最简单的形式莫过于
+
+```
+docker run --dns x.x.x.x
+```
+
+这种形式指定, 得到的效果即如下:
+
+```
+[root@opm-server ~]# docker run --rm -dit -v /docker/autodeployment-1.0.2.jar:/123.jar -e JAVA_HOME="/autodeploy/jdk1.8.0_351" -e PATH="/autodeploy/jdk1.8.0_351/bin:$PATH" --dns 61.128.128.68 -p 3532:3532 --name=autodeployment_app jdk_8u351:latest /bin/bash
+ef42e2c2cbe4e3985c0d1d70a90de8c258b9f7fa6f2516b8d973deac72c97067
+[root@opm-server ~]# docker exec -it autodeployment_app /bin/bash
+[root@ef42e2c2cbe4 /]# cat /etc/resolv.conf 
+nameserver 61.128.128.68
+[root@ef42e2c2cbe4 /]# exit
+```
+
+docker 官方文档也已有清晰的描述
+
+相关的讨论也在:
+
+https://stackoverflow.com/questions/41032744/unable-to-edit-etc-resolv-conf-in-docker-container
+
+比较有意思的是下面这篇文章, 对 docker 运行时对  
+```/etc/hosts``` ```/etc/resolv.conf```  
+文件的处理,做了一个验证
+
+https://blog.csdn.net/Max_Cong/article/details/96861826
