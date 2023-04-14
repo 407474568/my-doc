@@ -68,6 +68,9 @@ virsh edit 虚拟机名称
 # 把虚拟机设为开机自启动
 virsh autostart 虚拟机名称
 
+# 取消开机自启动
+virsh autostart --disable 虚拟机名称
+
 # 查看已设置了开机自启动的虚拟机
 ll /etc/libvirt/qemu/autostart/
 
