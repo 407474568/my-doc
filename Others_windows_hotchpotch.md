@@ -2,7 +2,7 @@
   * [IPSec实现防火墙功能](#1)
   * [注册Windows服务项](#2)
   * [mstsc 指定显示器](#3)
-
+  * [清理arp条目](#4)
 
 
 <h3 id="1">IPSec实现防火墙功能</h3>
@@ -116,12 +116,14 @@ C:\WINDOWS\SysWOW64\instsrv.exe <自定义的服务名称> remove
 
 其后在注册表的服务项下添加 ```parameters```, 其位置位于 
 
-```HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services```
+```
+HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services
+```
 
 
 > 名称 Application 值：你要作为服务运行的程序地址。  
-名称 AppDirectory 值：你要作为服务运行的程序所在文件夹路径。  
-名称 AppParameters 值：你要作为服务运行的程序启动所需要的参数。
+> 名称 AppDirectory 值：你要作为服务运行的程序所在文件夹路径。  
+> 名称 AppParameters 值：你要作为服务运行的程序启动所需要的参数。
 
 一个完整的注册表项的导出
 
@@ -148,6 +150,8 @@ Windows Registry Editor Version 5.00
 
 <h3 id="3">mstsc 指定显示器</h3>
 
+当终端是多个显示器时, 希望指定mstsc的显示窗口运行在哪个显示器上
+
 https://www.cnblogs.com/wuhailong/p/16420263.html
 
 从 mstsc 编辑会话框上另存出一个会话来, ```.rdp``` 的文件
@@ -159,13 +163,33 @@ https://www.cnblogs.com/wuhailong/p/16420263.html
 增加一个语句行
 
 ```
-# 表示第1,2个显示器
+表示第1,2个显示器
 selectedmonitors:s:1,2
 
-# 表示第1个显示器
+表示第1个显示器
 selectedmonitors:s:1
 ```
 
 以此类推
 
 ![](images/FyG1lejZrqxUhPJAM2oeIOQlZWG5FmYb.png)
+
+
+<h3 id="4">清理arp条目</h3>
+
+https://www.yundongfang.com/Yun68558.html
+
+Windows上arp命令的几个相关用法
+
+```
+查看arp缓存
+arp -a
+也可以
+arp -a <IP地址>
+
+清理全部arp缓存
+netsh interface IP delete arpcache
+
+删除特定arp条目
+arp -d <IP地址>
+```

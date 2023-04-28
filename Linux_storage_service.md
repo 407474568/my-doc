@@ -47,6 +47,45 @@ initiator名称用来唯一标识一个iSCSI Initiator端。保存此名称的�
 InitiatorName=iqn.2000-01.com.synology:themain-3rd.ittest
 ```
 
+**有关 iSCSI qualified name 命名规范**
+
+https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.storage.doc/GUID-686D92B6-A2B2-4944-8718-F1B74F6A2C53.html
+
+> iSCSI Qualified Name Format
+> The iSCSI Qualified Name (IQN) format takes the form iqn.yyyy-mm.naming-authority:unique name, where:
+>
+> yyyy-mm is the year and month when the naming authority was established.
+> 
+> naming-authority is the reverse syntax of the Internet domain name of the naming authority. For example, the iscsi.
+> 
+> vmware.com naming authority can have the iSCSI qualified name form of iqn.1998-01.com.vmware.iscsi. The name 
+> indicates that the vmware.com domain name was registered in January of 1998, and iscsi is a subdomain, maintained 
+> by vmware.com.
+> 
+> unique name is any name you want to use, for example, the name of your host. The naming authority must make sure 
+> that any names assigned following the colon are unique, such as:  
+iqn.1998-01.com.vmware.iscsi:name1   
+iqn.1998-01.com.vmware.iscsi:name2  
+iqn.1998-01.com.vmware.iscsi:name999  
+
+https://blog.csdn.net/Mickeywaugh/article/details/119103075
+
+> 一、可以包含的字符  
+> 最长223个字符，不能使用大写字母，可以使用的字符是：字母（a～z）、数字（0～9）、点（.）、冒号（:）和连字符（-）
+> 
+> 二、遵循以下两种编码方式
+> 1．iqn(iSCSI qualified name)：  
+类型  
+日期（拥有组织名的日期）  
+组织名  
+组织内部唯一的标志符  
+实例：iqn.2001-04.com.h3c:storage.tape1.sys1.xyz
+> 
+> 2．eui（Extended Unique Identifier，主要用于FC设备接入iSCSI网络）  
+类型  
+EUI-64 标识符（如果是FC设备，那么就是FC的WWN）  
+实例：eui.02004567A425678D
+
 CHAP认证 -- 可选项
 
 ```

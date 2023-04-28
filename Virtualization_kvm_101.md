@@ -68,6 +68,9 @@ virsh edit 虚拟机名称
 # 把虚拟机设为开机自启动
 virsh autostart 虚拟机名称
 
+# 取消开机自启动
+virsh autostart --disable 虚拟机名称
+
 # 查看已设置了开机自启动的虚拟机
 ll /etc/libvirt/qemu/autostart/
 
@@ -655,7 +658,7 @@ falloc模式：使用posix_fallocate()函数分配文件的块并标示它们的
 一般性而言, 最实用的分配方式是 ```preallocation=falloc``` 或 ```preallocation=metedata```
 
 ```
-[root@X9DR3-F pm983]# qemu-img create -f qcow2 -o preallocation=falloc /vm/pm983/chia-miner-02-data01.qcow2 300G
+[root@X9DR3-F pm983]# qemu-img create -f qcow2 -o preallocation=metadata /vm/pm983/chia-miner-02-data01.qcow2 300G
 Formatting '/vm/pm983/chia-miner-02-data01.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off preallocation=falloc compression_type=zlib size=322122547200 lazy_refcounts=off refcount_bits=16
 ```
 

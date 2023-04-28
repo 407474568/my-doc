@@ -22,7 +22,7 @@ http://www.garfielder.com/post/990cc2cb.html
   * [NextCloud客户端, 尽管登录url以https开头,但轮询url中没有](#7)
   * [上传 / 同步时出现413 Request Entity Too Large](#7)
   * [OCC 批量导入文件](#8)
-  * [OCC 清理 "files_version" 目录](#9)
+  * [OCC 清理 "files_version" 和 "files_trashbin" 目录](#9)
   * [OCC 重建缓存](#10)
   * [无法删除/移动文件或文件夹的情况的处理](#11)
   * [误报存储满的问题](#12)
@@ -189,7 +189,7 @@ nextcloud 的 OCC 命令 位于 nextcloud 的网站根目录下
 容器环境 和 编译 / rpm 安装的路径存在区别, 需要自己查找.
 
 
-<h3 id="9">OCC 清理 "files_version" 目录</h3>
+<h3 id="9">OCC 清理 "files_version" 和 "files_trashbin" 目录</h3>
 
 发现 nextcloud 目录下似乎有不合理的空间占用
 
@@ -242,6 +242,61 @@ https://help.nextcloud.com/t/how-to-force-delete-of-versions-in-files-versions/8
 ```
 [root@docker ~]# docker exec -u 33 -it my_nextcloud /var/www/html/occ version:cleanup tanhuang
 Delete versions of   tanhuang
+```
+
+#### 清理 files_trashbin
+
+```
+[root@docker-node1 ~]# du -s -B 1G /docker/nextcloud/data/tanhuang/*
+0	/docker/nextcloud/data/tanhuang/cache
+0	/docker/nextcloud/data/tanhuang/files
+50	/docker/nextcloud/data/tanhuang/files_trashbin
+42	/docker/nextcloud/data/tanhuang/files_versions
+1	/docker/nextcloud/data/tanhuang/uploads
+[root@docker-node1 ~]# docker exec -u 33 -it my_nextcloud /var/www/html/occ version:cleanup tanhuang
+Delete versions of   tanhuang
+[root@docker-node1 ~]# du -s -B 1G /docker/nextcloud/data/tanhuang/*
+0	/docker/nextcloud/data/tanhuang/cache
+0	/docker/nextcloud/data/tanhuang/files
+50	/docker/nextcloud/data/tanhuang/files_trashbin
+1	/docker/nextcloud/data/tanhuang/uploads
+```
+
+同上清理 file_version
+
+```
+docker exec -u 33 -it my_nextcloud /var/www/html/occ trashbin:cleanup tanhuang
+```
+
+#### nextcloud 的参数里设置自动清理
+
+https://blog.csdn.net/weixin_43598457/article/details/117367623
+
+> 通过修改trashbin_retention_obligation参数为'auto,D'可自动清理超过D天的trashbin
+
+我的示例
+
+```
+[root@docker-node1 ~]# cat /docker/nextcloud/var_www_html/config/config.php
+<?php
+$CONFIG = array (
+  'htaccess.RewriteBase' => '/',
+  'memcache.local' => '\\OC\\Memcache\\APCu',
+  ……无关项省去……
+  'quota_include_external_storage' => true,
+  'trashbin_retention_obligation' => 'auto,60',
+);
+```
+
+其中最后一条的 ```'trashbin_retention_obligation' => 'auto,60',``` 是新添加的
+
+同理, file_version 也设置自动清理
+
+https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/file_versioning.html
+
+```
+  'trashbin_retention_obligation' => 'auto,60',
+  'versions_retention_obligation' => 'auto,60',
 ```
 
 <h3 id="10">OCC 重建缓存</h3>

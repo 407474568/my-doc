@@ -1,3 +1,23 @@
+#### awk 里的单引号,双引号问题
+
+https://segmentfault.com/q/1010000041476037
+
+在 awk 里, 一旦需要用到的单引号, 双引号嵌套的层数多了, 就变得容易出错,还不方便调试.
+
+>最外层要么使用单引号（避免字符串里面的命令替换$(xxx)被提前解析），要想使用双引号的话，里面的$需要转义处理\$（也是避免被解析）
+>
+>另外你需要考虑引号嵌套的问题，简单来说最外层是单引号，里面最好都用双引号；反之最外层是双引号，里面全用单引号。
+>
+>最外层是双引号时，在其他场合你还需要考虑各种转义，建议还是外层单引号省心。
+
+与链接中帖子讨论的内容比较一致, 我个人总结的经验也是如下:
+
+- awk 最外层, 使用单引号 '
+- 除最外层之外的, 都使用双引号 "
+- 在双引号也有嵌套的情况, 也就是双引号内里还需要包裹双引号, 那么内里的双引号使用 \ 号转义
+- 以上也就是最多3层嵌套, 如果嵌套层数更多, 那还是老老实实转函数吧
+
+
 #### 按行过滤
 
 https://www.itranslater.com/qa/details/2125844298871604224  
@@ -21,6 +41,22 @@ extract_data | awk 'NR<3{print $0;next}{print $0| "sort -r"}'
 alias dockerimage="docker image ls | awk 'NR<2{print \$0;next}{print \$0| \"sort\"}'"
 ```
 
+第2个例子, 同样是利用 awk 的 if...else 语句:
+
+https://www.v2ex.com/t/612650
+
+```goodlucky37``` 的回答
+
+> 这个我想到的方法时可以通过 awk 的"if-else"或条件语句实现：  
+command | awk 'NR==1 {print $0};NR!=1 {print $0 | "sort xxx"}'  
+eg：  
+ps -fxo user,ppid,pid,pgid,command | awk 'NR==1 {print $0};NR!=1 {print $0 | "sort -k4,4nr"}'
+
+我的示例
+
+```
+\df -T -B 1G | grep -v -E -e "^(dev)?tmpfs" -e "\boverlay\b"  | awk 'NR==1 {print $0};NR!=1 {print $0 | "sort -k 7"}'
+```
 
 #### awk 筛选数据输出
 针对数据文件，利用awk 判断符合条件的数据，并筛选出结果数据，输入到对应的文件中。
