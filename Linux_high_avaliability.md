@@ -100,6 +100,9 @@ RealServer 把自己的网关指向的是LVS节点的内网地址.
 https://www.keepalived.org/download.html  
 https://www.keepalived.org/manpage.html  
 
+源码包  
+https://www.keepalived.org/download.html
+
 #### 环境编译
 
 https://segmentfault.com/a/1190000013214834  
