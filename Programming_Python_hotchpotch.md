@@ -4,6 +4,7 @@
   * [在 Beautifulsoup 中使用 XPATH 方式捕获对象](#3)
   * [Python代码创建系统服务的形式运行](#4)
   * [字典选择第一个、最后一个元素的key或value](#5)
+  * [pip使用代理](#6)
 
 
 <h3 id="1">Python 时间格式处理</h3>
@@ -327,4 +328,36 @@ print("first value : ", my_dict.get(next(iter(my_dict))))
 ```
 print("last key : ", list(my_dict.keys())[-1])
 print("last value : ", my_dict.get(list(my_dict.keys())[-1]))
+```
+
+<h3 id="6">pip使用代理</h3>
+
+https://zhuanlan.zhihu.com/p/371953325
+
+几种方式:  
+
+方式1, 临时性的指向其他源
+
+```
+# 豆瓣源
+pip install -r requirements.txt -i https://pypi.douban.com/simple --trusted-host=pypi.douban.com
+
+# 清华源
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+```
+
+方式2, 配置到系统的环境中.
+
+```
+vim /etc/profile：
+    export http_proxy='http://代理服务器IP:端口号'
+    export https_proxy='http://代理服务器IP:端口号'
+source /etc/profile
+```
+
+方式3, shell下设置代理的方式, 临时性的  
+
+```
+export http_proxy='http://代理服务器IP:端口号
+export https_proxy='http://代理服务器IP:端口号'
 ```
