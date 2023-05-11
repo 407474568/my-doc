@@ -103,7 +103,7 @@ SATA-16T                  zfs         118970 89609     29362  76% /SATA-16T
 ```
 
 从以上可见:  
-1) 首先, ```cannot unmount '/SATA-16T': pool or dataset is busy```一定还有服务没停止完, zpool 真的在使用中, 务必需要处理完毕.
-2) 其次, ```was /dev/sdf1``` 这种就属于标记错误发生了混乱, 原本是sdf的盘符变化了, ZFS 却没有找到正确的成员盘. 然而盘却是实实在在在线的.
+1) 首先, ```cannot unmount '/SATA-16T': pool or dataset is busy```一定还有服务没停止完, zpool 真的在使用中, 务必需要处理完毕.  
+2) 其次, ```was /dev/sdf1``` 这种就属于标记错误发生了混乱, 原本是sdf的盘符变化了, ZFS 却没有找到正确的成员盘. 然而盘却是实实在在在线的.  
 3) 处理办法, 并不需要去执行```zfs replace``` 替换盘的操作, 这样确实显得太笨, 因为实际上盘并不是真的丢失了. 需要的操作就是先执行```zpool export pool的名称```先导出,
    再执行```zpool import SATA-16T -d /dev/disk/by-id```导入回去.
