@@ -13,6 +13,9 @@ https://openzfs.org/wiki/Main_Page
 
 <h3 id="1">因盘符变化而导致pool错误的进入DEGRADED状态的处理</h3>
 
+https://serverfault.com/questions/854979/how-to-change-the-drive-reference-in-a-zfs-pool-from-dev-sdx-to-dev-disk-by-id
+https://superuser.com/questions/1732532/zfs-disk-drive-letter-changed-how-to-reimport-by-id
+
 实际上, ZFS的设计并不依赖Linux系统分配的盘符来标识成员硬盘.  
 但从问题的现象来看, 比如此次的案例是系统添加了新的磁盘进来, 而引起盘符的变化.  
 而盘符的变化又显然引起了ZFS对zpool成员盘的标识错误.  
