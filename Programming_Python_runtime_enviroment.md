@@ -1,7 +1,9 @@
 * [目录](#0)
   * [Python 在Linux上的编译安装](#1)
-  * [有关pyinstaller](#2)
-  * [cython 创建完全静态连接的可执行程序](#3)
+  * [查看编译安装环境](#2)
+  * [编译安装中的异常处理](#3)
+  * [有关pyinstaller](#4)
+  * [cython 创建完全静态连接的可执行程序](#5)
 
 
 <h3 id="1">Python 在Linux上的编译安装</h3>
@@ -26,8 +28,32 @@
 
 <a href="files/Python-3.10-install.sh" target="_blank">Python-3.10-install.sh</a>
 
+<h3 id="2">查看编译安装环境</h3>
 
-<h3 id="2">有关pyinstaller</h3>
+```
+# 查看编译时的参数是哪些
+python3 -c "import sysconfig; print(sysconfig.get_config_var('CONFIG_ARGS'))"
+
+# 查看当前导入的 ssl 模块的 openssl 的版本
+python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"
+```
+
+<h3 id="3">编译安装中的异常处理</h3>
+
+#### python 3 编译报错 Could not import runpy module 解决方案
+
+https://blog.csdn.net/whatday/article/details/103903955
+
+导致原因
+- 在低版本的gcc版本中带有 --enable-optimizations 参数时会出现上面问题
+- gcc 8.1.0修复此问题  
+
+解决方法选择
+- 升级gcc
+- ./configure参数中去掉 --enable-optimizations
+
+
+<h3 id="4">有关pyinstaller</h3>
 
 pyinstaller 作为 python的一个lib, 可以将 python 脚本编译生成成可执行程序, 尤其是单个文件
 
@@ -94,5 +120,5 @@ https://github.com/DARIAH-DE/TopicsExplorer/issues/53
 ![](images/nXOCNdEsmJbgyHq3nw9f6GlaiDTAvtEm.jpg)
 
 
-<h3 id="3">cython 创建完全静态连接的可执行程序</h3>
+<h3 id="5">cython 创建完全静态连接的可执行程序</h3>
 

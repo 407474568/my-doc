@@ -26,7 +26,12 @@ http://www.garfielder.com/post/990cc2cb.html
   * [OCC 重建缓存](#10)
   * [无法删除/移动文件或文件夹的情况的处理](#11)
   * [误报存储满的问题](#12)
+  * [nextcloud 版本号](#13)
 
+
+<h3 id="13">nextcloud 版本号</h3>
+
+![](images/05QlqrzaHGkQmgSqKvrWj3E0zGaZCD4J.png)
 
 <h3 id="1">config 可选参数</h3>
 

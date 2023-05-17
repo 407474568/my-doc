@@ -42,6 +42,7 @@
     * [grafana 汇总](Service_grafana.md)
     * [Redis 管理员手册](Service_redis_admin_manual.md)
     * [nextcloud 管理员手册](Service_nextcloud_admin_manual.md)
+    * [zfs 管理员手册](Service_zfs_summary.md)
     * [TrueNAS 管理员手册](Service_truenas_admin_manual.md)
 * [数据库](category_4_Database.md)
     * [MySQL常规事务](Database_MySQL_101.md)
