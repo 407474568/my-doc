@@ -123,6 +123,18 @@ iscsiadm -m node -T iqn.2000-01.com.synology:themain-3rd.ittest -p 172.29.88.62 
 
 <h3 id="3">bcache 的使用</h3>
 
+#### 个人环境
+
+编译Linux内核时, 选择的 bcache 以模块形式存在  
+我个人的加载 bcache 模块的统一方式
+
+```
+[root@X9DRi-LN4F ~]# cat /etc/sysconfig/modules/bcache.modules
+/usr/sbin/modprobe bcache
+
+[root@X9DRi-LN4F ~]# chmod u+x /etc/sysconfig/modules/bcache.modules
+```
+
 #### 基本操作
 
 常用命令  
