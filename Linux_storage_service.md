@@ -158,7 +158,7 @@ bcache-super-show <bcache格式化过的设备,如:/dev/sdc>
 
 
 # 一条命令的创建方法
-make-bcache -B <设备,如:/dev/sdc> -C <设备,如:/dev/sdc>
+make-bcache -B <后端设备,如:/dev/sdc> -C <缓存设备,如:/dev/sdc>
 
 
 # 如果原本该磁盘上有文件系统信息, 则需要 wipefs 来擦除
@@ -188,4 +188,8 @@ https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-dev
 由以上帖子讨论内容得出.  
 虽然其中有人提到开发者文档提到, 在未来的版本中, 会有多个cache可以以镜像mirror的形式组合以提升容错率, 但实际情况是 bcache
 已多年未更新过代码
+
+有关于此问题, 我个人的理解是, bcache 这一特性是由内核代码这一级别的限制决定.  
+多个缓存设备共同缓存同一个后端设备, 则存在每一个IO请求的负载究竟应由哪块缓存设备来承担, 这会带来选择困难, 或者说每次都由代码来根据负载来调节分配的代价过大.
+
 
