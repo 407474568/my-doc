@@ -181,6 +181,43 @@ echo 1>/sys/block/bcache0/bcache/stop
 操作完成后，通过lsblk命令查看结果, 此时，设备下并无bcache磁盘，即表示bcache后端磁盘已经停用。 
 ```
 
+#### 其他
+
+新创建的 bcache 盘, 确认它的盘符
+
+```
+# 新创建的 bcache 盘, 确认它的盘符
+
+[root@X9DRi-LN4F ~]# make-bcache -B /dev/sdk -C /dev/sdc
+UUID:			b344551c-5162-4543-9f25-f98d336751cc
+Set UUID:		5e636d9d-3a77-4ca0-840d-46fb3c92b8ce
+version:		0
+nbuckets:		763108
+block_size:		1
+bucket_size:		1024
+nr_in_set:		1
+nr_this_dev:		0
+first_bucket:		1
+UUID:			a0eae3cd-428b-4088-bd86-b952f5017aba
+Set UUID:		5e636d9d-3a77-4ca0-840d-46fb3c92b8ce
+version:		1
+block_size:		1
+data_offset:		16
+```
+
+创建之后有 "UUID", 注意不是"Set UUID", 而且是第2个"UUID", 即"first_bucket"下一行的"UUID"
+
+由此UUID查找 
+
+```
+[root@X9DRi-LN4F ~]# ll /dev/bcache/by-uuid/
+total 0
+lrwxrwxrwx 1 root root 13 May 30 22:06 a0eae3cd-428b-4088-bd86-b952f5017aba -> ../../bcache0
+```
+
+可知指向的是 /dev/bcache0
+
+
 #### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
 
 https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-devices-with-bcache
