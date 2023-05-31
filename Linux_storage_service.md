@@ -181,9 +181,7 @@ echo 1>/sys/block/bcache0/bcache/stop
 操作完成后，通过lsblk命令查看结果, 此时，设备下并无bcache磁盘，即表示bcache后端磁盘已经停用。 
 ```
 
-#### 其他
-
-新创建的 bcache 盘, 确认它的盘符
+#### 新创建的 bcache 盘, 确认它的盘符
 
 ```
 # 新创建的 bcache 盘, 确认它的盘符
@@ -217,6 +215,29 @@ lrwxrwxrwx 1 root root 13 May 30 22:06 a0eae3cd-428b-4088-bd86-b952f5017aba -> .
 
 可知指向的是 /dev/bcache0
 
+#### 一个 bcache 设备, 如何确定它的构成成员盘
+
+方式一
+
+```lsblk``` 命令, 树形结构可以看出构成关系
+
+#### 关于在卸载 bcache 组合时常见的 Device or resource busy
+
+```
+[root@X9DRi-LN4F ~]# wipefs -a /dev/sdd
+wipefs: error: /dev/sdd: probing initialization failed: Device or resource busy
+[root@X9DRi-LN4F ~]# umount /dev/sdd
+umount: /dev/sdd: not mounted.
+```
+
+关于这一问题, 多数情况下都是源于 ```/sys/block/bcache<N>``` 再次出现导致的  
+在保证文件系统已先行卸载的基础上, 再次执行
+
+```
+echo 1>/sys/block/bcache<N>/bcache/stop
+```
+
+再通过 ```lsblk``` 确认该 bcache 盘符没有再次出现.
 
 #### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
 
