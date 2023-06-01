@@ -230,6 +230,8 @@ wipefs: error: /dev/sdd: probing initialization failed: Device or resource busy
 umount: /dev/sdd: not mounted.
 ```
 
+https://unix.stackexchange.com/questions/115764/how-do-i-remove-the-cache-device-from-bcache
+
 关于这一问题, 多数情况下都是源于 ```/sys/block/bcache<N>``` 再次出现导致的  
 在保证文件系统已先行卸载的基础上, 再次执行
 
