@@ -227,7 +227,15 @@ lrwxrwxrwx 1 root root 13 May 30 22:06 a0eae3cd-428b-4088-bd86-b952f5017aba -> .
 
 这个 bcache 设备的后端磁盘的名称: ```/sys/block/bcache<数字>/bcache/backing_dev_name```  
 这个 bcache 设备的后端磁盘的uuid: ```/sys/block/bcache<数字>/bcache/backing_dev_uuid```  
-这个 bcache 设备的cache盘: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; ```/sys/block/bcache<数字>/bcache/cache``` 这是一个软链接指向
+这个 bcache 设备的cache盘: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; ```/sys/block/bcache<数字>/bcache/cache``` 这是一个软链接
+
+进而倒推这个 bcache 盘的 cache 设备是哪个 block 设备
+
+```/sys/block/bcache<数字>/bcache/cache``` 指向的 /sys/fs/bcache/  
+而路径中最后一级的字符串就正是 cache 设备的 cset.uuid  
+再由 /sys/fs/bcache/<cset.uuid> 目录下的  
+```bdev<数字>``` 指向它的后端设备  
+```cache<数字>``` 指向它的 cache 设备的真实 block 设备对象
 
 #### 关于在卸载 bcache 组合时常见的 Device or resource busy
 
