@@ -123,6 +123,18 @@ iscsiadm -m node -T iqn.2000-01.com.synology:themain-3rd.ittest -p 172.29.88.62 
 
 <h3 id="3">bcache 的使用</h3>
 
+#### 个人环境
+
+编译Linux内核时, 选择的 bcache 以模块形式存在  
+我个人的加载 bcache 模块的统一方式
+
+```
+[root@X9DRi-LN4F ~]# cat /etc/sysconfig/modules/bcache.modules
+/usr/sbin/modprobe bcache
+
+[root@X9DRi-LN4F ~]# chmod u+x /etc/sysconfig/modules/bcache.modules
+```
+
 #### 基本操作
 
 常用命令  
@@ -146,7 +158,7 @@ bcache-super-show <bcache格式化过的设备,如:/dev/sdc>
 
 
 # 一条命令的创建方法
-make-bcache -B <设备,如:/dev/sdc> -C <设备,如:/dev/sdc>
+make-bcache -B <后端设备,如:/dev/sdc> -C <缓存设备,如:/dev/sdc>
 
 
 # 如果原本该磁盘上有文件系统信息, 则需要 wipefs 来擦除
@@ -169,6 +181,82 @@ echo 1>/sys/block/bcache0/bcache/stop
 操作完成后，通过lsblk命令查看结果, 此时，设备下并无bcache磁盘，即表示bcache后端磁盘已经停用。 
 ```
 
+#### 新创建的 bcache 盘, 确认它的盘符
+
+```
+# 新创建的 bcache 盘, 确认它的盘符
+
+[root@X9DRi-LN4F ~]# make-bcache -B /dev/sdk -C /dev/sdc
+UUID:			b344551c-5162-4543-9f25-f98d336751cc
+Set UUID:		5e636d9d-3a77-4ca0-840d-46fb3c92b8ce
+version:		0
+nbuckets:		763108
+block_size:		1
+bucket_size:		1024
+nr_in_set:		1
+nr_this_dev:		0
+first_bucket:		1
+UUID:			a0eae3cd-428b-4088-bd86-b952f5017aba
+Set UUID:		5e636d9d-3a77-4ca0-840d-46fb3c92b8ce
+version:		1
+block_size:		1
+data_offset:		16
+```
+
+创建之后有 "UUID", 注意不是"Set UUID", 而且是第2个"UUID", 即"first_bucket"下一行的"UUID"
+
+由此UUID查找 
+
+```
+[root@X9DRi-LN4F ~]# ll /dev/bcache/by-uuid/
+total 0
+lrwxrwxrwx 1 root root 13 May 30 22:06 a0eae3cd-428b-4088-bd86-b952f5017aba -> ../../bcache0
+```
+
+可知指向的是 /dev/bcache0
+
+#### 一个 bcache 设备, 如何确定它的构成成员盘
+
+方式一
+
+```lsblk``` 命令, 树形结构可以看出构成关系
+
+方式二
+
+相关信息, 其实都在 ```/sys/block/bcache<数字>/bcache/``` 下
+
+这个 bcache 设备的后端磁盘的名称: ```/sys/block/bcache<数字>/bcache/backing_dev_name```  
+这个 bcache 设备的后端磁盘的uuid: ```/sys/block/bcache<数字>/bcache/backing_dev_uuid```  
+这个 bcache 设备的cache盘: &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; ```/sys/block/bcache<数字>/bcache/cache``` 这是一个软链接
+
+进而倒推这个 bcache 盘的 cache 设备是哪个 block 设备
+
+```/sys/block/bcache<数字>/bcache/cache``` 指向的 /sys/fs/bcache/  
+而路径中最后一级的字符串就正是 cache 设备的 cset.uuid  
+再由 /sys/fs/bcache/<cset.uuid> 目录下的  
+```bdev<数字>``` 指向它的后端设备  
+```cache<数字>``` 指向它的 cache 设备的真实 block 设备对象
+
+#### 关于在卸载 bcache 组合时常见的 Device or resource busy
+
+```
+[root@X9DRi-LN4F ~]# wipefs -a /dev/sdd
+wipefs: error: /dev/sdd: probing initialization failed: Device or resource busy
+[root@X9DRi-LN4F ~]# umount /dev/sdd
+umount: /dev/sdd: not mounted.
+```
+
+https://unix.stackexchange.com/questions/115764/how-do-i-remove-the-cache-device-from-bcache
+
+关于这一问题, 多数情况下都是源于 ```/sys/block/bcache<N>``` 再次出现导致的  
+在保证文件系统已先行卸载的基础上, 再次执行
+
+```
+echo 1>/sys/block/bcache<N>/bcache/stop
+```
+
+再通过 ```lsblk``` 确认该 bcache 盘符没有再次出现.
+
 #### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
 
 https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-devices-with-bcache
@@ -176,4 +264,8 @@ https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-dev
 由以上帖子讨论内容得出.  
 虽然其中有人提到开发者文档提到, 在未来的版本中, 会有多个cache可以以镜像mirror的形式组合以提升容错率, 但实际情况是 bcache
 已多年未更新过代码
+
+有关于此问题, 我个人的理解是, bcache 这一特性是由内核代码这一级别的限制决定.  
+多个缓存设备共同缓存同一个后端设备, 则存在每一个IO请求的负载究竟应由哪块缓存设备来承担, 这会带来选择困难, 或者说每次都由代码来根据负载来调节分配的代价过大.
+
 
