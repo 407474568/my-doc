@@ -60,5 +60,6 @@
     * [远程唤醒计算机](Others_remote_wake_up_computer.md)
     * [机箱风道](Others_case_air_flue.md)
     * [Xshell连接使用隧道](Others_xshell_use_tunnel.md)
-    * [Linux菜鸟101](Others_rookie_trainning_Linux.md)
+    * [菜鸟101-Linux](Others_rookie_trainning_Linux.md)
+    * [菜鸟101-硬件](Others_rookie_trainning_hardware.md)
     * [Python面试题](Others_python_interview_questions.md)
