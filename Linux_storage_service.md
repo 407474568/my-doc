@@ -291,7 +291,11 @@ https://zhuanlan.zhihu.com/p/63990027
 
 ```
 创建 RAID 阵列
-mdadm --create /dev/md/<用户定义名称> --level=<阵列级别> --raid-devices=<成员设备数量> /dev/<成员设备> /dev/<成员设备>
+mdadm --create /dev/md/<用户定义名称> --level=<阵列级别> \
+--raid-devices=<成员设备数量> /dev/<成员设备> /dev/<成员设备>
 
 /dev/md/<用户定义名称> 用户定义的名称是一个友好命名, 它其实指向 /dev/md<数字>
+
+探测有哪些mdadm组成的软阵列
+mdadm -D -s
 ```
