@@ -2,6 +2,7 @@
   * [iscsi 服务端](#1)
   * [iscsi 客户端](#2)
   * [bcache 的使用](#3)
+  * [mdadm 的使用](#4)
 
 
 <h3 id="1">iscsi 服务端</h3>
@@ -269,3 +270,28 @@ https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-dev
 多个缓存设备共同缓存同一个后端设备, 则存在每一个IO请求的负载究竟应由哪块缓存设备来承担, 这会带来选择困难, 或者说每次都由代码来根据负载来调节分配的代价过大.
 
 
+<h3 id="4">mdadm 的使用</h3>
+
+优势就是软件阵列, 不依赖特定的硬件类型, 灵活性自由度高  
+选择 raid 0 和 raid 1 也基本不受CPU性能影响阵列性能和增加CPU负担.  
+
+https://zhuanlan.zhihu.com/p/63990027
+
+原文
+
+>创建 RAID 阵列：mdadm --create /dev/md/test --homehost=any --metadata=1.0 --level=1 --raid-devices=2 /dev/sda1 /dev/sdb1  
+组合（并启动）RAID 阵列：mdadm --assemble /dev/md/test /dev/sda1 /dev/sdb1  
+停止 RAID 阵列：mdadm --stop /dev/md/test  
+删除 RAID 阵列：mdadm --zero-superblock /dev/sda1 /dev/sdb1  
+检查所有已组合的 RAID 阵列的状态：cat /proc/mdstat
+
+实际上已有部分不合时宜的地方, 比如 
+- Rocky 8.7上, mdadm 的metadata 的版本已经是1.2, 所以手动指定1.0反而是多余的.  
+- --homehost=any 取决于应用场景, 如果是希望该磁盘更换了主机反而是不希望mdadm自动去组装, 则不应添加该参数
+
+```
+创建 RAID 阵列
+mdadm --create /dev/md/<用户定义名称> --level=<阵列级别> --raid-devices=<成员设备数量> /dev/<成员设备> /dev/<成员设备>
+
+/dev/md/<用户定义名称> 用户定义的名称是一个友好命名, 它其实指向 /dev/md<数字>
+```
