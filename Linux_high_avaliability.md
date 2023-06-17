@@ -148,13 +148,15 @@ configure: error:
 
 处理办法: 上述帖子中 "cookie1106" 的回答是完整的.  
 
-> vi /data/keepalived-2.2.0/configure.ac
-> LOCAL_SSL = /usr/local/openssl/include/
-> CFLAGS = "$ CFLAGS -I $ LOCAL_SSL"
->
-> #before the AC_CHECK_HEADERS(openssl,...) line
->
-> ./configure --prefix=/data/keepalived CFLAGS="-I/usr/local/openssl/include" LDFLAGS="-L/usr/local/openssl/lib"
+```
+vi /data/keepalived-2.2.0/configure.ac
+LOCAL_SSL = /usr/local/openssl/include/
+CFLAGS = "$ CFLAGS -I $ LOCAL_SSL"
+
+#before the AC_CHECK_HEADERS(openssl,...) line
+
+./configure --prefix=/data/keepalived CFLAGS="-I/usr/local/openssl/include" LDFLAGS="-L/usr/local/openssl/lib"
+```
 
 实测, 仅要以下 configure 命令足够, 应当版本都通用  
 
