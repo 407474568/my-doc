@@ -153,7 +153,7 @@ Environment="HTTPS_PROXY=https://proxy.example.com:443"
 Environment="NO_PROXY=your-registry.com,10.10.10.10,*.example.com"
 ```
 
-多个 NO_PROXY 变量的值用逗号分隔，而且可以使用通配符（*），极端情况下，如果 NO_PROXY=*，那么所有请求都将不通过代理服务器。
+多个 NO_PROXY 变量的值用逗号分隔，而且可以使用通配符 ```*```，极端情况下，如果 NO_PROXY=*，那么所有请求都将不通过代理服务器。
 
 4) 重新加载配置文件，重启 dockerd
 
