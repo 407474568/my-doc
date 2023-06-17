@@ -70,14 +70,14 @@ https://hub.docker.com/search?q=
 | 中国科学技术大学       | https://docker.mirrors.ustc.edu.cn |
 | 阿里云 | https://<你的ID>.mirror.aliyuncs.com |
 
-修改配置文件  
-修改/etc/docker/daemon.json文件，如果没有先建一个即可  
+~~修改配置文件~~  
+~~修改/etc/docker/daemon.json文件，如果没有先建一个即可~~  
 
 ```
 sudo vim /etc/docker/daemon.json
 ```
 
-示例1
+~~示例1~~
 
 ```
 {
@@ -85,7 +85,7 @@ sudo vim /etc/docker/daemon.json
 }
 ```
 
-示例2
+~~示例2~~
 
 ```
 {
@@ -97,19 +97,20 @@ sudo vim /etc/docker/daemon.json
 }
 ```
 
-使配置文件生效  
+~~使配置文件生效~~  
 
 ```
 systemctl daemon-reload
 ```
 
-重启Docker  
+~~重启Docker~~  
 
 ```
 systemctl restart docker
 ```
 
-查看当前的镜像站点信息, docker info 输出的最后 Registry Mirrors 部分
+~~查看当前的镜像站点信息, docker info 输出的最后 Registry Mirrors 部分~~
+
 ```
 docker info
 
@@ -120,6 +121,62 @@ Registry Mirrors:
  https://mirror.baidubce.com/
 Live Restore Enabled: false
 Product License: Community Engine
+```
+
+以上应当不属于有效方法.  
+虽然 ```Registry Mirrors``` 能查看到自行配置的镜像站点地址, 但在实际使用中依然能发现与预期不符的痕迹.  
+另一个问题是, 实际经验发现有的镜像在使用 mirror 站点并不能获取到的情况, 依然要以 docker hub 的资源为主.  
+而经确认过的, 正确的方法如下:
+
+https://www.lfhacks.com/tech/pull-docker-images-behind-proxy/
+
+1) 创建 dockerd 相关的 systemd 目录，这个目录下的配置将覆盖 dockerd 的默认配置
+
+```
+$ sudo mkdir -p /etc/systemd/system/docker.service.d
+```
+
+2) 新建配置文件 /etc/systemd/system/docker.service.d/http-proxy.conf，这个文件中将包含环境变量
+
+```
+[Service]
+Environment="HTTP_PROXY=http://proxy.example.com:80"
+Environment="HTTPS_PROXY=https://proxy.example.com:443"
+```
+
+3) 如果你自己建了私有的镜像仓库，需要 dockerd 绕过代理服务器直连，那么配置 NO_PROXY 变量：
+
+```
+[Service]
+Environment="HTTP_PROXY=http://proxy.example.com:80"
+Environment="HTTPS_PROXY=https://proxy.example.com:443"
+Environment="NO_PROXY=your-registry.com,10.10.10.10,*.example.com"
+```
+
+多个 NO_PROXY 变量的值用逗号分隔，而且可以使用通配符（*），极端情况下，如果 NO_PROXY=*，那么所有请求都将不通过代理服务器。
+
+4) 重新加载配置文件，重启 dockerd
+
+```
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart docker
+```
+
+5) 检查确认环境变量已经正确配置：
+
+```
+$ sudo systemctl show --property=Environment docker
+```
+
+6) 从 docker info 的结果中查看配置项。
+
+```
+[root@docker-cluster-node2 ~]# docker info
+ ...略...
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ HTTP Proxy: http://192.168.1.40:9998
+ HTTPS Proxy: http://192.168.1.40:9998
 ```
 
 <h3 id="3">docker ps 命令</h3>
