@@ -224,7 +224,7 @@ Jun 17 23:56:30 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens1
 配置方面, 补充几个链接
 
 https://www.ucloud.cn/yun/129110.html  用了 wireshark 抓包以演示其切换过程
-https://www.jianshu.com/p/f15de9e67910  作者所谓的"双主"应属理解偏差了, 服务IP都各不相同, 何来双主一说
+https://www.jianshu.com/p/f15de9e67910  作者所谓的"双主"应属理解偏差了, 服务IP都各不相同, 何来双主一说  
 https://zhuanlan.zhihu.com/p/455502306  nginx做四层的负载均衡, keepalived 来保证高可用的做法
 
 #### 配置
