@@ -134,7 +134,7 @@ systemctl status keepalived
 
 #### 关于编译时的报错
 
-1) 情形一
+- 情形一 Can not include OpenSSL headers files
 
 https://github.com/acassen/keepalived/issues/219
 
@@ -158,12 +158,68 @@ CFLAGS = "$ CFLAGS -I $ LOCAL_SSL"
 ./configure --prefix=/data/keepalived CFLAGS="-I/usr/local/openssl/include" LDFLAGS="-L/usr/local/openssl/lib"
 ```
 
-实测, 仅要以下 configure 命令足够, 应当版本都通用  
+实测, 针对自行编译过 openssl, 位置与系统发行版默认位置, 仅要以下 configure 命令足够, 应当版本都通用  
 
 ```
 ./configure --prefix=/data/keepalived CFLAGS="-I/usr/local/openssl/include" LDFLAGS="-L/usr/local/openssl/lib"
 ```
 
+- 情形二 WARNING - this build will not support IPVS with IPv6
+
+包名随系统版本不同而不同
+
+```
+yum -y install libnl libnl-devel
+```
+
+```
+yum -y install libnl3 libnl3-devel
+```
+
+#### 2023-06-18 补充
+
+OS版本: Rocky 8.7, keepalived-2.2.8.
+
+测试模式为, 2台主机的 state 都是 backup, 仅 priority 不同, 有以下内容值得注意:
+
+1) 从日志中能明确 keepavlived 调用了 ipvs 内核模块
+2) 但你如果使用 ipvsadm 试图查看配置的 LVS 规则, 是一无所获的
+3) 切换流程如预期执行, 即使你不作任何配置, 心跳通告默认1s, 3秒收不到通告, 其他主机发起抢占.
+
+日志文本如下:
+
+```
+[root@localhost ~]# ipvsadm -ln
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+[root@localhost ~]# tail -f /var/log/messages 
+Jun 17 23:54:25 localhost systemd[1]: Started /usr/bin/systemctl start man-db-cache-update.
+Jun 17 23:54:25 localhost systemd[1]: Starting man-db-cache-update.service...
+Jun 17 23:54:25 localhost systemd[1]: Reloading.
+Jun 17 23:54:25 localhost systemd[1]: /usr/lib/systemd/system/irqbalance.service:6: Unknown lvalue 'ConditionCPUs' in section 'Unit'
+Jun 17 23:54:25 localhost systemd[1]: man-db-cache-update.service: Succeeded.
+Jun 17 23:54:25 localhost systemd[1]: Started man-db-cache-update.service.
+Jun 17 23:54:25 localhost systemd[1]: run-r732834aa8ae242b38604413c947d598a.service: Succeeded.
+Jun 17 23:55:49 localhost kernel: IPVS: Registered protocols (TCP, UDP, SCTP, AH, ESP)
+Jun 17 23:55:49 localhost kernel: IPVS: Connection hash table configured (size=4096, memory=64Kbytes)
+Jun 17 23:55:49 localhost kernel: IPVS: ipvs loaded.
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: (VI_1) Receive advertisement timeout
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: (VI_1) Entering MASTER STATE
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: (VI_1) setting VIPs.
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: (VI_1) Sending/queueing gratuitous ARPs on ens160 for 192.168.1.180
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:25 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:30 localhost Keepalived_vrrp[34930]: (VI_1) Sending/queueing gratuitous ARPs on ens160 for 192.168.1.180
+Jun 17 23:56:30 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:30 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:30 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:30 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+Jun 17 23:56:30 localhost Keepalived_vrrp[34930]: Sending gratuitous ARP on ens160 for 192.168.1.180
+```
 
 
 #### 配置
