@@ -140,8 +140,8 @@ crash> quit
 同时, crash 读取系统 core dump 所需的全部套件也都编译安装上.  
 除 crash 自行yum安装即可, 其余都无需额外安装.  
 注意此时的 crash 运行所需的 vmlinux 所在的位置.如果没找到, 在crash不加参数的情况也应该会自动生成提示.  
-```/lib/modules/6.1.20/build/vmlinux ```  
 
+```/lib/modules/6.1.20/build/vmlinux ```  
 
 
 #### 以下内容属于路径错误, 或者也可能能实现, 但不知从何获取正确的资源

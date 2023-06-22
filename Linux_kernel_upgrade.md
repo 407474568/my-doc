@@ -206,6 +206,20 @@ make modules
 make bzImage
 make modules_install
 make install
+# vmlinux 是与之配套的调试内核, 在需要crash 分析 vmcore 时, 需要用到
+# 应当执行, 并且保留生成的文件
+make vmlinux
+```
+
+关于 make vmlinux 的补充
+
+```
+[root@5950x-node1 linux-6.1.20]# make vmlinux
+  CALL    scripts/checksyscalls.sh
+  DESCEND objtool
+  MODPOST vmlinux.symvers
+[root@5950x-node1 linux-6.1.20]# ll vmlinux
+-rwxr-xr-x 1 root root 886M Jun 22 23:23 vmlinux
 ```
 
 根源来自执行 make 阶段, 原本该有以下
