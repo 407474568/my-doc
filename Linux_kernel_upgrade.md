@@ -108,6 +108,21 @@ https://blog.51cto.com/u_3436241/4750925
 yum install -y ncurses-devel gcc-c++ make openssl-devel bison flex elfutils-libelf-devel perl
 ```
 
+<font color=red>有关 linux 内核源码的存放位置, 建议: </font>
+
+```
+/usr/src/kernels/<内核版本号>
+```
+
+
+并且, 编译安装完成, 应当予以保留, 因为其中包含的工具链在系统需要 debug 时会依赖.  
+如果是希望精简体积, 则应当只选择性的删除 drivers 目录下的驱动为主.
+
+
+<br>
+
+以下是必要的基本步骤
+
 ```
 tar -xvf linux-5.10.90.tar.xz -C /tmp/
 cd /tmp/linux-5.10.90/
@@ -146,6 +161,9 @@ make modules
 make bzImage
 make modules_install
 make install
+# vmlinux 是与之配套的调试内核, 在需要crash 分析 vmcore 时, 需要用到
+# 应当执行, 并且保留生成的文件
+make vmlinux
 ```
 
 使用grubby切换内核  
