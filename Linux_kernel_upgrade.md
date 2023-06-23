@@ -160,11 +160,11 @@ make -j$(nproc)
 
 make modules
 make bzImage
-make modules_install
-make install
 # vmlinux 是与之配套的调试内核, 在需要crash 分析 vmcore 时, 需要用到
 # 应当执行, 并且保留生成的文件
 make vmlinux
+make modules_install
+make install
 ```
 
 使用grubby切换内核  
@@ -223,11 +223,11 @@ https://stackoverflow.com/questions/49397856/linux-compilation-error-missing-fil
 make -j$(nproc)
 make modules
 make bzImage
-make modules_install
-make install
 # vmlinux 是与之配套的调试内核, 在需要crash 分析 vmcore 时, 需要用到
 # 应当执行, 并且保留生成的文件
 make vmlinux
+make modules_install
+make install
 ```
 
 关于 make vmlinux 的补充
