@@ -160,12 +160,18 @@ make -j$(nproc)
 
 make modules
 make bzImage
-# vmlinux 是与之配套的调试内核, 在需要crash 分析 vmcore 时, 需要用到
-# 应当执行, 并且保留生成的文件
 make vmlinux
 make modules_install
 make install
 ```
+
+补充说明:  
+- vmlinux 是与之配套的调试内核, 在需要crash 分析 vmcore 时, 需要用到.应当执行, 并且保留生成的文件  
+- 实际上, 当执行了```make modules``` 和 ```make modules_install``` , 如果编译参数文件 ```.config``` 有启用 ```CONFIG_DEBUG_INFO=y```的话, 
+  本身也会生成```vmlinux```
+文件, 它位于 ```/lib/modules/<内核版本号>/build/vmlinux```
+- 额外又执行了一次 ```make vmlinux```, 所以, 以建议的内核源码放置目录为例, ```/usr/src/kernels/<内核版本号>/vmlinux```
+也有一个vmlinux, 是相同的作用, 都是用于 crash 工具使用的 ```namelist```
 
 使用grubby切换内核  
 如果没有安装  
@@ -223,12 +229,11 @@ https://stackoverflow.com/questions/49397856/linux-compilation-error-missing-fil
 make -j$(nproc)
 make modules
 make bzImage
-# vmlinux 是与之配套的调试内核, 在需要crash 分析 vmcore 时, 需要用到
-# 应当执行, 并且保留生成的文件
 make vmlinux
 make modules_install
 make install
 ```
+
 
 关于 make vmlinux 的补充
 
