@@ -124,8 +124,9 @@ yum install -y ncurses-devel gcc-c++ make openssl-devel bison flex elfutils-libe
 以下是必要的基本步骤
 
 ```
-tar -xvf linux-5.10.90.tar.xz -C /tmp/
-cd /tmp/linux-5.10.90/
+# --strip-components 1  不包含tar包里的第一级目录
+tar -xvf linux-6.1.35.tar.xz --strip-components 1 -C /usr/src/kernels/6.1.35
+cd /usr/src/kernels/6.1.35
 
 # 确认当前使用的内核
 uname -r
