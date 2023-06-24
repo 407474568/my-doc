@@ -14,7 +14,7 @@
 http://bean-li.github.io/proc-scsi-scsi-to-dev-sdX/  
 https://blog.csdn.net/yiyeguzhou100/article/details/100715930  
 
-![](imgages/3Zs7lRNdCyUPZidBp4LVgWbsyQKDj96Y.png)
+![](images/3Zs7lRNdCyUPZidBp4LVgWbsyQKDj96Y.png)
 
 如图所示  
 
