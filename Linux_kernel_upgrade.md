@@ -125,8 +125,10 @@ yum install -y ncurses-devel gcc-c++ make openssl-devel bison flex elfutils-libe
 
 ```
 # --strip-components 1  不包含tar包里的第一级目录
-tar -xvf linux-6.1.35.tar.xz --strip-components 1 -C /usr/src/kernels/6.1.35
-cd /usr/src/kernels/6.1.35
+kernel_version=6.1.35
+mkdir /usr/src/kernels/"$kernel_version"
+tar -xvf linux-"$kernel_version".tar.xz --strip-components 1 -C /usr/src/kernels/"$kernel_version"
+cd /usr/src/kernels/"$kernel_version"
 
 # 确认当前使用的内核
 uname -r
@@ -134,19 +136,35 @@ uname -r
 cp /boot/config-$(uname -r) ./.config
 ```
 
-在.config文件中找到 ```CONFIG_SYSTEM_TRUSTED_KEYS```，```CONFIG_DEBUG_INFO_BTF```这两行，并将这两行注释。  
+在.config文件中找到 ```CONFIG_SYSTEM_TRUSTED_KEYS```，将这行置空, 但不能注释, 否则依然会要你提供证书keys的位置。  
+即```CONFIG_SYSTEM_TRUSTED_KEYS=""```
+
 额外的, 如果有启用其他模块的需求, 如:  
-debug 用途的 ```CONFIG_DEBUG_INFO```  
+debug 用途的 ```CONFIG_DEBUG_INFO```, ```CONFIG_DEBUG_INFO_BTF```, 而 ```CONFIG_DEBUG_INFO_NONE=n``` 需要显式的等于n  
 用于缓存用途的 ```CONFIG_BCACHE```  
 也是通过编辑 ./config 文件来启用  
 查询内核模块名称的网站  
 https://www.kernelconfig.io/
+
+https://cateee.net/lkddb/web-lkddb/DEBUG_INFO_NONE.html
 
 接下来执行 make menuconfig  
 进入UI界面，参数不用改，切换到save直接保存，尔后按两下Esc退出。  
 
 ```
 make menuconfig
+```
+
+执行以上这一步的原因是, 还有大量的参数没有指定, 如果不适用```make menuconfig```为你自动配置, 则会在```make```阶段
+以大量的交互式问题的形式需要你进行回答.  
+使用 ```make menuconfig``` 向导自动完成之后, 仍有必要再次确认, 是否被修改覆盖掉你原本打算启用/禁用的内容.  
+例如:  
+
+```
+grep -w CONFIG_SYSTEM_TRUSTED_KEYS .config
+grep -w CONFIG_DEBUG_INFO .config
+grep -w CONFIG_DEBUG_INFO_BTF .config
+grep -w CONFIG_BCACHE .config
 ```
 
 编译内核--依次执行以下步骤,注意确认是否有报错  
