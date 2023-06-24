@@ -99,6 +99,65 @@ yum remove $(rpm -qa | grep kernel | grep -v $(uname -r))
 
 <h3 id="2">在 rocky 8 (红帽 8) 编译升级 5.x 6.x</h3>
 
+#### 2023-06-24 重要补充说明
+
+本节内描述的结论, 基于以下测试环境验证:
+- OS发行版: Rocky 8.7
+- 内核版本: 原 4.18.0-425.3.1.el8.x86_64 的内核, 经历以下升级验证  
+4.18 --> 6.1.20  
+4.18 --> 6.1.35  
+6.1.20 --> 6.1.35  
+
+如果编译安装期望的结果是: 内核版本得到升级, 同时kdump服务能正常工作, crash工具也能正常读取kdump生成的crash日志文件, 
+则应当采取经过验证其有效性的步骤如下:
+
+1) 解压内核源码包
+2) 复制一个系统原本自带的 config 文件, 位于 /boot/config-xxx 到解压的内核源码包的根目录下.具体操作本文下方已有详细步骤.
+3) 编辑 .config 文件内的内容, 需要 ```CONFIG_SYSTEM_TRUSTED_KEYS=""```, 另外需要```CONFIG_DEBUG_INFO```, 
+   ```CONFIG_DEBUG_INFO_BTF```都为N (<font color=red>有关这一点还有补充说明</font>), 其余就是自己希望启用的内核模块了.
+4) 执行 ```make menuconfig```
+5) ```make menuconfig``` 执行后会覆盖原有对 .config 的变更, 需要重新执行步骤3的检查和修改,有关这一点,也许会显得步骤3是多余的, 但其实不尽然
+6) 执行编译步骤
+
+以上流程, 经过内核版本 6.1.20 和 6.1.35 的实践检验证明其有效性.
+
+如果省略其中某个步骤, 可能会引起  ```make menuconfig``` 生成的 .config 文件的变化, 导致在 make 阶段, 会提出新的问题需要交互.从而有编译结果的不一致性.
+这其中的原因是, 每一个新的内核版本发布都可能会包含有新的 config 参数, 而在原有的 config 文件中并不包含配置值, 需要人为的
+给出明确指示,
+
+在内核版本 6.1.20 和 6.1.35 的编译过程中发现, ```CONFIG_DEBUG_INFO```, ```CONFIG_DEBUG_INFO_BTF```, ```CONFIG_DEBUG_INFO_NONE```
+如果出现在你的 config 文件中, 根据以上经验, 设置为 ```=N``` 大N, 能得出正确的结果.
+
+不过也通过 make 过程中查看 .config 文件的变化也发现, .config 文件依然受到了 make 命令的修改, 改为了 ```=y```
+
+如下:
+
+```
+[root@X9DR3-F 6.1.35]# grep -w CONFIG_DEBUG_INFO .config
+CONFIG_DEBUG_INFO=y
+[root@X9DR3-F 6.1.35]# grep -w CONFIG_DEBUG_INFO_BTF .config
+# CONFIG_DEBUG_INFO_BTF is not set
+[root@X9DR3-F 6.1.35]# grep -w CONFIG_DEBUG_INFO_NONE .config
+# CONFIG_DEBUG_INFO_NONE is not set
+```
+
+但如果你在上述第3步中, 自行配置 ```CONFIG_DEBUG_INFO=y```, 却会引出新的 ```CONFIG_DEBUG_INFO_NONE=y```
+从而在此状态编译出的内核, kdump 虽然工作正常, 但 crash 工具去读取时却会提示 ```no debugging data available```,
+且尝试各种在此基础上的组合,均无法得出期望的结果.  
+而你按照以上列出的步骤执行, 则可以得出期望的结果.  
+这正是其吊诡之处, 与过去以往的文章告诉你, ```CONFIG_DEBUG_INFO=y``` 就是你需要的步骤, 已发生某种改变.  
+
+附:  
+<a href="files/w6kzRJaoMtnqOFJ6UHSL098YZlRvIiKM" target="_blank">被make修改后的config文件, 内核版本6.1.35</a>
+
+该附件可用于直接执行 make 命令, 不再需要 ```make menuconfig``` 等步骤.  
+但需要注意的是, 经过检验的是 6.1.35 的内核, 不同的内核版本则可能会出现新的问题.
+
+另外其实也无需单独生成 vmlinux, ```make modules``` 和 ```make modules_install``` 会配置 crash 命令默认的 vmlinux 文件
+位置, 即内核源码的解压缩位置
+
+#### 基本步骤
+
 绝大部分步骤参考此文档即可  
 https://blog.51cto.com/u_3436241/4750925  
 
@@ -137,10 +196,10 @@ cp /boot/config-$(uname -r) ./.config
 ```
 
 在.config文件中找到 ```CONFIG_SYSTEM_TRUSTED_KEYS```，将这行置空, 但不能注释, 否则依然会要你提供证书keys的位置。  
-即```CONFIG_SYSTEM_TRUSTED_KEYS=""```
+即```CONFIG_SYSTEM_TRUSTED_KEYS=""```, 因为```CONFIG_SYSTEM_TRUSTED_KEYRING=y``` 且改为 N 也依然要你提供key
 
 额外的, 如果有启用其他模块的需求, 如:  
-debug 用途的 ```CONFIG_DEBUG_INFO```, ```CONFIG_DEBUG_INFO_BTF```, 而 ```CONFIG_DEBUG_INFO_NONE=n``` 需要显式的等于n  
+~~debug 用途的 ```CONFIG_DEBUG_INFO```, ```CONFIG_DEBUG_INFO_BTF```, 而 ```CONFIG_DEBUG_INFO_NONE=n``` 需要显式的等于n~~  
 用于缓存用途的 ```CONFIG_BCACHE```  
 也是通过编辑 ./config 文件来启用  
 查询内核模块名称的网站  
