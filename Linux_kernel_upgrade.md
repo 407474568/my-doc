@@ -156,6 +156,10 @@ CONFIG_DEBUG_INFO=y
 另外其实也无需单独生成 vmlinux, ```make modules``` 和 ```make modules_install``` 会配置 crash 命令默认的 vmlinux 文件
 位置, 即内核源码的解压缩位置
 
+其他一些可以支撑本节论述的观点的文字, 因重要性不高, 使用附件形式.  
+
+<a href="files/w6kzRJaoMtnBKV4vzYcG6fl0x7obmePs.txt" target="_blank">部分操作记录</a>
+
 #### 基本步骤
 
 绝大部分步骤参考此文档即可  

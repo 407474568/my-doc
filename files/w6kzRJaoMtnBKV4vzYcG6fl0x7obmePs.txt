@@ -1,0 +1,362 @@
+Connecting to 192.168.1.86:22...
+...Connection established.
+To escape to local shell, press 'Ctrl+Alt+]'.
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Last login: Fri Jun 23 21:52:55 2023 from 192.168.1.100
+[root@kvm-host-simulator ~]# uname -r
+6.1.20
+[root@kvm-host-simulator ~]# crash
+
+crash 7.3.2-4.el8
+Copyright (C) 2002-2022  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+GNU gdb (GDB) 7.6
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-unknown-linux-gnu"...
+
+WARNING: kernel relocated [396MB]: patching 137180 gdb minimal_symbol values
+
+      KERNEL: /lib/modules/6.1.20/build/vmlinux                        
+    DUMPFILE: /proc/kcore
+        CPUS: 24
+        DATE: Fri Jun 23 23:06:01 EDT 2023
+      UPTIME: 00:00:27
+LOAD AVERAGE: 0.14, 0.03, 0.01
+       TASKS: 382
+    NODENAME: kvm-host-simulator
+     RELEASE: 6.1.20
+     VERSION: #1 SMP PREEMPT_DYNAMIC Fri Jun 23 22:54:08 EDT 2023
+     MACHINE: x86_64  (3400 Mhz)
+      MEMORY: 8 GB
+         PID: 1461
+     COMMAND: "crash"
+        TASK: ffff9f5ec3526600  [THREAD_INFO: ffff9f5ec3526600]
+         CPU: 17
+       STATE: TASK_RUNNING (ACTIVE)
+
+crash> ^Z
+[1]+  Stopped                 crash
+[root@kvm-host-simulator ~]# echo c > /proc/sysrq-trigger
+
+Socket error Event: 32 Error: 10053.
+Connection closing...Socket close.
+
+Connection closed by foreign host.
+
+Disconnected from remote host(`6_KVM宿主机-实验机) at 11:09:59.
+
+Type `help' to learn how to use Xshell prompt.
+[D:\~]$ 
+Reconnecting in 15 seconds. Press any key to exit local shell.
+...............
+
+Connecting to 192.168.1.86:22...
+...........Canceled.
+
+Type `help' to learn how to use Xshell prompt.
+[D:\~]$ 
+
+Connecting to 192.168.1.86:22...
+Connection established.
+To escape to local shell, press 'Ctrl+Alt+]'.
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Last login: Fri Jun 23 23:05:42 2023 from 192.168.1.100
+[root@kvm-host-simulator ~]# uname -r
+6.1.20
+[root@kvm-host-simulator ~]# ll /var/crash
+total 0
+[root@kvm-host-simulator ~]# systemctl status kdump.service 
+● kdump.service - Crash recovery kernel arming
+   Loaded: loaded (/usr/lib/systemd/system/kdump.service; enabled; vendor preset: enabled)
+   Active: failed (Result: exit-code) since Fri 2023-06-23 23:12:21 EDT; 20s ago
+  Process: 1387 ExecStart=/usr/bin/kdumpctl start (code=exited, status=1/FAILURE)
+ Main PID: 1387 (code=exited, status=1/FAILURE)
+
+Jun 23 23:12:21 kvm-host-simulator systemd[1]: Starting Crash recovery kernel arming...
+Jun 23 23:12:21 kvm-host-simulator kdumpctl[1403]: kdump: No memory reserved for crash kernel
+Jun 23 23:12:21 kvm-host-simulator kdumpctl[1403]: kdump: Starting kdump: [FAILED]
+Jun 23 23:12:21 kvm-host-simulator systemd[1]: kdump.service: Main process exited, code=exited, status=1/FAILURE
+Jun 23 23:12:21 kvm-host-simulator systemd[1]: kdump.service: Failed with result 'exit-code'.
+Jun 23 23:12:21 kvm-host-simulator systemd[1]: Failed to start Crash recovery kernel arming.
+[root@kvm-host-simulator ~]# vi /etc/default/grub 
+[root@kvm-host-simulator ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
+Generating grub configuration file ...
+done
+[root@kvm-host-simulator ~]# reboot
+Connection closing...Socket close.
+
+Connection closed by foreign host.
+
+Disconnected from remote host(`6_KVM宿主机-实验机) at 11:13:55.
+
+Type `help' to learn how to use Xshell prompt.
+[D:\~]$ 
+Reconnecting in 15 seconds. Press any key to exit local shell.
+...............
+
+Connecting to 192.168.1.86:22...
+.Connection established.
+To escape to local shell, press 'Ctrl+Alt+]'.
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Last login: Fri Jun 23 23:12:27 2023 from 192.168.1.100
+[root@kvm-host-simulator ~]# systemctl status kdump.service 
+● kdump.service - Crash recovery kernel arming
+   Loaded: loaded (/usr/lib/systemd/system/kdump.service; enabled; vendor preset: enabled)
+   Active: active (exited) since Fri 2023-06-23 23:14:18 EDT; 537ms ago
+  Process: 1392 ExecStart=/usr/bin/kdumpctl start (code=exited, status=0/SUCCESS)
+ Main PID: 1392 (code=exited, status=0/SUCCESS)
+
+Jun 23 23:14:15 kvm-host-simulator dracut[1770]: *** Install squash loader ***
+Jun 23 23:14:15 kvm-host-simulator dracut[1770]: *** Stripping files ***
+Jun 23 23:14:15 kvm-host-simulator dracut[1770]: *** Stripping files done ***
+Jun 23 23:14:15 kvm-host-simulator dracut[1770]: *** Squashing the files inside the initramfs ***
+Jun 23 23:14:17 kvm-host-simulator dracut[1770]: *** Squashing the files inside the initramfs done ***
+Jun 23 23:14:17 kvm-host-simulator dracut[1770]: *** Creating image file '/boot/initramfs-6.1.20kdump.img' ***
+Jun 23 23:14:17 kvm-host-simulator dracut[1770]: *** Creating initramfs image file '/boot/initramfs-6.1.20kdump.img' done ***
+Jun 23 23:14:18 kvm-host-simulator kdumpctl[1412]: kdump: kexec: loaded kdump kernel
+Jun 23 23:14:18 kvm-host-simulator kdumpctl[1412]: kdump: Starting kdump: [OK]
+Jun 23 23:14:18 kvm-host-simulator systemd[1]: Started Crash recovery kernel arming.
+[root@kvm-host-simulator ~]# ll^C
+[root@kvm-host-simulator ~]# echo c > /proc/sysrq-trigger
+
+Socket error Event: 32 Error: 10053.
+Connection closing...Socket close.
+
+Connection closed by foreign host.
+
+Disconnected from remote host(`6_KVM宿主机-实验机) at 11:15:10.
+
+Type `help' to learn how to use Xshell prompt.
+[D:\~]$ 
+Reconnecting in 15 seconds. Press any key to exit local shell.
+...............
+
+Connecting to 192.168.1.86:22...
+Connection established.
+To escape to local shell, press 'Ctrl+Alt+]'.
+
+Activate the web console with: systemctl enable --now cockpit.socket
+
+Last login: Fri Jun 23 23:12:27 2023 from 192.168.1.100
+[root@kvm-host-simulator ~]# ll /var/crash/
+total 0
+drwxr-xr-x. 2 root root 67 Jun 23 23:14 127.0.0.1-2023-06-23-23:14:42
+[root@kvm-host-simulator ~]# crash /lib/modules/6.1.20/build/vmlinux /var/crash/127.0.0.1-2023-06-23-23\:14\:42/vmcore
+
+crash 7.3.2-4.el8
+Copyright (C) 2002-2022  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+GNU gdb (GDB) 7.6
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-unknown-linux-gnu"...
+
+WARNING: kernel relocated [856MB]: patching 137180 gdb minimal_symbol values
+
+      KERNEL: /lib/modules/6.1.20/build/vmlinux                        
+    DUMPFILE: /var/crash/127.0.0.1-2023-06-23-23:14:42/vmcore  [PARTIAL DUMP]
+        CPUS: 24
+        DATE: Fri Jun 23 23:14:36 EDT 2023
+      UPTIME: 00:00:31
+LOAD AVERAGE: 0.11, 0.03, 0.01
+       TASKS: 383
+    NODENAME: kvm-host-simulator
+     RELEASE: 6.1.20
+     VERSION: #1 SMP PREEMPT_DYNAMIC Fri Jun 23 22:54:08 EDT 2023
+     MACHINE: x86_64  (3400 Mhz)
+      MEMORY: 8 GB
+       PANIC: "Kernel panic - not syncing: sysrq triggered crash"
+         PID: 1584
+     COMMAND: "bash"
+        TASK: ffff8e8c02773300  [THREAD_INFO: ffff8e8c02773300]
+         CPU: 8
+       STATE: TASK_RUNNING (PANIC)
+
+crash> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[root@kvm-host-simulator ~]# crash /lib/modules/6.1.35/build/vmlinux /var/crash/127.0.0.1-2023-06-24-01\:13\:49/vmcore
+
+crash 7.3.2-4.el8
+Copyright (C) 2002-2022  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+GNU gdb (GDB) 7.6
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-unknown-linux-gnu"...
+
+WARNING: kernel relocated [324MB]: patching 137263 gdb minimal_symbol values
+
+      KERNEL: /lib/modules/6.1.35/build/vmlinux                        
+    DUMPFILE: /var/crash/127.0.0.1-2023-06-24-01:13:49/vmcore  [PARTIAL DUMP]
+        CPUS: 24
+        DATE: Sat Jun 24 01:13:45 EDT 2023
+      UPTIME: 00:05:36
+LOAD AVERAGE: 0.00, 0.00, 0.00
+       TASKS: 337
+    NODENAME: kvm-host-simulator
+     RELEASE: 6.1.35
+     VERSION: #1 SMP PREEMPT_DYNAMIC Sat Jun 24 00:56:47 EDT 2023
+     MACHINE: x86_64  (3399 Mhz)
+      MEMORY: 8 GB
+       PANIC: "Kernel panic - not syncing: sysrq triggered crash"
+         PID: 2015
+     COMMAND: "bash"
+        TASK: ffff8a7014aa8000  [THREAD_INFO: ffff8a7014aa8000]
+         CPU: 16
+       STATE: TASK_RUNNING (PANIC)
+
+crash> quit
+[root@kvm-host-simulator ~]# uname -r
+6.1.35
+[root@kvm-host-simulator ~]# modprobe bcache
+[root@kvm-host-simulator ~]# lsmod | grep -i bcache
+bcache                339968  0
+crc64                  20480  1 bcache
+
+
+
+
+
+
+
+
+[root@X9DRi-LN4F ~]# crash /lib/modules/6.1.35/build/vmlinux /var/crash/127.0.0.1-2023-06-24-16\:07\:36/vmcore
+
+crash 7.3.2-4.el8
+Copyright (C) 2002-2022  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+GNU gdb (GDB) 7.6
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-unknown-linux-gnu"...
+
+WARNING: kernel relocated [564MB]: patching 137263 gdb minimal_symbol values
+
+      KERNEL: /lib/modules/6.1.35/build/vmlinux  [TAINTED]             
+    DUMPFILE: /var/crash/127.0.0.1-2023-06-24-16:07:36/vmcore  [PARTIAL DUMP]
+        CPUS: 32
+        DATE: Sat Jun 24 16:07:18 CST 2023
+      UPTIME: 00:03:09
+LOAD AVERAGE: 1.16, 1.19, 0.53
+       TASKS: 630
+    NODENAME: X9DRi-LN4F
+     RELEASE: 6.1.35
+     VERSION: #1 SMP PREEMPT_DYNAMIC Sat Jun 24 15:53:48 CST 2023
+     MACHINE: x86_64  (2600 Mhz)
+      MEMORY: 1024 GB
+       PANIC: "Kernel panic - not syncing: sysrq triggered crash"
+         PID: 2741
+     COMMAND: "bash"
+        TASK: ffff94a5914f9980  [THREAD_INFO: ffff94a5914f9980]
+         CPU: 13
+       STATE: TASK_RUNNING (PANIC)
+
+crash> 
+
+
+
+
+
+
+
+
+
+[root@X9DR3-F 6.1.35]# grep -w CONFIG_DEBUG_INFO .config
+CONFIG_DEBUG_INFO=y
+[root@X9DR3-F 6.1.35]# grep -w CONFIG_DEBUG_INFO_BTF .config
+# CONFIG_DEBUG_INFO_BTF is not set
+[root@X9DR3-F 6.1.35]# grep -w CONFIG_DEBUG_INFO_NONE .config
+# CONFIG_DEBUG_INFO_NONE is not set
