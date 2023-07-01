@@ -60,9 +60,9 @@ $ grep NOFILE /etc/systemd/system.conf.d/limits.conf
 DefaultLimitNOFILE=65535
 ```
 
-缺点:
-1) 修改对象就不再仅限于该服务, 而是系统上的全部服务项
-2) 需要重启操作系统才能生效
+缺点:  
+1) 修改对象就不再仅限于该服务, 而是系统上的全部服务项  
+2) 需要重启操作系统才能生效  
 
 #### 2021-11-06 增补  
 https://bbs.huaweicloud.com/blogs/108323  
