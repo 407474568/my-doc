@@ -176,6 +176,42 @@ yum -y install libnl libnl-devel
 yum -y install libnl3 libnl3-devel
 ```
 
+#### master-slave 角色变换时, 执行操作
+
+https://blog.51cto.com/u_13520924/2094236
+
+在 ```vrrp_instance``` 段内添加配置语句
+
+```
+vrrp_instance VI_1 {
+    state MASTER
+    interface eth1
+    virtual_router_id 66
+    priority 100
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 123456
+    }
+    virtual_ipaddress {
+        172.18.0.200/16
+    }
+    notify_master "/etc/keepalived/notify.sh master"
+    notify_backup "/etc/keepalived/notify.sh backup"
+    notify_fault "/etc/keepalived/notify.sh fault"
+}
+```
+
+其中
+
+```
+    notify_master "/etc/keepalived/notify.sh master"
+    notify_backup "/etc/keepalived/notify.sh backup"
+    notify_fault "/etc/keepalived/notify.sh fault"
+```
+
+就是你希望调度执行的脚本
+
 #### 2023-06-18 补充
 
 OS版本: Rocky 8.7, keepalived-2.2.8.
