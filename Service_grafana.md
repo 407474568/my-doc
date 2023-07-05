@@ -26,6 +26,7 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
   * [grafana--时间范围的两个功能的应用](#4)
   * [grafana--通过自定义变量实现下拉筛选菜单](#5)
   * [grafana--计算项](#6)
+  * [grafana--重新指定field的文字显示的几种方式](#7)
 
 
 <h3 id="1">grafana--样式参考</h3>
@@ -202,3 +203,18 @@ https://blog.csdn.net/weixin_48421114/article/details/109455178
 3 可添加项选择filter by name，然后勾选你实际想要的换算后的新列名
 
 ![](images/UgkV5FHAqz8P3XmLkONpnAWCrgET9she.png)
+
+
+<h3 id="7">grafana--重新指定field的文字显示的几种方式</h3>
+
+https://community.grafana.com/t/how-to-rename-values-in-grafana-using-regex-based-value-mapping/53616/2
+
+这是方式一, 使用 ```transform``` 里的 ```Rename by regex```
+
+![](images/HxTbsVl80zMd7CtAIJwUW4pRQo5rnKF0.png)
+
+方式二, 在 ```query``` 这里使用 ```function```
+
+![](images/HxTbsVl80z0TlixEeZmId2tXPQFvYScj.png)
+
+以上都是支持正则表达式, 分组引用注意是 ```$1 $2``` 的格式 
