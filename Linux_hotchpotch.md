@@ -3,6 +3,16 @@
   * [进程的运行时间](#2)
   * [不明的磁盘空间占用问题](#3)
   * [fallocate 预分配文件大小](#4)
+  * [fallocate 全局禁用IPv6](#5)
+  * [iftop 监控网卡特定流量](#6)
+  * [logrotate 的配置语法](#7)
+  * [内存做ramdisk](#8)
+  * [查找sar -d 里面显示设备名称与熟知的设备名称的对应关系](#9)
+  * [不能本地console / 远程ssh登录的检查项](#11)
+  * [因机器异常关闭导致xfs文件系统损坏的不能启动](#12)
+  * [/etc/fstab 文件详解](#13)
+  * [处理NETSTAT中获取不到PID的进程](#14)
+  * [NFS服务对应的端口及iptables配置](#15)
 
 <h3 id="1">ASCII对照表</h3>  
 
@@ -188,7 +198,7 @@ https://linux.die.net/man/1/fallocate
 512	/SATA-16T/losetup-test
 ```
 
-#### 全局禁用IPv6
+<h3 id="5">全局禁用IPv6</h3>
 
 编辑文件/etc/sysctl.conf，
 ```
@@ -208,7 +218,7 @@ net.ipv6.conf.default.disable_ipv6 =1
 sysctl -p
 ```
 
-#### iftop 监控网卡特定流量
+<h3 id="6">iftop 监控网卡特定流量</h3>
 
 https://huataihuang.gitbooks.io/cloud-atlas/content/network/packet_analysis/utilities/iftop.html
 
@@ -282,7 +292,7 @@ Cumulative (sent/received/total):                      688B     12.6KB     13.3K
 ============================================================================================
 ```
 
-#### logrotate 的配置语法
+<h3 id="7">logrotate 的配置语法</h3>
 
 完全引用自:  
 https://wangchujiang.com/linux-command/c/logrotate.html
@@ -379,7 +389,8 @@ size(或minsize) log-size 当日志文件到达指定的大小时才转储
 
 > 这种情况下，会将轮转过的log再重新轮转,因为轮转过后的文件名也是已log开头的
 
-#### autofs自动挂载
+<h3 id="8">autofs自动挂载</h3>
+
 相比 /etc/fstab 在操作系统启动时挂载  
 autofs 按需挂载具有更多的灵活性  
 https://www.cnblogs.com/felixzh/p/9239298.html
@@ -464,10 +475,12 @@ remoteuser1
 实际的文件夹 /rhome/remoteuser1
 remoteuser1 存不存在都不影响
 
-#### 内存做ramdisk
+<h3 id="9">内存做ramdisk</h3>
+
 [https://blog.csdn.net/weixin_37871174/article/details/75084619](https://blog.csdn.net/weixin_37871174/article/details/75084619)
 
 以下操作不存在侵入性, 诸如编译内核参数等.
+
 ```
 #!/bin/bash
 # 指定大小,单位是KB
@@ -490,7 +503,8 @@ umount /dev/ram0
 modprobe -r brd
 ```
 
-#### 查找sar -d 里面显示设备名称与熟知的设备名称的对应关系
+<h3 id="10">查找sar -d 里面显示设备名称与熟知的设备名称的对应关系</h3>
+
 [文章链接](https://itindex.net/detail/48792-lvm-%E7%A3%81%E7%9B%98-%E6%98%A0%E5%B0%84)
 
 ![](/images/b6be90b3gy1gj2w0mf10cj20sk05cq2x.jpg)
@@ -503,14 +517,16 @@ dmsetup ls
 ![](/images/b6be90b3gy1gj2w1xhe2xj20d30933yi.jpg)
   
   
-#### 不能本地console / 远程ssh登录的检查项
+<h3 id="11">不能本地console / 远程ssh登录的检查项</h3>
+
 检查/etc/pam.d/login 是否有异常项  
 检查/etc/securetty 这里面的是允许登录的交互方式, 如果被注释掉,则root不能登录  
 检查/etc/passwd 用户shell 是否nologin  
 从/var/log/messages 和 /var/log/secure 里查找提示
 
 
-#### 因机器异常关闭导致xfs文件系统损坏的不能启动
+<h3 id="12">因机器异常关闭导致xfs文件系统损坏的不能启动</h3>
+
 [文章链接](https://blog.csdn.net/Jaelin_Pang/article/details/77825408)  
 错误大概显示如下：
 ```
@@ -524,7 +540,8 @@ Entering emergence mode......
 ```xfs_repair  -L  /dev/dm-0```  
 
 
-#### /etc/fstab 文件详解
+<h3 id="13">/etc/fstab 文件详解</h3>
+
 [文章链接](https://www.jianshu.com/p/87bef8c24c15)  
 
 ![](/images)  
@@ -562,14 +579,16 @@ nosuid Blocks the operation of suid, and sgid bits.
 ```
 
 
-#### 处理NETSTAT中获取不到PID的进程
+<h3 id="14">处理NETSTAT中获取不到PID的进程</h3>
+
 [文章链接](http://www.debugrun.com/a/OI9oeBu.html)  
 说是运行时间长(一年半载)的进程可能会遇到这种现象
 在常规手段都找不到的情况下,还有可能是内核线程,所以没有PID
 查看方式  
 rpcinfo -p localhost
 
-#### NFS服务对应的端口及iptables配置
+<h3 id="15">NFS服务对应的端口及iptables配置</h3>
+
 [文章链接](http://www.cnblogs.com/Skyar/p/3573187.html)  
 NFS主要用到的端口有：111- portmapper， 875 - rquotad，892-mountd，2049-nfs，udp：32769-nlockmgr，tcp：32803-nlockmgr，把这些端口加入到iptables规则中即可。  
 配置过程如下：  
@@ -628,6 +647,7 @@ service nfs restart
 ```
 
 #### Linux查看进程运行的完整路径方法
+
 通过ps及top命令查看进程信息时，只能查到相对路径，查不到的进程的详细信息，如绝对路径等。这时，我们需要通过以下的方法来查看进程的详细信息：  
 Linux在启动一个进程时，系统会在/proc下创建一个以PID命名的文件夹，在该文件夹下会有我们的进程的信息，其中包括一个名为exe的文件即记录了绝对路径，通过ll或ls –l命令即可查看。  
 ll /proc/PID  
@@ -669,10 +689,12 @@ Subsystem
 Subsystem 是说 ssh 的子模块 这里启用的即为 sftp 模块，我们使用系统自带的 internal-sftp 来提供此服务，其实配置到这你即可以使用帐号 ssh 登录，也可以使用 ftp 客户端 sftp 登录。
 
 #### EOF块中使变量不被引用方法
+
 ![](/images/b6be90b3gy1gj2w5jsuo5j20kk08y0tc.jpg)
 
 
 #### /etc/fstab中带空格的路径问题
+
 写入/etc/fstab中的路径,如果有空格,用引号,以及用\转义都是行不通的,会提示/etc/fstab列表中语法有错误  
 ```
 [mntent]: line 9 in /etc/fstab is bad
