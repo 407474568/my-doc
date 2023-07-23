@@ -179,7 +179,14 @@ https://linux.die.net/man/1/fallocate
 使用 fallocate 命令, 可以预分配文件大小, 但又无需 dd 之类的命令一样实际有个写入操作  
 尽管 dd 命令可以指定 /dev/zero 这样最高效的源端, 但依然需要耗时.  
 使用 fallocate 命令, 则可避免这个问题
+注意区别在于, ls 命令看到的是预分配大小, du 看到的实际数据大小
 
+```
+[root@storage ~]# ll /SATA-16T/losetup-test 
+-rw-r--r-- 1 root root 1.0T Jul 23 23:07 /SATA-16T/losetup-test
+[root@storage ~]# du -sh /SATA-16T/losetup-test 
+512	/SATA-16T/losetup-test
+```
 
 #### 全局禁用IPv6
 
