@@ -7,6 +7,7 @@
   * [盘符上限问题](#6)
   * [移动设备挂载与Winodws分区表错误修复](#7)
   * [固化网卡命名](#8)
+  * [scsi_id 的问题](#9)
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
@@ -430,3 +431,37 @@ SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="11:22:33:44:55:6
 SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="11:22:33:44:55:77", NAME="eth1"
 SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="11:22:33:44:55:88", NAME="eth2"
 ```
+
+<h3 id="9">scsi_id 的问题</h3>
+
+当需要查看磁盘 ```scsi_id``` 时的选择有多个
+
+```
+scsi_id -g -s <盘符的绝对路径, 如/dev/sda>
+
+lsscsi --scsi_id
+```
+
+```lsscsi --scsi_id``` 一次性给出了所有的scsi盘
+
+scsi_id 命令找不到的情况
+
+```
+[root@X9DRi-LN4F ~]# scsi_id
+-bash: scsi_id: command not found
+[root@X9DRi-LN4F ~]# which scsi_id
+/usr/bin/which: no scsi_id in (/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin)
+```
+
+实际上它可能位于以下位置, 并不在默认环境变量中
+
+```
+[root@X9DRi-LN4F ~]# ll /lib/udev/scsi_id
+-rwxr-xr-x 1 root root 54K Mar 17 16:57 /lib/udev/scsi_id
+```
+
+另外, vmware虚拟化中, 由vmware虚拟出来的 scsi 磁盘类型, 默认并没有 scsi_id, 需要手工修改文件才能具备.
+
+https://blog.purestorage.com/purely-technical/enabling-scsi_id-on-vmware/
+
+需要增加配置  disk.enableUUID=true到.vmx文件里面。重启虚拟机生效。
