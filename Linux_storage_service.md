@@ -111,6 +111,22 @@ iscsiadm -m discovery -t sendtargets -p 172.29.88.62:3260
 iscsiadm -m node -T iqn.2000-01.com.synology:themain-3rd.ittest -p 172.29.88.62 --login
 ```
 
+其他
+
+```
+# 查看默认是否自动登录
+grep startup /var/lib/iscsi/nodes/<server端的IQN>/<server端的IP+端口等>/default
+
+# 重新扫描会话
+iscsiadm -m node -R
+
+# 查看注册的卷
+cat /proc/scsi/scsi 
+
+# 查看session
+iscsiadm -m node
+```
+
 -T后面跟target名称，--login等同于-l，
 
 登录目标节点成功后，即建立了initiator与target之间的会话（session），同时target提供的存储设备也挂载到主机中，在/dev目录下生成一个新的设备文件类似于sdb、sdc等。使用iscsiadm -m session -P 3（与service iscsi status相同）来查看连接会话信息。
