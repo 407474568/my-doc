@@ -121,6 +121,9 @@ iscsiadm -m node -T iqn.2000-01.com.synology:themain-3rd.ittest -p 172.29.88.62 
 /var/lib/iscsi/nodes/<server端名称的目录>
 ```
 
+同样的, 如果不再需要该磁盘, 且该 iscsi server端的信息也无需保留, 也可以通过删除整个目录达成该目的.
+
+
 
 <h3 id="3">bcache 的使用</h3>
 
