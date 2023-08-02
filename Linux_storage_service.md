@@ -113,6 +113,8 @@ iscsiadm -m node -T iqn.2000-01.com.synology:themain-3rd.ittest -p 172.29.88.62 
 
 其他
 
+https://blog.csdn.net/qq_41586875/article/details/123090983
+
 ```
 # 查看默认是否自动登录
 grep startup /var/lib/iscsi/nodes/<server端的IQN>/<server端的IP+端口等>/default
