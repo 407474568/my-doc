@@ -449,10 +449,33 @@ https://zhuanlan.zhihu.com/p/85808151
 附一个我的示例如下
 
 ```
+[root@X9DRi-LN4F ~]# cat /etc/udev/rules.d/user_custom.rules 
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="30000000000000000", SYMLINK="sys-1"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="SATA_GLOWAY_STK240GS3_M23031400590", SYMLINK="sys-2"
+
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="355cd2e414dc8bf5e", SYMLINK="s3710-400G-1"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="355cd2e414db00fd7", SYMLINK="s3710-400G-2"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="355cd2e414db3e2ff", SYMLINK="s3710-400G-3"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="355cd2e414db3c6ff", SYMLINK="s3710-400G-4"
+
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="35000c5008460ecd7", SYMLINK="SAS-6T-1"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="35000cca2323327c8", SYMLINK="SAS-6T-2"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="35000c50084562273", SYMLINK="SAS-6T-3"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="35000c50095d0f64b", SYMLINK="SAS-6T-4"
+
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="355cd2e404b657976", SYMLINK="s3700-800G"
+KERNEL=="sd*", SUBSYSTEM=="block", PROGRAM=="/lib/udev/scsi_id -g -u %N", RESULT=="35002538c407256e2", SYMLINK="sm863a-960G"
+
+
 [root@X9DRi-LN4F ~]# cat iostat.sh 
 # date "+%F %T"
-iostat -t -x -m 3 -g s3710 sdb sdd sde sdh -g iscsi-1 sdn -g s3700-sm863a sdi sdj -g iscsi-2 sdm
-[root@X9DRi-LN4F ~]# vi iostat.sh 
+iostat -t -x -m 3 \
+-g s3710 /dev/s3710-400G-1 /dev/s3710-400G-2 /dev/s3710-400G-3 /dev/s3710-400G-4 \
+-g SAS-6T /dev/SAS-6T-1 /dev/SAS-6T-2 /dev/SAS-6T-3 /dev/SAS-6T-4 \
+-g s3700-sm863a /dev/s3700-800G /dev/sm863a-960G \
+-g iscsi-2 sdm
+-g sys /dev/sys-1 /dev/sys-2
+
 [root@X9DRi-LN4F ~]# ./iostat.sh 
 Linux 6.1.35 (X9DRi-LN4F) 	07/29/2023 	_x86_64_	(32 CPU)
 
