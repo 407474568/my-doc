@@ -16,15 +16,85 @@ https://openzfs.org/wiki/Main_Page
 
 - yum 安装
 
+https://www.linuxprobe.com/centos7-install-use-zfs.html
 
+参照此文档, 根据自己的OS版本修改相应url
+
+```
+# 获取repo文件
+yum localinstall --nogpgcheck http://epel.mirror.net.in/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+yum localinstall --nogpgcheck http://archive.zfsonlinux.org/epel/zfs-release.el7.noarch.rpm
+
+# 安装zfs包
+yum install kernel-devel zfs
+```
 
 - 编译安装
 
-以下工具链是可能缺失的, 需要确保安装
+安装手册, 官方文档
+https://openzfs.github.io/openzfs-docs/Developer%20Resources/Building%20ZFS.html
+
+
+安装依赖, RHEL/CentOS 7:
 
 ```
-yum -y install pkg-config libuuid-devel libblkid-devel libtirpc-devel rpm-build 
+sudo yum install epel-release gcc make autoconf automake libtool rpm-build libtirpc-devel libblkid-devel libuuid-devel libudev-devel openssl-devel zlib-devel libaio-devel libattr-devel elfutils-libelf-devel kernel-devel-$(uname -r) python python2-devel python-setuptools python-cffi libffi-devel git ncompress libcurl-devel
+sudo yum install --enablerepo=epel python-packaging dkms 
 ```
+
+安装依赖, RHEL/CentOS 8, Fedora:
+
+```
+sudo dnf install --skip-broken epel-release gcc make autoconf automake libtool rpm-build libtirpc-devel libblkid-devel libuuid-devel libudev-devel openssl-devel zlib-devel libaio-devel libattr-devel elfutils-libelf-devel kernel-devel-$(uname -r) python3 python3-devel python3-setuptools python3-cffi libffi-devel git ncompress libcurl-devel
+sudo dnf install --skip-broken --enablerepo=epel --enablerepo=powertools python3-packaging dkms
+```
+
+以及, kernel-devel 也需要确保安装  
+如果内核是自行编译安装, 还需要注意内核编译时, 也生成了kernel-devel  
+参见本站文档
+
+https://docs.heyday.net.cn:1000/Linux_kernel_upgrade.html#2  
+```如何从内核源码中提取kernel-devel```
+
+执行步骤
+
+```
+tar -xvzf <zfs源码包版本>
+cd <zfs源码包版本>
+sh autogen.sh
+./configure
+make -s -j$(nproc)
+```
+
+最后安装
+
+```
+sudo make install
+sudo ldconfig
+sudo depmod
+```
+
+重启后核实模块加载情况
+
+```
+[root@storage-archive ~]# uname -r
+6.1.35
+[root@storage-archive ~]# lsmod | grep -i bcache
+bcache                339968  0
+crc64                  20480  2 crc64_rocksoft,bcache
+[root@storage-archive ~]# lsmod | grep -i zfs
+zfs                  3969024  0
+zunicode              335872  1 zfs
+zzstd                 528384  1 zfs
+zlua                  184320  1 zfs
+zavl                   20480  1 zfs
+icp                   331776  1 zfs
+zcommon               114688  2 zfs,icp
+znvpair               110592  2 zfs,zcommon
+spl                   122880  6 zfs,icp,zzstd,znvpair,zcommon,zavl
+```
+
+
 
 
 <h3 id="2">因盘符变化而导致pool错误的进入DEGRADED状态的处理</h3>
