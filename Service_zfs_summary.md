@@ -8,10 +8,26 @@ https://openzfs.org/wiki/Main_Page
 
 
 * [目录](#0)
-  * [因盘符变化而导致pool错误的进入DEGRADED状态的处理](#1)
+  * [两种安装方式](#1)
+  * [因盘符变化而导致pool错误的进入DEGRADED状态的处理](#2)
 
 
-<h3 id="1">因盘符变化而导致pool错误的进入DEGRADED状态的处理</h3>
+<h3 id="1">两种安装方式</h3>
+
+- yum 安装
+
+
+
+- 编译安装
+
+以下工具链是可能缺失的, 需要确保安装
+
+```
+yum -y install pkg-config libuuid-devel libblkid-devel libtirpc-devel rpm-build 
+```
+
+
+<h3 id="2">因盘符变化而导致pool错误的进入DEGRADED状态的处理</h3>
 
 https://serverfault.com/questions/854979/how-to-change-the-drive-reference-in-a-zfs-pool-from-dev-sdx-to-dev-disk-by-id
 https://superuser.com/questions/1732532/zfs-disk-drive-letter-changed-how-to-reimport-by-id

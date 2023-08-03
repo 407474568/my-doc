@@ -160,6 +160,17 @@ CONFIG_DEBUG_INFO=y
 
 <a href="files/w6kzRJaoMtnBKV4vzYcG6fl0x7obmePs.txt" target="_blank">部分操作记录</a>
 
+
+#### 如何从内核源码中提取kernel-devel
+
+https://kernel.0voice.com/forum.php?mod=viewthread&tid=4045
+
+注意, 是在内核编译 ```make install``` 以后执行以下
+
+```
+make headers_install
+```
+
 #### 基本步骤
 
 绝大部分步骤参考此文档即可  
