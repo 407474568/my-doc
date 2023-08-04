@@ -56,6 +56,14 @@ sudo dnf install --skip-broken --enablerepo=epel --enablerepo=powertools python3
 https://docs.heyday.net.cn:1000/Linux_kernel_upgrade.html#2  
 ```如何从内核源码中提取kernel-devel```
 
+以及, zfs源码包的编译安装过程依赖python解释器, 而不同版本的zfs源码包, 对python解释器版本的识别正确与否表现不同.
+
+例如:  
+当我使用 zfs-2.1.11 的源码包时, python 解释器的版本是自行编译安装的 3.10.11.  
+在尝试让它正确识别后, 依然有错误的问题.  
+服软的解决办法就是 yum 安装随便安装一个满足它要求的版本, 然后在编译完成后, 恢复我原本的 python 3.10.11 的执行程序在 PATH
+下的链接指向
+
 执行步骤
 
 ```
