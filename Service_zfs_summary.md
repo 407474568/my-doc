@@ -53,10 +53,10 @@ sudo dnf install --skip-broken --enablerepo=epel --enablerepo=powertools python3
 
 以及, kernel-devel 也需要确保安装  
 如果内核是自行编译安装, 还需要注意内核编译时, 也生成了kernel-devel  
-参见本站文档
+参见本站文档  ```如何从内核源码中提取kernel-devel```
 
 https://docs.heyday.net.cn:1000/Linux_kernel_upgrade.html#2  
-```如何从内核源码中提取kernel-devel```
+
 
 以及, zfs源码包的编译安装过程依赖python解释器, 而不同版本的zfs源码包, 对python解释器版本的识别正确与否表现不同.
 
