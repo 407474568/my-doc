@@ -345,6 +345,6 @@ zpool import <池名>
 
 - 再重置 zpool 的 cache文件  
 zpool set cachefile=none <池名>  
-zpool set cachefile=<cache文件位置, 如:/usr/local/etc/zfs/zpool.cache> <池名>
+zpool set cachefile=```cache文件位置, 如:/usr/local/etc/zfs/zpool.cache``` <池名>
 
 在我的情景下问题得到解决
