@@ -209,9 +209,9 @@ SATA-16T                  zfs         118970 89609     29362  76% /SATA-16T
 
 旧版 zfs 创建的池, 当在新版 zfs 中运行时, 有升级提示
 
-注意分辨清, zfs 在许多命令组合上都采用此逻辑:
-- 如果输入是的 ```zpool <动作>```, 通常这意味着只是查看
-- 如果你是真的希望被执行, 则是 ```zpool <动作> <对象>```
+注意分辨清, zfs 在许多命令组合上都采用此逻辑:  
+- 如果输入是的 ```zpool <动作>```, 通常这意味着只是查看  
+- 如果你是真的希望被执行, 则是 ```zpool <动作> <对象>```  
 
 因此, 在此问题中, 应当执行 ```zpool upgrade <池名>```
 
@@ -339,12 +339,12 @@ Condition: start condition failed at Sun 2023-08-06 11:04:45 CST; 9min ago
 前者应是第一步的四个服务未全部开机自启  
 后者是 zpool 的 cache 文件的问题, 在我的情景下它根本未被创建
 
-处置办法:
-- 先导入池
-zpool import <池名>
+处置办法:  
+- 先导入池  
+zpool import <池名>  
 
-- 再重置 zpool 的 cache文件
-zpool set cachefile=none <池名>
+- 再重置 zpool 的 cache文件  
+zpool set cachefile=none <池名>  
 zpool set cachefile=<cache文件位置, 如:/usr/local/etc/zfs/zpool.cache> <池名>
 
 在我的情景下问题得到解决
