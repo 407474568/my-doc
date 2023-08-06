@@ -10,6 +10,8 @@ https://openzfs.org/wiki/Main_Page
 * [目录](#0)
   * [两种安装方式](#1)
   * [因盘符变化而导致pool错误的进入DEGRADED状态的处理](#2)
+  * [池特性升级](#3)
+  * [如果开机没有自动导入池](#3)
 
 
 <h3 id="1">两种安装方式</h3>
@@ -201,3 +203,148 @@ SATA-16T                  zfs         118970 89609     29362  76% /SATA-16T
 2) 其次, ```was /dev/sdf1``` 这种就属于标记错误发生了混乱, 原本是sdf的盘符变化了, ZFS 却没有找到正确的成员盘. 然而盘却是实实在在在线的.  
 3) 处理办法, 并不需要去执行```zfs replace``` 替换盘的操作, 这样确实显得太笨, 因为实际上盘并不是真的丢失了. 需要的操作就是先执行```zpool export pool的名称```先导出,
    再执行```zpool import SATA-16T -d /dev/disk/by-id```导入回去.
+
+
+<h3 id="3">池特性升级</h3>
+
+旧版 zfs 创建的池, 当在新版 zfs 中运行时, 有升级提示
+
+注意分辨清, zfs 在许多命令组合上都采用此逻辑:
+- 如果输入是的 ```zpool <动作>```, 通常这意味着只是查看
+- 如果你是真的希望被执行, 则是 ```zpool <动作> <对象>```
+
+因此, 在此问题中, 应当执行 ```zpool upgrade <池名>```
+
+```
+[root@storage-archive ~]# zpool list
+no pools available
+[root@storage-archive ~]# zpool import
+   pool: SAS-4T-group01
+     id: 8055163225617679732
+  state: ONLINE
+status: Some supported features are not enabled on the pool.
+	(Note that they may be intentionally disabled if the
+	'compatibility' property is set.)
+ action: The pool can be imported using its name or numeric identifier, though
+	some features will not be available without an explicit 'zpool upgrade'.
+ config:
+
+	SAS-4T-group01                                ONLINE
+	  raidz3-0                                    ONLINE
+	    ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K2DN7X0E  ONLINE
+	    scsi-35000cca03b49d970                    ONLINE
+	    scsi-35000cca03b8c2c20                    ONLINE
+	    scsi-35000cca05c1e5180                    ONLINE
+	    scsi-35000cca05c2302a4                    ONLINE
+	    scsi-35000cca05c218680                    ONLINE
+	    scsi-35000cca05c203418                    ONLINE
+	    scsi-35000cca05c22d4d0                    ONLINE
+	    scsi-35000cca05c2302a8                    ONLINE
+	    scsi-35000cca05c0f6d24                    ONLINE
+	    scsi-35000cca05c1e5200                    ONLINE
+	    ata-ST4000DM004-2CV104_ZFN0238P           ONLINE
+	    ata-WDC_WD40EZAZ-19SF3B0_WD-WX42DA1PHC31  ONLINE
+[root@storage-archive ~]# zpool import SAS-4T-group01
+[root@storage-archive ~]#  zpool upgrade
+This system supports ZFS pool feature flags.
+
+All pools are formatted using feature flags.
+
+
+Some supported features are not enabled on the following pools. Once a
+feature is enabled the pool may become incompatible with software
+that does not support the feature. See zpool-features(7) for details.
+
+Note that the pool 'compatibility' feature can be used to inhibit
+feature upgrades.
+
+POOL  FEATURE
+---------------
+SAS-4T-group01
+      encryption
+      project_quota
+      device_removal
+      obsolete_counts
+      zpool_checkpoint
+      spacemap_v2
+      allocation_classes
+      resilver_defer
+      bookmark_v2
+      redaction_bookmarks
+      redacted_datasets
+      bookmark_written
+      log_spacemap
+      livelist
+      device_rebuild
+      zstd_compress
+      draid
+
+
+[root@storage-archive ~]# zpool import SAS-4T-group01
+[root@storage-archive ~]# zpool upgrade SAS-4T-group01
+This system supports ZFS pool feature flags.
+
+Enabled the following features on 'SAS-4T-group01':
+  encryption
+  project_quota
+  device_removal
+  obsolete_counts
+  zpool_checkpoint
+  spacemap_v2
+  allocation_classes
+  resilver_defer
+  bookmark_v2
+  redaction_bookmarks
+  redacted_datasets
+  bookmark_written
+  log_spacemap
+  livelist
+  device_rebuild
+  zstd_compress
+  draid
+```
+
+<h3 id="4">如果开机没有自动导入池</h3>
+
+https://github.com/openzfs/zfs/issues/8831
+
+第一步, 这些服务应被启用, 源码包编译安装的, 它也会自动创建
+
+```
+systemctl enable zfs.target --now
+systemctl enable zfs-import.target --now
+systemctl enable zfs-import-cache --now
+systemctl enable zfs-mount --now
+```
+
+第二步, ```zfs-import-cache``` 服务极可能是未能启动的状态
+
+```
+[root@storage-archive ~]# systemctl status zfs-import-cache.service
+● zfs-import-cache.service - Import ZFS pools by cache file
+   Loaded: loaded (/usr/lib/systemd/system/zfs-import-cache.service; enabled; vendor preset: enabled)
+   Active: inactive (dead)
+     Docs: man:zpool(8)
+
+
+[root@storage-archive ~]# systemctl status zfs-import-cache.service 
+● zfs-import-cache.service - Import ZFS pools by cache file
+   Loaded: loaded (/usr/lib/systemd/system/zfs-import-cache.service; enabled; vendor preset: enabled)
+   Active: inactive (dead)
+Condition: start condition failed at Sun 2023-08-06 11:04:45 CST; 9min ago
+           └─ ConditionFileNotEmpty=/usr/local/etc/zfs/zpool.cache was not met
+     Docs: man:zpool(8)
+```
+
+前者应是第一步的四个服务未全部开机自启  
+后者是 zpool 的 cache 文件的问题, 在我的情景下它根本未被创建
+
+处置办法:
+- 先导入池
+zpool import <池名>
+
+- 再重置 zpool 的 cache文件
+zpool set cachefile=none <池名>
+zpool set cachefile=<cache文件位置, 如:/usr/local/etc/zfs/zpool.cache> <池名>
+
+在我的情景下问题得到解决
