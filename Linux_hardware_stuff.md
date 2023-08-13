@@ -16,11 +16,11 @@
 
 https://www.veritas.com/support/en_US/article.100021449
 
-| 文件 | 用途 |
-| ------ | ------ |
-| /proc/scsi/scsi | View scsi devices configured in kernel 查看内核中配置的 scsi 设备 |
-| /proc/scsi/<vendor hba>/<controller> | View  hba configured device in kernel, mappings, driver version. 在内核、映射、驱动程序版本中查看 hba 配置的设备。 |
-| /proc/partitions | View partitions loaded in kernel. 查看内核中加载的分区。 |
+| 文件                                              | 用途 |
+|-------------------------------------------------| ------ |
+| /proc/scsi/scsi                                 | View scsi devices configured in kernel 查看内核中配置的 scsi 设备 |
+| /proc/scsi/```<vendor hba>```/```<controller>``` | View  hba configured device in kernel, mappings, driver version. 在内核、映射、驱动程序版本中查看 hba 配置的设备。 |
+| /proc/partitions                                | View partitions loaded in kernel. 查看内核中加载的分区。 |
 
 | 命令 | 用途 |
 | ------ | ------ |
