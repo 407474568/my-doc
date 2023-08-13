@@ -18,23 +18,23 @@ https://www.veritas.com/support/en_US/article.100021449
 
 | 文件                                              | 用途 |
 |-------------------------------------------------| ------ |
-| /proc/scsi/scsi                                 | View scsi devices configured in kernel 查看内核中配置的 scsi 设备 |
-| /proc/scsi/```<vendor hba>```/```<controller>``` | View  hba configured device in kernel, mappings, driver version. 在内核、映射、驱动程序版本中查看 hba 配置的设备。 |
-| /proc/partitions                                | View partitions loaded in kernel. 查看内核中加载的分区。 |
+| /proc/scsi/scsi                                 | View scsi devices configured in kernel <br>查看内核中配置的 scsi 设备 |
+| /proc/scsi/```<vendor hba>```/```<controller>``` | View  hba configured device in kernel, mappings, driver version. <br>在内核、映射、驱动程序版本中查看 hba 配置的设备。 |
+| /proc/partitions                                | View partitions loaded in kernel. <br>查看内核中加载的分区。 |
 
 | 命令 | 用途 |
 | ------ | ------ |
 | lspci     | ListPCI devices 列出PCI设备 |
-| fdisk     | Partition table manipulator 分区表操纵器 |
-| sfdisk   | Partition table manipulator 分区表操纵器 |
-| parted | Partition table manipulator also used to configure EFI disks. 分区表操纵器也用于配置 EFI 磁盘。 |
-| hdparm    |  Get/set hard disk parameters 获取/设置硬盘参数 |
-| blockdev   | Call block device ioctls from the command line 从命令行调用块设备 ioctls |
-| badblocks  | Check for bad blocks on device 检查设备上的坏块 |
-| lsmod      | View loaded modules 查看加载的模块 |
-| modinfo    | View module loaded parameters 查看模块加载的参数 |
-| scsi_id    | Retrieve and generate a unique SCSI identifier 检索并生成唯一的 SCSI 标识符 |
-| MAKEDEV  | MAKEDEV is a program that will create the devices tree that interfaces with drivers in the kernel. MAKEDEV是一个程序，它将创建与内核中的驱动程序接口的设备树。 |
+| fdisk     | Partition table manipulator <br>分区表操纵器 |
+| sfdisk   | Partition table manipulator <br>分区表操纵器 |
+| parted | Partition table manipulator also used to configure EFI disks. <br>分区表操纵器也用于配置 EFI 磁盘。 |
+| hdparm    |  Get/set hard disk parameters <br>获取/设置硬盘参数 |
+| blockdev   | Call block device ioctls from the command line <br>从命令行调用块设备 ioctls |
+| badblocks  | Check for bad blocks on device <br>检查设备上的坏块 |
+| lsmod      | View loaded modules <br>查看加载的模块 |
+| modinfo    | View module loaded parameters <br>查看模块加载的参数 |
+| scsi_id    | Retrieve and generate a unique SCSI identifier <br>检索并生成唯一的 SCSI 标识符 |
+| MAKEDEV  | MAKEDEV is a program that will create the devices tree that interfaces with drivers in the kernel. <br>MAKEDEV是一个程序，它将创建与内核中的驱动程序接口的设备树。 |
 
 
 The following requires sg module be loaded and sg3_utils be installed
@@ -42,20 +42,20 @@ The following requires sg module be loaded and sg3_utils be installed
 
 | 命令 | 用途 |
 | ------ | ------ |
-| sg_map      | displays mapping between sg and other SCSI devices 显示 SG 和其他 SCSI 设备之间的映射 |
-| sg_scan     | does a scan of sg devices (or given SCSI/ATAPI/ATA devices) and prints the results 扫描 SG 设备（或给定的 SCSI/ATAPI/ATA 设备）并打印结果 |
-| sg_modes   | reads SCSI MODE SENSE pages 读取 SCSI 模式检测页 |
-| sg_rbuf     |   reads data using SCSI READ BUFFER command 使用 SCSI 读取缓冲区命令读取数据 |
-| sg_reset    |  exercises SCSI device/bus/host reset capability 演习 SCSI 设备/总线/主机复位功能 |
-| sg_senddiag |   performs a SCSI SEND DIAGNOSTIC command 执行 SCSI 发送诊断命令 |
-| sg_readcap  |   calls a READ CAPACITY command on a SCSI device 在 SCSI 设备上调用读取容量命令 |
-| sg_start    |      starts (spins-up) or stops(spins down) SCSI devices 启动（向上旋转）或停止（向下旋转）SCSI 设备 |
-| sg_turs     |      executes  a user specified number of TEST UNIT READY commands on the given device 在给定设备上执行用户指定数量的测试单元就绪命令 |
-| sg_test_rwbuf  |  Tests  the  SCSI host adapter by issuing write and read operations on a device âs buffer and calculatingchecksums. 通过在设备的缓冲区上发出写入和读取操作并计算校验和来测试 SCSI 主机适配器。 |
-| sg_inq    | outputs data retrieved from the SCSI INQUIRY command 输出从 SCSI 查询命令检索的数据 |
-| sginfo    | access mode page information for a SCSI (or ATAPI) device SCSI（或 ATAPI）设备的访问模式页面信息 |
-| sg_dd     | copies data to and from sg and raw devices 将数据复制到 SG 和 RAW 设备或从 SG 和 RAW 设备复制数据 |
-| sg_logs   | reads SCSI LOG SENSE pages 读取 SCSI 日志感知页 |
+| sg_map      | displays mapping between sg and other SCSI devices <br>显示 SG 和其他 SCSI 设备之间的映射 |
+| sg_scan     | does a scan of sg devices (or given SCSI/ATAPI/ATA devices) and prints the results <br>扫描 SG 设备（或给定的 SCSI/ATAPI/ATA 设备）并打印结果 |
+| sg_modes   | reads SCSI MODE SENSE pages <br>读取 SCSI 模式检测页 |
+| sg_rbuf     |   reads data using SCSI READ BUFFER command <br>使用 SCSI 读取缓冲区命令读取数据 |
+| sg_reset    |  exercises SCSI device/bus/host reset capability <br>演习 SCSI 设备/总线/主机复位功能 |
+| sg_senddiag |   performs a SCSI SEND DIAGNOSTIC command <br>执行 SCSI 发送诊断命令 |
+| sg_readcap  |   calls a READ CAPACITY command on a SCSI device <br>在 SCSI 设备上调用读取容量命令 |
+| sg_start    |      starts (spins-up) or stops(spins down) SCSI devices <br>启动（向上旋转）或停止（向下旋转）SCSI 设备 |
+| sg_turs     |      executes  a user specified number of TEST UNIT READY commands on the given device <br>在给定设备上执行用户指定数量的测试单元就绪命令 |
+| sg_test_rwbuf  |  Tests  the  SCSI host adapter by issuing write and read operations on a device âs buffer and calculatingchecksums. <br>通过在设备的缓冲区上发出写入和读取操作并计算校验和来测试 SCSI 主机适配器。 |
+| sg_inq    | outputs data retrieved from the SCSI INQUIRY command <br>输出从 SCSI 查询命令检索的数据 |
+| sginfo    | access mode page information for a SCSI (or ATAPI) device <br>SCSI（或 ATAPI）设备的访问模式页面信息 |
+| sg_dd     | copies data to and from sg and raw devices <br>将数据复制到 SG 和 RAW 设备或从 SG 和 RAW 设备复制数据 |
+| sg_logs   | reads SCSI LOG SENSE pages <br>读取 SCSI 日志感知页 |
 
 
 <h3 id="1">查看磁盘归属哪张板卡</h3>  
