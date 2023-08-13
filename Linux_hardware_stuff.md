@@ -36,7 +36,8 @@ ls -ld /sys/block/*/device
 则可以查看每个盘符对应的通道编号, 两者对应上, 则可获知需要的信息  
 但如果是虚拟化平台直通后的, 又会无法确定在宿主机上的对应关系, 因为通道号不同
 
-但以上依然有一个问题未能解答: 该输出结果如何与 ```lspci``` 输出结果中的通道号对应上?
+但以上依然有一个问题未能解答:   
+**该输出结果如何与 ```lspci``` 输出结果中的通道号对应上?**
 
 答案在此处  
 https://support.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=595195495741058&parent=EXTERNAL_SEARCH&sourceId=HOWTO&id=2409184.1&_afrWindowMode=0&_adf.ctrl-state=yv5sqxtd2_4
