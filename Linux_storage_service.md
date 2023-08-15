@@ -44,7 +44,7 @@ backstore 里的四种类型
 - pscsi：pscsi类型存储对象适用于直接通过SCSI命令访问的资源, 需要 ```dev=```
 - ramdisk：ramdisk类型存储对象适用于临时缓存设备，支持多session
 
-红帽关于 pscsi 的提示
+红帽关于 pscsi 的提示  
 https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/managing_storage_devices/creating-a-pscsi-storage-object_configuring-an-iscsi-target
 
 以最常用的 ```fileio```为例, 创建的命令格式
