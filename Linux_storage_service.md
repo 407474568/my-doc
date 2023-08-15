@@ -30,7 +30,48 @@ https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/ma
 
 
 使用示例  
-http://linux.51yip.com/search/targetcli
+http://linux.51yip.com/search/targetcli  
+https://knowledgebase.45drives.com/kb/kb450410-adding-new-luns-to-iscsi-configuration/
+
+只不过关于 targetcli 的文章虽多, 但也是新手教程级别为主, 当用户需要独立控制某些环节的问题就没有交代清楚.
+
+**创建 backstore 磁盘**
+
+backstore 里的四种类型
+
+- block：block类型存储对象适用于本地块设备和逻辑设备, 需要 ```dev=```
+- fileio：fileio类型存储对象适用于存储在本地磁盘上的常规文件
+- pscsi：pscsi类型存储对象适用于直接通过SCSI命令访问的资源, 需要 ```dev=```
+- ramdisk：ramdisk类型存储对象适用于临时缓存设备，支持多session
+
+红帽关于 pscsi 的提示
+https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/9/html/managing_storage_devices/creating-a-pscsi-storage-object_configuring-an-iscsi-target
+
+以最常用的 ```fileio```为例, 创建的命令格式
+
+```
+/backstore/fileio create <在targetcli里的名称> <文件系统上的实际存放位置> <大小, 例如多少G>
+```
+
+**在已有ACL主机对象的情况下, 添加映射的LUN**
+
+此场景适用于一个需要授权的客户端主机, 已经存在于 targetcli 内, 只不过现在缺少特定的 LUN 的授权, 需要添加特定的 LUN.
+
+例如下图
+
+![](images/wIWzqFnVhlOYXwa2mIv6lqkuo1DP7zxU.png)
+
+
+```
+/iscsi/<server 端的 WWN>/tpg1/acls/<客户端的 WWN> create tpg_lun_or_backstore=<数字> mapped_lun=<数字>
+```
+
+其中  
+tpg_lun_or_backstore 是server端, 位于 ```/iscsi/<server 端的 WWN>/tpg1/luns```
+mapped_lun 是客户端ACL 下的 映射LUN 的编号
+
+![](images/wIWzqFnVhlHaCTxr6A5vuK8BjUPSdJL2.png)
+
 
 <h3 id="2">iscsi 客户端</h3>
 
