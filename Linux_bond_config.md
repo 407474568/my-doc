@@ -64,6 +64,34 @@ nmcli connection modify br2 -ipv4.routes "172.16.0.9/32 172.16.0.4"
 nmcli connection modify br2 +ipv4.routes "172.16.0.9/32 172.16.0.4 400"
 ```
 
+#### 默认路由调整优先级
+
+```
+[root@X9DRi-LN4F ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.1.1     0.0.0.0         UG    425    0        0 br0
+172.16.0.0      0.0.0.0         255.255.255.0   U     104    0        0 enp130s0f1
+172.16.0.0      0.0.0.0         255.255.255.0   U     400    0        0 br1
+192.168.1.0     0.0.0.0         255.255.255.0   U     425    0        0 br0
+192.168.122.0   0.0.0.0         255.255.255.0   U     0      0        0 virbr0
+
+[root@X9DRi-LN4F ~]# nmcli con modify to-home-office +ipv4.routes "172.16.0.100/32 172.16.0.6 100"
+[root@X9DRi-LN4F ~]# nmcli con modify to-home-office ipv4.route-metric 425
+[root@X9DRi-LN4F ~]# nmcli con up to-home-office 
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/18)
+
+[root@X9DRi-LN4F ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.1.1     0.0.0.0         UG    425    0        0 br0
+172.16.0.0      0.0.0.0         255.255.255.0   U     400    0        0 br1
+172.16.0.0      0.0.0.0         255.255.255.0   U     425    0        0 enp130s0f1
+172.16.0.100    172.16.0.6      255.255.255.255 UGH   100    0        0 enp130s0f1
+192.168.1.0     0.0.0.0         255.255.255.0   U     425    0        0 br0
+192.168.122.0   0.0.0.0         255.255.255.0   U     0      0        0 virbr0
+```
+
 #### bond的7种模式
 https://blog.csdn.net/watermelonbig/article/details/53127165  
 

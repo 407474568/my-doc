@@ -9,7 +9,8 @@
   * [移动设备挂载与Winodws分区表错误修复](#7)
   * [udev固化网卡命名](#8)
   * [udev固化磁盘名称](#9)
-  * [scsi_id 的问题](#9)
+  * [scsi_id 的问题](#10)
+  * [HP 544 FLR (Mellanox ConnectX-3 Pro芯片) 40G网卡切换以太网模式](#11)
 
 
 <h3 id="10">scsi 磁盘相关的实用命令</h3>  
@@ -591,3 +592,34 @@ scsi_id 命令找不到的情况
 https://blog.purestorage.com/purely-technical/enabling-scsi_id-on-vmware/
 
 需要增加配置  disk.enableUUID=true到.vmx文件里面。重启虚拟机生效。
+
+<h3 id="11">HP 544 FLR (Mellanox ConnectX-3 Pro芯片) 40G网卡切换以太网模式</h3>
+
+HP 544 FLR 网卡, 芯片实际是Mellanox ConnectX-3 Pro 的芯片, 40G 以太网或 infiniband 56G 模式
+
+Linux 内核 4.18 和 6.1 默认都有驱动
+
+但是网卡固件即使刷好ETH模式, 在linux上默认识别的也是 ib 模式, 即infiniband 56G 模式
+
+解决的办法也十分简单, 并不需要去安装 Mellanox 的 OFED 驱动
+
+https://forums.unraid.net/topic/79988-mellanox-interface-not-showing/
+
+我的自动化修改示例
+
+```
+#!/bin/bash
+export LANG=en_US.UTF-8
+source /Code/private/dev/linux_common_lib/linux_common_lib.sh
+
+lspci | grep -i "ConnectX-3 Pro" | awk '{print $1}' | while read -r line
+do
+    find /sys/bus/pci/devices/0000:"$line"/ -name "mlx4_port*" | grep -E "[0-9]$" | while read -r sub_line
+    do
+        value=$(cat "$sub_line")
+        if [ "$value" != "eth" ];then
+            echo eth > "$sub_line"
+        fi
+    done
+done
+```
