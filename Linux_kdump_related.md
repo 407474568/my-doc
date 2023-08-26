@@ -731,7 +731,7 @@ crash>
 ```
 
 以上为例,  
-```PANIC:``` 是引起内核崩溃的原因
+```PANIC:``` 是引起内核崩溃的原因  
 ```PID``` ```COMMAND``` 是相关的进程/命令
 
 3) 还想更进一步了解更多
@@ -784,7 +784,7 @@ crash> dis -l ffffffff8ca01eb2
 其中  
 ```/usr/src/kernels/6.1.46/arch/x86/entry/entry_64.S: 312```  
 代表该代码文件及行数, 即:  
-文件是: /usr/src/kernels/6.1.46/arch/x86/entry/entry_64.S  
+文件是: ```/usr/src/kernels/6.1.46/arch/x86/entry/entry_64.S```  
 行数为: 312 行
 
 ```0xffffffff8ca01eb2 <ret_from_fork+34>:  movq   $0x0,0x50(%rsp)```  
