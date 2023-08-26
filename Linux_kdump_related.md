@@ -4,7 +4,9 @@
   * [kdump需要保留多少内存](#3)
   * [设置了crashkernel的大小, kdump服务依然报错的情况](#4)
   * [kdump服务正常, vmcore未正常生成](#5)
+  * [crash 调查内核崩溃原因](#6)
 
+  
 <h3 id="1">非原始内核版本下的kdump服务</h3>  
 
 #### 可行的操作方法
@@ -646,3 +648,152 @@ https://bugzilla.openanolis.cn/show_bug.cgi?id=1360
 [root@5950x-node1 ~]# cat /proc/cmdline 
 BOOT_IMAGE=(mduuid/09130a4a9a5219308af89a0cd8ad0e0b)/vmlinuz-6.1.20 root=UUID=efd8306f-d3a5-4be6-b70c-273dc67f4095 ro crashkernel=0M-2G:0M,2G-8G:256M,8G-:512M rd.md.uuid=c73334c8:9da98fe8:be443e65:43c976e2 rd.md.uuid=09130a4a:9a521930:8af89a0c:d8ad0e0b rhgb quiet
 ```
+
+
+<h3 id="6">crash 调查内核崩溃原因</h3>
+
+https://www.51cto.com/article/648410.html
+
+要能读取 ```kdump``` 生成的内核转储文件, 实际需要用到3个包
+
+```
+crash
+kernel-debuginfo
+kernel-debuginfo-common-<架构>
+```
+
+其中 ```kernel-debuginfo-common-<架构>``` 包名依赖于你的具体CPU架构
+
+通过 yum 命令安装, 其实只需要给出,```crash```和```kernel-debuginfo```, yum 会附带给出```kernel-debuginfo-common-<架构>```的名称.
+
+而自行编译安装的内核, 如按照本文档前述内容, 在编译安装阶段, 启用了 ```kdump``` 的相关工具链, 则只需要 ```crash``` 软件包被安装即可
+
+1) crash 命令格式
+
+```crash <namelist, 即用于读取kdump文件的环境> <内核转储文件>```
+
+其中
+- namelist , 如果按本文文档的编译安装阶段的推荐位置, 则位于 ```/lib/modules/<内核版本>/build/vmlinux```
+即, crash 命令不给任何参数的情况下, "KERNEL:" 一行指向的位置
+
+- 内核转储文件, 即 kdump 生成的文件, 默认配置没有修改的情况下是 ```/var/crash``` 会新增出目录
+最终的文件是 ```vmcore``` (同样没有修改默认配置的情况下)
+
+2) 内核崩溃的原因与进程
+
+```
+[root@X9DRi-LN4F ~]# crash /lib/modules/6.1.46/build/vmlinux /var/crash/127.0.0.1-2023-08-26-12\:08\:02/vmcore
+
+crash 7.3.2-4.el8_8.1
+Copyright (C) 2002-2022  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+GNU gdb (GDB) 7.6
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-unknown-linux-gnu"...
+
+WARNING: kernel relocated [912MB]: patching 139086 gdb minimal_symbol values
+
+      KERNEL: /lib/modules/6.1.46/build/vmlinux  [TAINTED]             
+    DUMPFILE: /var/crash/127.0.0.1-2023-08-26-12:08:02/vmcore  [PARTIAL DUMP]
+        CPUS: 32
+        DATE: Sat Aug 26 12:07:39 CST 2023
+      UPTIME: 4 days, 14:05:22
+LOAD AVERAGE: 6.02, 4.26, 3.50
+       TASKS: 1364
+    NODENAME: X9DRi-LN4F
+     RELEASE: 6.1.46
+     VERSION: #1 SMP PREEMPT_DYNAMIC Sun Aug 20 11:29:53 CST 2023
+     MACHINE: x86_64  (3300 Mhz)
+      MEMORY: 1024 GB
+       PANIC: "Oops: 0000 [#1] PREEMPT SMP PTI" (check log for details)
+         PID: 1882
+     COMMAND: "bcache_gc"
+        TASK: ffff96141b514c80  [THREAD_INFO: ffff96141b514c80]
+         CPU: 26
+       STATE: TASK_RUNNING (PANIC)
+
+crash>
+```
+
+以上为例,  
+```PANIC:``` 是引起内核崩溃的原因
+```PID``` ```COMMAND``` 是相关的进程/命令
+
+3) 还想更进一步了解更多
+
+**bt 命令查看堆栈信息**
+
+```
+crash> bt
+PID: 1957     TASK: ffff8949c5ca4c80  CPU: 17   COMMAND: "bcache_gc"
+ #0 [ffffa51b342778b0] machine_kexec at ffffffff8ca6a7e7
+ #1 [ffffa51b34277908] __crash_kexec at ffffffff8cbbcaba
+ #2 [ffffa51b342779c8] crash_kexec at ffffffff8cbbdd84
+ #3 [ffffa51b342779d8] oops_end at ffffffff8ca28af9
+ #4 [ffffa51b342779f8] page_fault_oops at ffffffff8ca79825
+ #5 [ffffa51b34277a78] exc_page_fault at ffffffff8d558714
+ #6 [ffffa51b34277aa0] asm_exc_page_fault at ffffffff8d600bb2
+    [exception RIP: btree_node_free+17]
+    RIP: ffffffffc0a0c921  RSP: ffffa51b34277b58  RFLAGS: 00010207
+    RAX: 0000000080000000  RBX: 0000000000000000  RCX: 0000000000000001
+    RDX: 0000000080000001  RSI: ffff8948d8780690  RDI: 0000000000000000
+    RBP: ffffa51b34277dd8   R8: ffff8948d8780690   R9: 00000000000301c0
+    R10: 0004bc434315903d  R11: 0000000000000001  R12: 0000000000000004
+    R13: ffffa51b34277e00  R14: ffffa51b34277e60  R15: ffffa51b34277d10
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ #7 [ffffa51b34277b70] btree_gc_coalesce at ffffffffc0a10ea5 [bcache]
+ #8 [ffffa51b34277cf8] btree_gc_recurse at ffffffffc0a111e1 [bcache]
+ #9 [ffffa51b34277de0] bch_btree_gc at ffffffffc0a11ae7 [bcache]
+#10 [ffffa51b34277ec8] bch_gc_thread at ffffffffc0a11d91 [bcache]
+#11 [ffffa51b34277f18] kthread at ffffffff8cb19ec9
+#12 [ffffa51b34277f50] ret_from_fork at ffffffff8ca01eb2
+```
+
+有编号的最后一行:  
+```#12 [ffffa51b34277f50] ret_from_fork at ffffffff8ca01eb2```  
+是系统崩溃前的最后一个调用  
+如果想查看与之关联的对象, 则需执行下一个命令
+
+**dis 反编译**
+
+通过前一步的 ```ret_from_fork at ffffffff8ca01eb2``` 其中的 ```ffffffff8ca01eb2``` 是其内存地址.
+
+用 dis 命令来看一下该地址的反汇编结果
+
+```
+crash> dis -l ffffffff8ca01eb2
+/usr/src/kernels/6.1.46/arch/x86/entry/entry_64.S: 312
+0xffffffff8ca01eb2 <ret_from_fork+34>:  movq   $0x0,0x50(%rsp)
+```
+
+其中  
+```/usr/src/kernels/6.1.46/arch/x86/entry/entry_64.S: 312```  
+代表该代码文件及行数, 即:  
+文件是: /usr/src/kernels/6.1.46/arch/x86/entry/entry_64.S  
+行数为: 312 行
+
+```0xffffffff8ca01eb2 <ret_from_fork+34>:  movq   $0x0,0x50(%rsp)```  
+执行的汇编指令, 当然已超出个人技能范畴  
+
+**log 命令**
+
+可以打印系统消息缓冲区，从而可能找到系统崩溃的线索。
+
+** ps 命令**
+
+ps 命令用于显示进程的状态，带 > 标识代表是活跃的进程。
