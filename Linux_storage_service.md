@@ -73,6 +73,25 @@ mapped_lun 是客户端ACL 下的 映射LUN 的编号
 ![](images/wIWzqFnVhlHaCTxr6A5vuK8BjUPSdJL2.png)
 
 
+**取消默认的,新增LUN后, 会自动添加到各个主机的ACL去的行为**
+
+通过```man targetcli```可以发现, 这一行为是被 ```auto_add_mapped_luns``` 参数所定义,但具体操作也没说清楚.
+
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/online-storage-management
+
+红帽该文档有指出步骤:
+
+在 targetcli 内执行 ```set global auto_add_mapped_luns=false```
+
+```
+/> set global auto_add_mapped_luns=false
+Parameter auto_add_mapped_luns is now 'false'.
+/> exit
+Global pref auto_save_on_exit=true
+Last 10 configs saved in /etc/target/backup/.
+Configuration saved to /etc/target/saveconfig.json
+```
+
 <h3 id="2">iscsi 客户端</h3>
 
 https://developer.aliyun.com/article/47365
