@@ -679,6 +679,39 @@ kernel-debuginfo-common-<架构>
 - 内核转储文件, 即 kdump 生成的文件, 默认配置没有修改的情况下是 ```/var/crash``` 会新增出目录
 最终的文件是 ```vmcore``` (同样没有修改默认配置的情况下)
 
+**如何确认一个文件是否为有效的读取 kdump 的环境?**
+
+```
+[root@X9DRi-LN4F ~]# crash -g /lib/modules/6.1.46/build/vmlinux
+
+crash 7.3.2-4.el8_8.1
+Copyright (C) 2002-2022  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011, 2020-2022  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+GNU gdb (GDB) 7.6
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-unknown-linux-gnu"...
+
+crash: /lib/modules/6.1.46/build/vmlinux: contains debugging data
+```
+
+其中  
+```crash: /lib/modules/6.1.46/build/vmlinux: contains debugging data```
+
 2) 内核崩溃的原因与进程
 
 ```
