@@ -474,7 +474,6 @@ errors: No known data errors
 <img src="images/EW2IhDqLv18UOmuV2IAMy6NRPiotk1pv.png" style="zoom:65%" />
 
 <br>
-<br>
 
 ![](images/EW2IhDqLv1NnzgWZqo6wk3s9GIYrBUc5.png)
 
