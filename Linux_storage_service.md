@@ -3,9 +3,11 @@
   * [iscsi 客户端](#2)
   * [bcache 的使用](#3)
   * [mdadm 的使用](#4)
+  * [有关存储性能问题的测试结论](#5)
 
 
 <h3 id="1">iscsi 服务端</h3>
+
 
 中文手册  
 https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/managing_storage_devices/configuring-an-iscsi-target_managing-storage-devices
@@ -392,3 +394,94 @@ mdadm --create /dev/md/<用户定义名称> --level=<阵列级别> \
 探测有哪些mdadm组成的软阵列
 mdadm -D -s
 ```
+
+
+<h3 id="5">有关存储性能问题的测试结论</h3>
+
+**2023-08-27**
+
+我个人的存储, 11块 西数的 SATA-16T, 型号 ```WDC  WUH721816ALE6L4```, 使用 ZFS 组建的 ```raid-z3```
+
+如下:
+
+```
+[root@X9DR3-F ~]# zpool status
+  pool: SATA-16T
+ state: ONLINE
+  scan: resilvered 5.48M in 00:00:01 with 0 errors on Mon Aug 21 23:05:34 2023
+config:
+
+	NAME                        STATE     READ WRITE CKSUM
+	SATA-16T                    ONLINE       0     0     0
+	  raidz3-0                  ONLINE       0     0     0
+	    wwn-0x5000cca2ecc29ef7  ONLINE       0     0     0
+	    wwn-0x5000cca2cdcb04da  ONLINE       0     0     0
+	    wwn-0x5000cca2e3c40838  ONLINE       0     0     0
+	    wwn-0x5000cca295f815dc  ONLINE       0     0     0
+	    wwn-0x5000cca295f725b8  ONLINE       0     0     0
+	    wwn-0x5000cca2b7ccb7fc  ONLINE       0     0     0
+	    wwn-0x5000cca295f6ad26  ONLINE       0     0     0
+	    wwn-0x5000cca2a1f6f505  ONLINE       0     0     0
+	    wwn-0x5000cca2a1f75777  ONLINE       0     0     0
+	    wwn-0x5000cca2a1f54fa0  ONLINE       0     0     0
+	    wwn-0x5000cca295e57e92  ONLINE       0     0     0
+
+errors: No known data errors
+```
+
+事情的起因是发现 ```rsync```拷贝时的速度上不去,100多MB/S 到 300多MB/S不等  
+对于这个问题也十分的困惑, 也由此产生了一些猜测:  
+1) HBA卡受限于PCI-E带宽(后证实排除)
+2) ZFS 本身的性能, 因为ZFS所在的硬件平台的CPU单核能力不够?
+3) 受限于我先前的网络拓扑, 因为最早的网络是依靠双口网卡串联, 是Linux包转发效率, 或网卡性能瓶颈
+4) rsync 使用 openssl 加密, 所以性能开销跟不上
+
+最开始的网络拓扑
+
+![](images/使用双口网卡互联的网络拓扑.jpg)
+
+但随着 4口40G+48口10G 光纤交换机的上线, 上述拓扑也不复存在, 然而再复测速度, 依然没有丝毫变化.  
+因此第3点也被排除
+
+直至近日, 通过连续大量的测试, 最终得出的结论:  
+1) 单个文件的复制/传输速度与CPU单核性能正相关, 毋庸置疑. 其上限与CPU单线程IO能力有对应
+2) ZFS, 乃至我所选择的 raid-z3 并不是造成 100-300MB/S 这一结果的责任所在, CPU单核能力更强, 固然能让它输出更高速率, 
+但 100-300 这个区间并非它的责任所在
+3) 通过同时多个rsync复制的任务, 一是证明其上限远不止于此, 二是找出了我这套硬件平台上的甜点并发数.
+
+
+测试背景介绍:
+
+- 绝大部分都使用的 NFS 作server端
+- 在条件具备的主机上, 使用Linux的内存盘(tmpfs)作为源端存储体, 即使不具备的情况, 也保证源端的存储体自身的输出能力不是瓶颈
+- ```rsync```使用 ```rsync -avP```的参数组合, nc server端使用```nc -l <端口> < <文件>```, 客户端使用```nc <IP地址> <端口> > <文件>``` 的命令形式
+- 网络接口均为40G网口, 且```iperf3``` 测速在 ```30Gbps```水平
+
+<img src="images/EW2IhDqLv14uMcdGgD6ZnarIi3jzsTvE.png" style="zoom:65%" />
+
+由以上数据, 可以看出:
+- AMD Ryzen 5950x 和 AMD Ryzen 3700x 之间单个文件复制速度最快
+- 最糟糕的出现在两台 Intel Xeon E5-2667 v2 的两台物理机之间
+
+上图主要想证明的是, CPU 单核能力与单文件的复制传输速度的关系.  
+因为在单个文件的复制传输过程中, 你可以通过 ```ps``` ```top```等方式确定, 只有单个CPU逻辑核心会满载
+
+基于以上, 又进而做第2组验证:  
+既然单个rsync进程速度上不去, 是否 ZFS 的盘组性能还有更高上限, 使用多个 rsync 进程就可以达到?
+
+以下截图, 来自多个窗口同时进行的 ```rsync``` 的复制操作
+
+<img src="images/EW2IhDqLv18UOmuV2IAMy6NRPiotk1pv.png" style="zoom:65%" />
+
+<br>
+<br>
+
+![](images/EW2IhDqLv1NnzgWZqo6wk3s9GIYrBUc5.png)
+
+通过以上可以确定:
+- 单个```rsync``` 的复制操作的速率非常依赖于源端和目标端两端各自的单核心能力, 任何一端过于弱, 则服从木桶效应
+- ZFS 不该为单个 rsync 复制速度低背锅, 则 raid-z3 最初看重的就是它的最高级别数据保护能力, 虽然我个人上到实体设备的时间
+也还不算长, 但从```数据安全```和```性能```两个纬度, 就目前已有的经验来看, 是值得信任, 而无需去首先质疑的.
+- 老旧平台, 受限于CPU单核能力, 无论使用哪种后端方式, 只要单核能力决定单个传输进程/线程速度的规律存在(缺少更多硬件平台来验证), 
+就只剩多线程/进程IO来提升其吞吐能力.
+- 并发IO的传输工具, 现有可供选择的 ```parsyncfp``` ```fpsync```等
