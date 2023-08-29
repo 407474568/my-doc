@@ -755,7 +755,7 @@ KVM配置文件的示例
 操作方法  
 https://blog.51cto.com/u_15329153/4598066  
 这篇文档给出2种方式  
-1) 虚拟机已装好了系统, IDE改virtio
+1) 虚拟机已装好了系统, IDE改virtio  
 2) 虚拟机使用 virtio 全新安装windows操作系统
 
 第1种方式先装出系统, 然后分别多添加一块 virtio 类型的网卡和磁盘, 再安装 virtio 的windows驱动, 使windows有能力识别  
