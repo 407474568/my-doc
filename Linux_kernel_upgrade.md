@@ -115,7 +115,7 @@ yum remove $(rpm -qa | grep kernel | grep -v $(uname -r))
 2) 复制一个系统原本自带的 config 文件, 位于 /boot/config-xxx 到解压的内核源码包的根目录下.具体操作本文下方已有详细步骤.  
 3) 编辑 .config 文件内的内容, 需要 ```CONFIG_SYSTEM_TRUSTED_KEYS=""```, 另外需要```CONFIG_DEBUG_INFO```, 
    ```CONFIG_DEBUG_INFO_BTF```都为N (<font color=red>有关这一点还有补充说明</font>), 其余就是自己希望启用的内核模块了.  
-4) 执行 ```make menuconfig```
+4) 执行 ```make menuconfig```  
 5) ```make menuconfig``` 执行后会覆盖原有对 .config 的变更, 需要重新执行步骤3的检查和修改,有关这一点,也许会显得步骤3是多余的, 但其实不尽然  
 6) 执行编译步骤
 
