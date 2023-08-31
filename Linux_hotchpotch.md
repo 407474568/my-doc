@@ -13,6 +13,8 @@
   * [/etc/fstab 文件详解](#13)
   * [处理NETSTAT中获取不到PID的进程](#14)
   * [NFS服务对应的端口及iptables配置](#15)
+  * [xfsdump 与 xfsrestore](#16)
+
 
 <h3 id="1">ASCII对照表</h3>  
 
@@ -67,6 +69,78 @@
 | HT 横向列表 | DC4 设备控制4 | US 单元分隔符 |
 | LF 换行 | NAK 否定 | DEL 删除 |
 
+
+<h3 id="16">xfsdump 与 xfsrestore</h3>  
+
+红帽的文档
+
+https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/managing_file_systems/proc_backing-up-an-xfs-file-system-with-xfsdump-backing-up-an-xfs-file-system
+
+https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/managing_file_systems/proc_restoring-an-xfs-file-system-from-backup-with-xfsrestore-restoring-an-xfs-file-system-from-backup
+
+这里主要想说的:  
+- 单独使用 ```-``` 符号, 是标准输出的意思, 通常用来搭配管道符使用以进行别的处理, 而不是直接输出到文件  
+- xfsdump 本身未提供压缩功能, 但可以使用其他方式
+- xfsrestore 可以将一个 xfsdump 备份的文件, 恢复到一个目录下(而不是只能恢复到一个块设备等)
+
+https://gist.github.com/oliworx/9c69b26bf84fbe93d50f
+
+经实测, 1.2T 的内容, 使用 ```lzop``` 压缩后缩小到了500多G, 收益还是非常可观
+
+```
+[root@5950x-node1 ~]# xfsdump -L "$label_name" -J - "$backup_target_device" | lzop > /mnt/test/xfsdump/"$backup_target_device_name"_"$label_name"_L0.lzo
+xfsdump: using file dump (drive_simple) strategy
+xfsdump: version 3.1.8 (dump format 3.0)
+xfsdump: WARNING: most recent level 0 dump was interrupted, but not resuming that dump since resume (-R) option not specified
+xfsdump: level 0 dump of 5950x-node1:/vm
+xfsdump: dump date: Wed Aug 30 08:09:12 2023
+xfsdump: session id: 61aceaa1-0a60-4464-964e-1e28a5aceed6
+xfsdump: session label: ""
+xfsdump: ino map phase 1: constructing initial dump list
+xfsdump: ino map phase 2: skipping (no pruning necessary)
+xfsdump: ino map phase 3: skipping (only one dump stream)
+xfsdump: ino map construction complete
+xfsdump: estimated dump size: 1388337094016 bytes
+xfsdump: creating dump session media file 0 (media 0, file 0)
+xfsdump: dumping ino map
+xfsdump: dumping directories
+xfsdump: dumping non-directory files
+xfsdump: ending media file
+xfsdump: media file size 1380481364256 bytes
+xfsdump: dump size (non-dir files) : 1380457623128 bytes
+xfsdump: dump complete: 3606 seconds elapsed
+xfsdump: Dump Status: SUCCESS
+```
+
+恢复用时更短, 当然我是先解压缩, 再执行的 xfsrestore, 只有 xfsrestore 的用时记录
+
+```
+[root@5950x-node1 wait_delete]# xfsrestore -f /mnt/test/xfsdump/dev_nvme0n1__L0 /vm/wait_delete/
+xfsrestore: using file dump (drive_simple) strategy
+xfsrestore: version 3.1.8 (dump format 3.0) - type ^C for status and control
+xfsrestore: searching media for dump
+xfsrestore: examining media file 0
+xfsrestore: dump description: 
+xfsrestore: hostname: 5950x-node1
+xfsrestore: mount point: /vm
+xfsrestore: volume: /dev/nvme0n1
+xfsrestore: session time: Wed Aug 30 08:09:12 2023
+xfsrestore: level: 0
+xfsrestore: session label: ""
+xfsrestore: media label: ""
+xfsrestore: file system id: 7df92e29-0d37-43a2-93a7-ab9911ead7f3
+xfsrestore: session id: 61aceaa1-0a60-4464-964e-1e28a5aceed6
+xfsrestore: media id: 25279223-2784-43e1-9780-ab96d781d598
+xfsrestore: searching media for directory dump
+xfsrestore: reading directories
+xfsrestore: 5 directories and 61 entries processed
+xfsrestore: directory post-processing
+xfsrestore: restoring non-directory files
+xfsrestore: restore complete: 1498 seconds elapsed
+xfsrestore: Restore Summary:
+xfsrestore:   stream 0 /mnt/test/xfsdump/dev_nvme0n1__L0 OK (success)
+xfsrestore: Restore Status: SUCCESS
+```
 
 <h3 id="2">进程的运行时间</h3>  
 
