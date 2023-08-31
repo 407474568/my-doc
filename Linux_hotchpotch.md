@@ -85,7 +85,8 @@ https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/ma
 
 https://gist.github.com/oliworx/9c69b26bf84fbe93d50f
 
-经实测, 1.2T 的内容, 使用 ```lzop``` 压缩后缩小到了500多G, 收益还是非常可观
+经实测, 1.2T 的内容, 使用 ```lzop``` 压缩后缩小到了500多G, 收益还是非常可观  
+值得说明的是, 这个压缩率数值来自KVM虚拟机的磁盘文件为主, 由于里面存在不少都是预分配空间的情况, 所以可以理解为这个压缩比率的核心来自于本身就是稀疏文件的比率较高.
 
 ```
 [root@5950x-node1 ~]# xfsdump -L "$label_name" -J - "$backup_target_device" | lzop > /mnt/test/xfsdump/"$backup_target_device_name"_"$label_name"_L0.lzo
