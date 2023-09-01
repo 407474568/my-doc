@@ -234,6 +234,8 @@ make-bcache -C <设备,如:/dev/sdc>
 
 
 # 将前后端的关联关系建立,字符串是cset.uuid
+# 注意是把 cache 设备的 cset.uuid 加入到 attach
+# 如果不确定 cset.uuid 的值, 用下方的 bcache-super-show 命令查看
 echo "d0079bae-b749-468b-ad0c-6fedbbc742f4" >/sys/block/bcache0/bcache/attach 
 
 
