@@ -33,7 +33,7 @@ yum install kernel-devel zfs
 
 - 编译安装
 
-安装手册, 官方文档
+安装手册, 官方文档  
 https://openzfs.github.io/openzfs-docs/Developer%20Resources/Building%20ZFS.html
 
 
