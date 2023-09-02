@@ -343,6 +343,14 @@ echo 1>/sys/block/bcache<N>/bcache/stop
 
 再通过 ```lsblk``` 确认该 bcache 盘符没有再次出现.
 
+#### 如果开机没有自动出现 bcache 后端磁盘设备
+
+https://forums.gentoo.org/viewtopic-t-1068280-start-0.html
+
+```
+echo <后端磁盘/块设备的路径, 如/dev/sda, /dev/md125> > /sys/fs/bcache/register
+```
+
 #### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
 
 https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-devices-with-bcache
