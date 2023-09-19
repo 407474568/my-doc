@@ -613,6 +613,27 @@ virt-clone \
 | -n redis-01          | 克隆的新虚拟机名称      | 
 | -f /vm/redis/redis-01.img | 克隆的新虚拟机磁盘文件位置  |
 
+#### 克隆的虚拟机已经配置了多个磁盘文件时
+
+https://docs.deistercloud.com/content/Tutorials.100/Linux.80/KVM%20virtualization.40/Clone%20a%20KVM%20virtual%20machine.6.xml?embedded=true
+
+其实就是 ```-f``` 参数的多次给出, 并且, 它是按照虚拟机在 xml 中定义的顺序而来的
+
+```
+virt-clone \
+-o docker-cluster-node3 \
+-n docker-cluster-node8 \
+-f /vm/cheap_storage/docker-cluster-08.qcow2 \
+-f /vm/cheap_storage/docker-cluster-08-data01.qcow2
+
+
+virt-clone \
+-o docker-cluster-node3 \
+-n docker-cluster-node9 \
+-f /vm/cheap_storage/docker-cluster-09.qcow2 \
+-f /vm/cheap_storage/docker-cluster-09-data01.qcow2
+```
+
 
 方法2  
 
