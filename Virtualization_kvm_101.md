@@ -761,3 +761,23 @@ https://blog.51cto.com/tryingstuff/1954531
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
     </disk>
 ```
+
+<h3 id="11">磁盘的热添加/删除</h3>
+
+```
+virsh attach-disk <domain-name, 虚拟机名称> \
+  <磁盘文件位置> <在虚拟机内部的盘符, 如: vdb> \
+  --subdriver <磁盘格式类型,典型如: qcow2>
+```
+
+```
+for i in `echo 3 4 7 8`
+do
+    virsh attach-disk docker-cluster-node${i} /vm/cheap_storage/docker-cluster-0${i}-data02.qcow2 vdc --subdriver qcow2
+    virsh attach-disk docker-cluster-node${i} /vm/cheap_storage/docker-cluster-0${i}-data02.qcow2 vdc --subdriver qcow2 --config
+done
+```
+
+注意, 有无 ```--config``` 的区别在于, 写入配置文件与执行到当前虚拟机状态.  
+没有 ```--config``` 是对虚拟机当前状态生效  
+有 ```--config``` 虽然写入配置文件, 但 ```virsh dumpxml <虚拟机名称>``` 在虚拟机未关过机以前, 该内容不可见.
