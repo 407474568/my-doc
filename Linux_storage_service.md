@@ -394,7 +394,9 @@ Sep 29 15:37:14 X9DRi-LN4F kernel: bcache: register_bcache() error : failed to o
 -bash: /sys/block/md125/bcache/stop: Permission denied
 ```
 
-然而, 正确却是意想不到的--使用 register_quiet 却成功解决了问题
+然而, 正解却是意想不到的--使用 register_quiet 却成功解决了问题  
+文章都依然还是这篇  
+https://forums.gentoo.org/viewtopic-t-1068280-start-0.html
 
 ```
 echo /dev/sdh > /sys/fs/bcache/register_quiet
