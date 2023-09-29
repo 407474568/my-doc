@@ -351,6 +351,55 @@ https://forums.gentoo.org/viewtopic-t-1068280-start-0.html
 echo <后端磁盘/块设备的路径, 如/dev/sda, /dev/md125> > /sys/fs/bcache/register
 ```
 
+补充:  
+一个比较吊诡的现象--创建了bcache的设备, 在一次非人为重启后(并没有生成kdump文件), bcache设备对象未能自动创建, 且
+```dmesg``` 和 ```/var/log/messages``` 均有错误.
+
+```
+[root@X9DRi-LN4F ~]# dmesg -T | grep bcache
+[Fri Sep 29 15:08:32 2023] bcache: bch_journal_replay() journal replay done, 2256 keys in 259 entries, seq 21539124
+[Fri Sep 29 15:08:32 2023] bcache: register_cache() registered cache device md125
+[Fri Sep 29 15:19:28 2023] bcache: register_bcache() error : Not a bcache superblock (bad offset)
+[Fri Sep 29 15:22:39 2023] bcache: register_bcache() error : device already registered
+[Fri Sep 29 15:23:32 2023] bcache: register_bcache() error : failed to open device
+[Fri Sep 29 15:35:10 2023] bcache: register_bcache() error : failed to open device
+
+[root@X9DRi-LN4F ~]# grep bcache /var/log/messages
+Sep 27 00:19:56 X9DRi-LN4F kernel: i2c_i801 spl(O) acpi_ipmi intel_uncore pcspkr mei ipmi_si ioatdma lpc_ich i2c_smbus grace ipmi_devintf bcache ipmi_msghandler sunrpc xfs libcrc32c raid1 mgag200 drm_kms_helper sd_mod t10_pi crc64_rocksoft crc64 syscopyarea sg sysfillrect sysimgblt fb_sys_fops drm_shmem_helper drm ahci libahci libata igb mpt3sas crc32c_intel dca raid_class i2c_algo_bit scsi_transport_sas wmi dm_mirror dm_region_hash dm_log dm_mod fuse
+Sep 29 14:52:57 X9DRi-LN4F kernel: bcache: bch_journal_replay() journal replay done, 2256 keys in 258 entries, seq 21539123
+Sep 29 14:52:57 X9DRi-LN4F kernel: bcache: register_cache() registered cache device md125
+Sep 29 15:03:45 X9DRi-LN4F kernel: bcache: register_bcache() error : device already registered
+Sep 29 15:03:45 X9DRi-LN4F systemd-udevd[16185]: Process 'bcache-register /dev/md125' failed with exit code 1.
+Sep 29 15:08:32 X9DRi-LN4F kernel: bcache: bch_journal_replay() journal replay done, 2256 keys in 259 entries, seq 21539124
+Sep 29 15:08:32 X9DRi-LN4F kernel: bcache: register_cache() registered cache device md125
+Sep 29 15:19:29 X9DRi-LN4F kernel: bcache: register_bcache() error : Not a bcache superblock (bad offset)
+Sep 29 15:22:39 X9DRi-LN4F kernel: bcache: register_bcache() error : device already registered
+Sep 29 15:22:39 X9DRi-LN4F systemd-udevd[10213]: Process 'bcache-register /dev/md125' failed with exit code 1.
+Sep 29 15:23:32 X9DRi-LN4F kernel: bcache: register_bcache() error : failed to open device
+Sep 29 15:35:10 X9DRi-LN4F kernel: bcache: register_bcache() error : failed to open device
+Sep 29 15:37:14 X9DRi-LN4F kernel: bcache: register_bcache() error : failed to open device
+```
+
+而此时, 若按照前面手动注册的方式, 无法成功
+
+```
+[root@X9DRi-LN4F ~]# echo b030d322-4426-4c12-925a-15aa2165047f > /sys/fs/bcache/register
+-bash: echo: write error: Invalid argument
+
+[root@X9DRi-LN4F ~]# echo /dev/sda > /sys/fs/bcache/register
+-bash: echo: write error: Invalid argument
+
+# md125 是 cache 设备, 丢失的是后端设备 bdev
+[root@X9DRi-LN4F ~]# echo 1 > /sys/block/md125/bcache/stop
+-bash: /sys/block/md125/bcache/stop: Permission denied
+```
+
+然而, 正确却是意想不到的--使用 register_quiet 却成功解决了问题
+
+```
+echo /dev/sdh > /sys/fs/bcache/register_quiet
+```
+
 #### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
 
 https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-devices-with-bcache
