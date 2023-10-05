@@ -22,6 +22,7 @@ https://grafana.com/docs/grafana/v9.0/panels/transform-data/transformation-funct
 * [目录](#0)
   * [grafana--样式参考](#1)
   * [grafana--zabbix数据源--时间戳不一致情景下数据合并](#2)
+  * [grafana--zabbix数据源--来自同一主机上的不同组的指标列合并](#8)
   * [grafana--降序的阈值对应不同颜色](#3)
   * [grafana--时间范围的两个功能的应用](#4)
   * [grafana--通过自定义变量实现下拉筛选菜单](#5)
@@ -89,6 +90,34 @@ grafana 会因为相同的时间戳, 将字段拼接到一个结果中.
 最终效果图
 
 ![](/images/FiwKYRa58ojyGz47kJgaMtrYWcLefvpl.png)
+
+<h3 id="8">grafana--zabbix数据源--来自同一主机上的不同组的指标列合并</h3>
+
+上一节 [grafana--zabbix数据源--时间戳不一致情景下数据合并](#2) 描述的是期望以zabbix内的"主机"对象为单位的指标列
+合并的操作方法  
+而如果是来自同一主机上, 但指标列有不同组别, 同一组别的指标列希望落在同一行(row)上, 本节描述的正是以zabbix为数据源
+的实现方法(当然实际上也可能适用于其他数据源场景)
+
+原始需求示例:
+
+![](images/XF5WY4iG1BObqU0xFn3DcjICsRPvVK6S.png)
+
+相同的磁盘名称, 但拥有"温度"和"已消耗的寿命比例"等多个指标期望汇聚成一张表格
+
+实现的关键步骤:
+1) 其他前置处理不赘述, 但需要将所有指标列的"Filed"标签内的内容, 使用 "rename by regex"等方式先整理成完全一致
+2) 利用 "group by" 函数先行汇聚, 然后 ```group by``` 的值一列, 又选择 "Calculate" --> "All values", 此时所有值被合并到一列 
+3) 运用 ```Extract fields``` 使其列分离开  
+
+目前已知这个方式的缺陷是, 会因存在空列的情形产生的错位, 且尚未发现填充方法.
+
+实现关键示例:
+
+![](images/XF5WY4iG1BiBuWRTPxNQ4rJKEGMcgIZ9.png)
+
+实现后的效果:
+
+![](images/XF5WY4iG1Bal6IVcCKN2QogTJufDqeyd.png)
 
 
 <h3 id="3">grafana--降序的阈值对应不同颜色</h3>
