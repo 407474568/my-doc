@@ -123,7 +123,7 @@ grafana 会因为相同的时间戳, 将字段拼接到一个结果中.
 <h3 id="3">grafana--降序的阈值对应不同颜色</h3>
 
 升序的阈值对应不同颜色, 很简单, 拿来就用.  
-但如果犯过来, 低于某个值, 就以一种不同的颜色显示, grafana 能否实现和如何实现?
+但如果反过来, 低于某个值, 就以一种不同的颜色显示, grafana 能否实现和如何实现?
 
 https://github.com/grafana/grafana-polystat-panel/issues/46
 
