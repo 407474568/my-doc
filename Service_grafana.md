@@ -93,6 +93,10 @@ grafana 会因为相同的时间戳, 将字段拼接到一个结果中.
 
 <h3 id="8">grafana--zabbix数据源--来自同一主机上的不同组的指标列合并</h3>
 
+另附, 虽然与本节的方法并无关系, 但是是表格汇聚的基本概念  
+https://community.grafana.com/t/aggregating-different-metrics-in-table-panel/24170  
+https://www.robustperception.io/show-multiple-expressions-for-an-instance-in-a-grafana-table/
+
 上一节 [grafana--zabbix数据源--时间戳不一致情景下数据合并](#2) 描述的是期望以zabbix内的"主机"对象为单位的指标列
 合并的操作方法  
 而如果是来自同一主机上, 但指标列有不同组别, 同一组别的指标列希望落在同一行(row)上, 本节描述的正是以zabbix为数据源
