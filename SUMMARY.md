@@ -9,6 +9,7 @@
     * [Shell的awk](Programming_Shell_awk.md) 
     * [Python-运行环境](Programming_Python_runtime_enviroment.md)
     * [Python-杂集](Programming_Python_hotchpotch.md)
+    * [Python-操作word](Programming_Python_edit_word.md)
     * [Python-进阶技巧](Programming_Python_advance_tricks.md)
 * [Linux](category_2_Linux.md)
     * [Linux上的杂集](Linux_hotchpotch.md)
