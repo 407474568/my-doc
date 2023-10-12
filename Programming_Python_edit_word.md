@@ -129,3 +129,39 @@ from docx.oxml.shared import OxmlElement
         for cell in table.rows[row_num].cells:
             cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 ```
+
+<h3 id="4">分页符</h3>
+
+```
+    p = doc.add_paragraph()
+    run = p.add_run()
+    run.add_break(docx.enum.text.WD_BREAK.PAGE)
+```
+
+我这里采取的是, 添加一个空段落, 然后再添加个空的run对象, 再添加分页符的方法
+
+https://blog.csdn.net/m0_62184088/article/details/122314177
+
+这篇文章还提到了一些其他分页符, 分节符的样式
+
+它的代码示例
+
+```
+import docx
+doc1 =docx.Document(r"C:\Users\Administrator\Desktop\test.docx")
+ 
+doc1.paragraphs[0].runs[0].add_break(docx.enum.text.WD_BREAK.PAGE)      #插入分页符
+ 
+# 插入一个分节符；（分节符和分页符的区别是，分节符后的页面设置可以单独进行设置，
+# 如纸张方向，页边距，页码等；分页符页不行。）
+分节符 = doc1.add_section()
+doc1.add_paragraph('添加节后，添加的段落！')
+from docx.enum.section import WD_SECTION_START  #需要使用特别分节符功能的时候需要导入库
+doc1.sections[1].start_type = WD_SECTION_START.ODD_PAGE         #设置分节符的类型
+ 
+WD_SECTION_START.CONTINUOUS                     #连续分隔符
+WD_SECTION_START.NEW_COLUMN                     #新列分隔符
+WD_SECTION_START.NEW_PAGE                       #新页的分隔符
+WD_SECTION_START.EVEN_PAGE                      #偶数页的分隔符
+WD_SECTION_START.ODD_PAGE                       #奇数页的分隔符
+```
