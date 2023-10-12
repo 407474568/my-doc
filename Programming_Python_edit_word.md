@@ -1,6 +1,7 @@
 * [目录](#0)
   * [基本概念](#1)
-  * [标题与正文字体](#2)
+  * [标题与正文字体字号](#2)
+  * [表格](#3)
 
 
 Pypi 上能找到的, 关于 word 操作的库主要有两个  
@@ -36,7 +37,7 @@ https://cloud.tencent.com/developer/article/1898865
 ![](images/c08e7af90bb55c09673b403ff55961ce.png)
 
 
-<h3 id="2">标题与正文字体</h3>
+<h3 id="2">标题与正文字体字号</h3>
 
 默认字体可以像这样设置
 
@@ -70,3 +71,61 @@ https://cloud.tencent.com/developer/article/1898865
 不少文章会在```doc.add_heading('', level=1)```里加入标题内的文字, 即''留空的部分  
 然而又并未提及修改字体字号的方法  
 上述方式, 通过新增一个空标题, 再添加一个 run 对象, 然后设置 run 对象的属性来实现字体字号的控制  
+
+
+<h3 id="3">表格</h3>
+
+表格操作这里有个坑点: 网上大多数文章告诉你如何 import 相关的包, 其所使用的 ```python-docx``` 大多版本在```0.8.x```  
+然而这些方法在```python-docx```的 ```1.0.0```版本中已失效  
+其中会用到的 ```OxmlElement```, 正确的导入方法  
+
+```
+from docx.oxml.shared import OxmlElement
+```
+
+在此基础之上, 进行添加表格的操作如下
+
+```
+    row_num = 5
+    column_num = 3
+    table = doc.add_table(rows=row_num, cols=column_num, style='Table Grid')
+    hdr_cells = table.rows[0].cells
+    hdr_cells[0].text = '修订日期'
+    hdr_cells[1].text = '修订内容'
+    hdr_cells[2].text = '修订人'
+```
+
+其中  
+```doc.add_table()``` 是实例化一个表格对象, 其中的 row 和 cols 分别对应行和列, style 是表格样式, 'Table Grid' 是
+可见边框的表格, 如果此属性不赋值, 则默认是一个没有边框的表格.  
+其次是单元格的文本赋值操作, 示例中的方式是其一, 通过```table.rows[0].cells```得到的是包含该行全部单元格的列表对象,
+每个单元格的 .text 属性操作是修改文本的方式之一. 但需要注意, 这里的文本字体字号颜色等, 受默认字体 style 属性值控制.  
+另一个方式是在该单元格添加一个 paragraph 对象, 再添加 run 对象的方式, 可以实现独立的字体字号等控制, 不过缺点是该单元格又会出现一个多余的空行. 
+
+##### 表头行填充色, 单元格居中对齐等
+
+这里就需要用到前面提及的, ```OxmlElement```正确的导入方法  
+对齐是对每个单元格的 ```paragraphs[0]``` 做的对齐  
+而 ```paragraphs[0]``` 正是每个单元格的 ```.text``` 所在的"段落"  
+如果单元格文字不是采取的这种方式赋值, 则需要灵活应变处理
+
+```
+    # 表头行填充色
+    for cell in table.rows[0].cells:
+        cell_xml_element = cell._tc
+        table_cell_properties = cell_xml_element.get_or_add_tcPr()
+        shade_obj = OxmlElement('w:shd')
+        shade_obj.set(qn('w:fill'), header_color)
+        table_cell_properties.append(shade_obj)
+
+    # 第一行, 填入作者
+    hdr_cells = table.rows[1].cells
+    hdr_cells[0].text = config_info['output_file']['sign_date']
+    hdr_cells[1].text = "创建文档"
+    hdr_cells[2].text = config_info['output_file']['doc_author']
+
+    # 所有单元格居中对齐
+    for row_num in range(len(table.rows)):
+        for cell in table.rows[row_num].cells:
+            cell.paragraphs[0].alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+```
