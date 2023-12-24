@@ -12,6 +12,7 @@ https://openzfs.org/wiki/Main_Page
   * [因盘符变化而导致pool错误的进入DEGRADED状态的处理](#2)
   * [池特性升级](#3)
   * [如果开机没有自动导入池](#4)
+  * [限制ARC对内存的消耗大小](#5)
 
 
 <h3 id="1">两种安装方式</h3>
@@ -348,3 +349,18 @@ zpool set cachefile=none <池名>
 zpool set cachefile=```cache文件位置, 如:/usr/local/etc/zfs/zpool.cache``` <池名>
 
 在我的情景下问题得到解决
+
+
+<h3 id="5">限制ARC对内存的消耗大小</h3>
+
+https://www.emengweb.com/p/PVE%E8%AE%BE%E7%BD%AEZFS-RAM-Cache-%E5%A4%A7%E5%B0%8F
+
+此设置在/etc/modprobe.d/zfs.conf文件中完成
+
+```
+[root@X9DR3-F ~]# cat /etc/modprobe.d/zfs.conf
+options zfs zfs_arc_min=137438953472
+options zfs zfs_arc_max=274877906944
+```
+
+分别对应上限和下限
