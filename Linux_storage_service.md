@@ -402,6 +402,172 @@ https://forums.gentoo.org/viewtopic-t-1068280-start-0.html
 echo /dev/sdh > /sys/fs/bcache/register_quiet
 ```
 
+#### 如果开机没有自动出现 bcache 后端磁盘设备---情况2, cache 设备的损坏
+
+通过 ```dmesg -T | grep bcache``` 发现
+
+```
+[Sun Dec 24 21:05:59 2023] bcache: bch_cache_set_error() error on 76997545-a5b1-4ce5-a62a-a0a81d029d0d: bad btree header at bucket 4803467, block 0, 0 keys, disabling caching
+[Sun Dec 24 21:05:59 2023] bcache: register_cache() error md125: failed to run cache set
+[Sun Dec 24 21:05:59 2023] bcache: register_bcache() error : failed to register device
+[Sun Dec 24 21:05:59 2023] bcache: cache_set_free() Cache set 76997545-a5b1-4ce5-a62a-a0a81d029d0d unregistered
+[Sun Dec 24 21:06:00 2023] bcache: bch_cache_set_error() error on 76997545-a5b1-4ce5-a62a-a0a81d029d0d: bad btree header at bucket 4803467, block 0, 0 keys, disabling caching
+[Sun Dec 24 21:06:00 2023] bcache: register_cache() error md125: failed to run cache set
+[Sun Dec 24 21:06:00 2023] bcache: register_bcache() error : failed to register device
+[Sun Dec 24 21:06:00 2023] bcache: cache_set_free() Cache set 76997545-a5b1-4ce5-a62a-a0a81d029d0d unregistered
+[Sun Dec 24 21:10:34 2023] bcache: register_bdev() registered backing device sdf
+[Sun Dec 24 21:10:34 2023] bcache: register_bdev() registered backing device sdg
+[Sun Dec 24 21:10:34 2023] bcache: register_bdev() registered backing device sdh
+[Sun Dec 24 21:10:34 2023] bcache: register_bdev() registered backing device sdj
+[Sun Dec 24 21:10:34 2023] bcache: register_bdev() registered backing device sdk
+```
+
+这才是无论如何都再也注册不出 ```/dev/bcache*``` 设备的原因  
+因为只是 cache 设备, 且 bdev 的状态也是 clean, 那就比较简单  
+bdev 全部执行 detach, 然后重建 cache 设备即可
+
+```
+lsblk | grep -E "^sd" | grep 3.7T | awk '{print $1}' | while read -r line
+do
+    bcache-super-show /dev/$line > /dev/null
+    if [ $? -eq 0 ];then
+        echo 1 > /sys/block/$line/bcache/detach
+    fi
+done
+
+
+
+lsblk | grep -E "^sd" | grep 3.7T | awk '{print $1}' | while read -r line
+do
+    bcache-super-show /dev/$line > /dev/null
+    if [ $? -eq 0 ];then
+        echo 7141ec82-0b56-41b7-b840-b81dee1b37c6 > /sys/block/$line/bcache/attach
+    fi
+done
+
+
+
+[root@X9DRi-LN4F ~]# make-bcache -C /dev/md/s3610-group-01 
+Already a bcache device on /dev/md/s3610-group-01, overwrite with --wipe-bcache
+[root@X9DRi-LN4F ~]# make-bcache -C /dev/md/s3610-group-01 --wipe-bcache
+Device /dev/md/s3610-group-01 already has a non-bcache superblock, remove it using wipefs and wipefs -a
+[root@X9DRi-LN4F ~]# wipefs -a /dev/md/s3610-group-01
+/dev/md/s3610-group-01: 16 bytes were erased at offset 0x00001018 (bcache): c6 85 73 f6 4e 1a 45 ca 82 65 f5 7f 48 ba 6d 81
+[root@X9DRi-LN4F ~]# make-bcache -C /dev/md/s3610-group-01
+UUID:			d98dc9f2-4b01-4c88-b397-bbcd1e310e8c
+Set UUID:		7141ec82-0b56-41b7-b840-b81dee1b37c6
+version:		0
+nbuckets:		6103748
+block_size:		1
+bucket_size:		1024
+nr_in_set:		1
+nr_this_dev:		0
+first_bucket:		1
+[root@X9DRi-LN4F ~]# bcache-super-show /dev/md/s3610-group-01
+sb.magic		ok
+sb.first_sector		8 [match]
+sb.csum			B2DD47AF6D291B33 [match]
+sb.version		3 [cache device]
+
+dev.label		(empty)
+dev.uuid		d98dc9f2-4b01-4c88-b397-bbcd1e310e8c
+dev.sectors_per_block	1
+dev.sectors_per_bucket	1024
+dev.cache.first_sector	1024
+dev.cache.cache_sectors	6250236928
+dev.cache.total_sectors	6250237952
+dev.cache.ordered	yes
+dev.cache.discard	no
+dev.cache.pos		0
+dev.cache.replacement	0 [lru]
+
+cset.uuid		7141ec82-0b56-41b7-b840-b81dee1b37c6
+[root@X9DRi-LN4F ~]# lsblk | grep -E "^sd" | grep 3.7T | awk '{print $1}' | while read -r line
+> do
+>     bcache-super-show /dev/$line > /dev/null
+>     if [ $? -eq 0 ];then
+>         echo 7141ec82-0b56-41b7-b840-b81dee1b37c6 > /sys/block/$line/bcache/attach
+>     fi
+> done
+[root@X9DRi-LN4F ~]# 
+[root@X9DRi-LN4F ~]# lsblk
+NAME                MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda                   8:0    0 745.2G  0 disk  
+└─md125               9:125  0   2.9T  0 raid0 
+  ├─bcache0         252:0    0   3.7T  0 disk  
+  ├─bcache1         252:128  0   3.7T  0 disk  
+  ├─bcache2         252:256  0   3.7T  0 disk  
+  ├─bcache3         252:384  0   3.7T  0 disk  
+  └─bcache4         252:512  0   3.7T  0 disk  
+sdb                   8:16   0 894.3G  0 disk  
+├─sdb1                8:17   0 894.3G  0 part  
+└─sdb9                8:25   0     8M  0 part  
+sdc                   8:32   0 745.2G  0 disk  
+├─sdc1                8:33   0 745.2G  0 part  
+└─sdc9                8:41   0     8M  0 part  
+sdd                   8:48   0 745.2G  0 disk  
+└─md125               9:125  0   2.9T  0 raid0 
+  ├─bcache0         252:0    0   3.7T  0 disk  
+  ├─bcache1         252:128  0   3.7T  0 disk  
+  ├─bcache2         252:256  0   3.7T  0 disk  
+  ├─bcache3         252:384  0   3.7T  0 disk  
+  └─bcache4         252:512  0   3.7T  0 disk  
+sde                   8:64   0 745.2G  0 disk  
+└─md125               9:125  0   2.9T  0 raid0 
+  ├─bcache0         252:0    0   3.7T  0 disk  
+  ├─bcache1         252:128  0   3.7T  0 disk  
+  ├─bcache2         252:256  0   3.7T  0 disk  
+  ├─bcache3         252:384  0   3.7T  0 disk  
+  └─bcache4         252:512  0   3.7T  0 disk  
+sdf                   8:80   0   3.7T  0 disk  
+└─bcache0           252:0    0   3.7T  0 disk  
+sdg                   8:96   0   3.7T  0 disk  
+└─bcache1           252:128  0   3.7T  0 disk  
+sdh                   8:112  0   3.7T  0 disk  
+└─bcache2           252:256  0   3.7T  0 disk  
+sdi                   8:128  0 745.2G  0 disk  
+└─md125               9:125  0   2.9T  0 raid0 
+  ├─bcache0         252:0    0   3.7T  0 disk  
+  ├─bcache1         252:128  0   3.7T  0 disk  
+  ├─bcache2         252:256  0   3.7T  0 disk  
+  ├─bcache3         252:384  0   3.7T  0 disk  
+  └─bcache4         252:512  0   3.7T  0 disk  
+sdj                   8:144  0   3.7T  0 disk  
+└─bcache3           252:384  0   3.7T  0 disk  
+sdk                   8:160  0   3.7T  0 disk  
+└─bcache4           252:512  0   3.7T  0 disk  
+sdl                   8:176  0 223.6G  0 disk  
+└─md126               9:126  0 212.4G  0 raid1 
+  ├─md126p1         259:0    0     1G  0 md    /boot
+  └─md126p2         259:1    0 211.4G  0 md    
+    └─rootvg-lvroot 253:0    0 211.4G  0 lvm   /
+sdm                   8:192  0 223.6G  0 disk  
+└─md126               9:126  0 212.4G  0 raid1 
+  ├─md126p1         259:0    0     1G  0 md    /boot
+  └─md126p2         259:1    0 211.4G  0 md    
+    └─rootvg-lvroot 253:0    0 211.4G  0 lvm   /
+[root@X9DRi-LN4F ~]# zpool import
+   pool: SAS-4T-group01
+     id: 14559265339149382620
+  state: ONLINE
+status: One or more devices were being resilvered.
+ action: The pool can be imported using its name or numeric identifier.
+ config:
+
+	SAS-4T-group01  ONLINE
+	  raidz1-0      ONLINE
+	    bcache0     ONLINE
+	    bcache1     ONLINE
+	    bcache3     ONLINE
+	    bcache2     ONLINE
+	    bcache4     ONLINE
+	cache
+	  sdc
+	  sdb
+[root@X9DRi-LN4F ~]# reboot
+
+```
+
 #### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
 
 https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-devices-with-bcache
