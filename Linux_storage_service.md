@@ -437,16 +437,6 @@ done
 
 
 
-lsblk | grep -E "^sd" | grep 3.7T | awk '{print $1}' | while read -r line
-do
-    bcache-super-show /dev/$line > /dev/null
-    if [ $? -eq 0 ];then
-        echo 7141ec82-0b56-41b7-b840-b81dee1b37c6 > /sys/block/$line/bcache/attach
-    fi
-done
-
-
-
 [root@X9DRi-LN4F ~]# make-bcache -C /dev/md/s3610-group-01 
 Already a bcache device on /dev/md/s3610-group-01, overwrite with --wipe-bcache
 [root@X9DRi-LN4F ~]# make-bcache -C /dev/md/s3610-group-01 --wipe-bcache
