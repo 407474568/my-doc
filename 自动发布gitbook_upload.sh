@@ -8,6 +8,6 @@ if [ "$(hostname)" == "tanhuang-PC" ];then
     rsync -aP --delete -e 'ssh -i /cygdrive/c/Users/Administrator/.ssh/id_ed25519 -p 22' \
     /cygdrive/D/Code/my-doc/_book/ root@www.heyday.net.cn:/docker/my-doc-book --debug=ALL
 else
-    rsync -aP --delete -e 'ssh -i /cygdrive/c/Users/Administrator/.ssh/id_ed25519 -p 20022' \
+    rsync -aP --delete -e 'ssh -i /cygdrive/c/Users/Administrator/.ssh/id_ed25519 -p 22' \
     /cygdrive/D/Code/my-doc/_book/ root@www.heyday.net.cn:/docker/my-doc-book --debug=ALL
 fi
