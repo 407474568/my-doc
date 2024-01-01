@@ -566,6 +566,9 @@ sdm              0.14    0.00      0.00      0.00     0.00     0.00   0.00   0.0
 ```
 scsi_id -g -s <盘符的绝对路径, 如/dev/sda>
 
+# scsi_id -g -s 会有取不出值的情况, 尝试此命令
+/lib/udev/scsi_id -g -u -d <盘符的绝对路径, 如/dev/sda>
+
 lsscsi --scsi_id
 ```
 
