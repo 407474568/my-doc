@@ -356,3 +356,62 @@ https://stackoverflow.com/questions/41032744/unable-to-edit-etc-resolv-conf-in-d
 文件的处理,做了一个验证
 
 https://blog.csdn.net/Max_Cong/article/details/96861826
+
+
+<h3 id="9">Docker数据卷挂载命令volume(-v)与mount的区别</h3>
+
+https://blog.csdn.net/inrgihc/article/details/109001886
+
+--volume(-v)  
+参数--volume（或简写为-v）只能创建bind mount。示例：
+
+```
+docker run --name $CONTAINER_NAME -it \
+-v $PWD/$CONTAINER_NAME/app:/app:rw \
+-v $PWD/$CONTAINER_NAME/data:/data:ro \
+avocado-cloud:latest /bin/bash
+```
+
+注释：
+
+命令格式：[[HOST-DIR:]CONTAINER-DIR[:OPTIONS]]]  
+如果指定HOST-DIR则必须是绝对路径，如果路径不存在则会自动创建
+实例中的rw为读写，ro为只读
+
+--mount  
+参数--mount默认情况下用来挂载volume，但也可以用来创建bind mount和tmpfs。如果不指定type选项，则默认为挂载volume，volume是一种更为灵活的数据管理方式，volume可以通过docker volume命令集被管理。示例：
+
+```
+docker run --name $CONTAINER_NAME -it \
+--mount type=bind,source=$PWD/$CONTAINER_NAME/app,destination=/app \
+--mount source=${CONTAINER_NAME}-data,destination=/data,readonly \
+avocado-cloud:latest /bin/bash
+```
+
+注释：
+
+挂载volume命令格式：[type=volume,]source=my-volume,destination=/path/in/container[,...]  
+创建bind mount命令格式：type=bind,source=/path/on/host,destination=/path/in/container[,...]  
+如果创建bind mount并指定source则必须是绝对路径，且路径必须已经存在  
+示例中readonly表示只读
+
+#### 差异总结
+
+创建bind mount和挂载volume的比较
+
+| 对比项 | bind mount | volume |
+| --- | --- | --- |
+| Source位置 | 用户指定 | /var/lib/docker/volumes/ |
+| Source为空 | 覆盖dest为空 | 保留dest内容 |
+| Source非空 | 覆盖dest内容 | 覆盖dest内容 |
+| Source种类 | 文件或目录 | 只能是目录 |
+| 可移植性 | 一般（自行维护） | 强（docker托管） |
+| 宿主直接访问 | 容易（仅需chown） | 受限（需登陆root用户）* |
+
+*注释：Docker无法简单地通过sudo chown someuser: -R /var/lib/docker/volumes/somevolume来将volume的内容开放给主机上的普通用户访问，如果开放更多权限则有安全风险。而这点上Podman的设计就要理想得多，volume存放在$HOME/.local/share/containers/storage/volumes/路径下，即提供了便捷性，又保障了安全性。无需root权限即可运行容器，这正是Podman的优势之一，实际使用过程中的确受益良多。
+
+创建bind mount时使用--volume和--mount的比较
+
+| 对比项 | --volume 或 -v | --mount type=bind |
+| --- | --- | --- |
+| 如果主机路径不存在 | 自动创建 | 命令报错 |

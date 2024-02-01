@@ -78,6 +78,31 @@ ll /etc/libvirt/qemu/autostart/
 
 # virt-install --os-variant 可选值
 osinfo-query os
+
+# machine 的可选type
+[root@X9DRi-LN4F ~]# /usr/libexec/qemu-kvm -machine help
+Supported machines are:
+pc                   RHEL 7.6.0 PC (i440FX + PIIX, 1996) (alias of pc-i440fx-rhel7.6.0)
+pc-i440fx-rhel7.6.0  RHEL 7.6.0 PC (i440FX + PIIX, 1996) (default)
+pc-i440fx-rhel7.5.0  RHEL 7.5.0 PC (i440FX + PIIX, 1996)
+pc-i440fx-rhel7.4.0  RHEL 7.4.0 PC (i440FX + PIIX, 1996)
+pc-i440fx-rhel7.3.0  RHEL 7.3.0 PC (i440FX + PIIX, 1996)
+pc-i440fx-rhel7.2.0  RHEL 7.2.0 PC (i440FX + PIIX, 1996)
+pc-i440fx-rhel7.1.0  RHEL 7.1.0 PC (i440FX + PIIX, 1996)
+pc-i440fx-rhel7.0.0  RHEL 7.0.0 PC (i440FX + PIIX, 1996)
+q35                  RHEL-8.6.0 PC (Q35 + ICH9, 2009) (alias of pc-q35-rhel8.6.0)
+pc-q35-rhel8.6.0     RHEL-8.6.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel8.5.0     RHEL-8.5.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel8.4.0     RHEL-8.4.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel8.3.0     RHEL-8.3.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel8.2.0     RHEL-8.2.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel8.1.0     RHEL-8.1.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel8.0.0     RHEL-8.0.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel7.6.0     RHEL-7.6.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel7.5.0     RHEL-7.5.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel7.4.0     RHEL-7.4.0 PC (Q35 + ICH9, 2009)
+pc-q35-rhel7.3.0     RHEL-7.3.0 PC (Q35 + ICH9, 2009)
+none                 empty machine
 ```
 
 <h3 id="2">虚拟机快照类命令</h3>
