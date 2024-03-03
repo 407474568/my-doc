@@ -558,6 +558,24 @@ status: One or more devices were being resilvered.
 
 ```
 
+#### 如果开机没有自动出现 bcache 后端磁盘设备---情况3, cache 设备未注册
+
+用 ```bcache-super-show``` 检查各个后端磁盘, 一切正常, 看不出任何端倪.  
+包括 cache 设备也是如此  
+结果最后通过观察 lsblk 发现, cache设备没有注册成功  
+
+```
+# 再次确认 bcache 设备数量, 会有前端 cache 设备未注册, 导致的后端 bcache 设备注册不上的情况
+counter=$(find /dev/ -type b -name "bcache*" | wc -l)
+if [ "$counter" -lt 11 ];then
+    echo "bcache 后端盘数目不对, 可能是前端 cache 盘未注册成功, 自动注册cache 盘"
+    echo "/dev/md/s3710-group-01" > /sys/fs/bcache/register
+    echo "/dev/md/s3710-group-02" > /sys/fs/bcache/register
+fi
+```
+
+暂时也没想到什么更巧妙的判断方法, 先简单粗暴的解决吧
+
 #### bcache 的 cache 盘可以服务于多个 backend 后端磁盘, 但不能多个 cache 盘服务于同一个backend 后端磁盘 
 
 https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-devices-with-bcache

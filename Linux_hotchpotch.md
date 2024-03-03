@@ -14,6 +14,7 @@
   * [处理NETSTAT中获取不到PID的进程](#14)
   * [NFS服务对应的端口及iptables配置](#15)
   * [xfsdump 与 xfsrestore](#16)
+  * [SuSE 杂录](#17)
 
 
 <h3 id="1">ASCII对照表</h3>  
@@ -69,6 +70,31 @@
 | HT 横向列表 | DC4 设备控制4 | US 单元分隔符 |
 | LF 换行 | NAK 否定 | DEL 删除 |
 
+<h3 id="17">SuSE 杂录</h3>  
+
+#### SuSE 的 zypper
+
+非常脑残的一个地方, 像它的```DVD2.ISO``` 所包含的内容, 直接配到 zypper 源还没法使用
+
+```
+Repository 'DVD1' is up to date.
+Retrieving repository 'DVD2' metadata [\]
+File '/media.1/media' not found on medium 'http://iso.heyday.net.cn/SLES-11-SP4-DVD-x86_64-GM-DVD2.iso/'
+
+Abort, retry, ignore? [a/r/i/? shows all options] (a): A
+Retrieving repository 'DVD2' metadata [error]
+Repository 'DVD2' is invalid.
+[|] Valid metadata not found at specified URL(s)
+Please check if the URIs defined for this repository are pointing to a valid repository.
+Skipping repository 'DVD2' because of the above error.
+Some of the repositories have not been refreshed because of an error.
+```
+
+答案在此处
+
+https://superuser.com/questions/1081705/how-to-mount-3-iso-images-as-repos-in-sles-using-zypper/1307241
+
+> Unfortunately SUSE Enterprise Linux is not too rigorously tested and this definitely escaped testing. What you will need to do is extract the ISO to a folder, and add the folder to the repo list (either with YaSt or zypper, using dir:///path/to/extracted_ISO) and rename media.2 to media.1.
 
 <h3 id="16">xfsdump 与 xfsrestore</h3>  
 

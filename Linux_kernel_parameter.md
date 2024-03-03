@@ -66,8 +66,65 @@ Max：为TCP socket预留用于接收缓冲的内存最大值。该值不会影�
 缺省设置：4096 87380 174760  
 建议设置：873200 1746400 3492800  
 net.ipv4.tcp_rmem = 873200 1746400 3492800  
+
+2024-03-03 补充:
+
+https://cromwell-intl.com/open-source/performance-tuning/tcp.html
+
+> Kernel parameters for TCP are set in /proc/sys/net/core/[rw]mem* and /proc/sys/net/ipv4/tcp*, those apply for both 
+> IPv4 and IPv6. As with all the categories we've seen so far, only a few of the available kernel parameters let us 
+> make useful changes. Leave the rest alone.  
+TCP的内核参数在 /proc/sys/net/core/[rw]mem* 和 /proc/sys/net/ipv4/tcp* 中设置，这些参数适用于IPv4和IPv6。与我们迄今为止看到的所有类别一样，只有少数可用的内核参数可以让我们进行有用的更改。别管其他的了。
+
+> Parameters core/rmem_default and core/wmem_default are the default receive and send tcp buffer sizes, while 
+> core/rmem_max and core/wmem_max are the maximum receive and send buffer sizes that can be set using setsockopt(), 
+> in bytes.  
+> 参数 core/rmem_default 和 core/wmem_default 是默认的接收和发送tcp缓冲区大小，而 core/rmem_max 和 core/wmem_max 是可以使用 setsockopt() 
+> 设置的最大接收和发送缓冲区大小，以字节为单位。
+
+> Parameters ipv4/tcp_rmem and ipv4/tcp_wmem are the amount of memory in bytes for read (receive) and write (transmit)
+> buffers per open socket. Each contains three numbers: the minimum, default, and maximum values.  
+> 参数 ipv4/tcp_rmem 和 ipv4/tcp_wmem 是每个开放套接字的读（接收）和写（发送）缓冲区的内存量（以字节为单位）。每个都包含三个数字：最小值、默认值和最大值。
+
+> Parameter tcp_mem is the amount of memory in 4096-byte pages totaled across all TCP applications. It contains three 
+> numbers: the minimum, pressure, and maximum. The pressure is the threshold at which TCP will start to reclaim 
+> buffer memory to move memory use down toward the minimum. You want to avoid hitting that threshold.  
+> 参数 tcp_mem 是所有TCP应用程序中4096字节页面的内存总量。它包含三个数字：最小值、压力和最大值。压力是TCP开始回收缓冲区内存以将内存使用降至最低的阈值。你要避免触及这个门槛。
+
+```
+# grep . /proc/sys/net/ipv4/tcp*mem
+/proc/sys/net/ipv4/tcp_mem:181419  241895  362838
+/proc/sys/net/ipv4/tcp_rmem:4096    87380   6291456
+/proc/sys/net/ipv4/tcp_wmem:4096    16384   4194304 
+```
+
+> Increase the default and maximum for tcp_rmem and tcp_wmem on servers and clients when they are on either a 10 Gbps 
+LAN with latency under 1 millisecond, or communicating over high-latency low-speed WANs. In those cases their TCP 
+> buffers may fill and limit throughput, because the TCP window size can't be made large enough to handle the delay 
+> in receiving ACK's from the other end. IBM's High Performance Computing page recommends 4096 87380 16777216.  
+> 当服务器和客户端位于延迟低于1毫秒的10 Gbps LAN或通过高延迟低速WAN通信时，增加服务器和客户端上 tcp_rmem 和 tcp_wmem 
+> 的默认值和最大值。在这些情况下，它们的TCP缓冲区可能会填满并限制吞吐量，因为TCP窗口大小无法大到足以处理从另一端接收ACK的延迟。IBM的高性能计算页面推荐4096 87380 16777216。
+
+> Then, for tcp_mem, set it to twice the maximum value for tcp_[rw]mem multiplied by the maximum number of running 
+> network applications divided by 4096 bytes per page.
+
+```
+# grep . /proc/sys/net/ipv4/tcp*mem
+/proc/sys/net/ipv4/tcp_mem:181419  241895  362838
+/proc/sys/net/ipv4/tcp_rmem:4096    87380   6291456
+/proc/sys/net/ipv4/tcp_wmem:4096    16384   4194304
+```
+
+> Then, for tcp_mem, set it to twice the maximum value for tcp_[rw]mem multiplied by the maximum number of running 
+> network applications divided by 4096 bytes per page.  
+> 然后，对于 tcp_mem ，将其设置为 tcp_[rw]mem 最大值的两倍乘以运行的网络应用程序的最大数量除以每页4096字节。
+
+> Increase rmem_max and wmem_max so they are at least as large as the third values of tcp_rmem and tcp_wmem.  
+> 增加 rmem_max 和 wmem_max ，使它们至少与第三个值 tcp_rmem 和 tcp_wmem 一样大。
+
 <br/>
 <br/>
+
 /proc/sys/net/core/wmem_default  
 tcp 的内存是基于系统的内存自动计算的  
 该文件指定了发送套接字缓冲区大小的缺省值（以字节为单位）。缺省设置：110592  
@@ -88,7 +145,9 @@ net.core.rmem_max = 3492800
 <br/>
 <br/>
 ### 【网络协议工作机制类】
+
 <br/>
+
 决定检查过期多久邻居条目  
 内核维护的arp表过于庞大, 发生抖动, 因此导致了这种情况,几个内核ARP参数  
 gc_stale_time  
