@@ -126,6 +126,42 @@ LAN with latency under 1 millisecond, or communicating over high-latency low-spe
 > Increase rmem_max and wmem_max so they are at least as large as the third values of tcp_rmem and tcp_wmem.  
 > 增加 rmem_max 和 wmem_max ，使它们至少与第三个值 tcp_rmem 和 tcp_wmem 一样大。
 
+https://bbs.huaweicloud.com/blogs/393407
+
+引用华为论坛的结论, 主要取个整, 分别1G, 2G, 5G
+
+```
+net.core.netdev_max_backlog = 32768
+net.core.rmem_default = 2097152
+net.core.rmem_max = 5242880
+net.core.wmem_default = 2097152
+net.core.wmem_max = 5242880
+net.ipv4.tcp_mem = 65536  393216  524288
+net.ipv4.tcp_rmem = 1048576  2097152  5242880
+net.ipv4.tcp_wmem = 1048576  2097152  5242880
+net.ipv4.tcp_window_scaling = 1
+```
+
+还有一篇文章
+
+https://blog.csdn.net/huangling07031190/article/details/122824887
+
+但以上不考虑机器RAM实际大小, 恐怕也不太妥
+
+*找到IBM的文档, 信服力够强*
+
+https://www.ibm.com/docs/en/linux-on-systems?topic=tuning-tcpip-ipv4-settings
+
+解释的内容, 其实前文就是对它的翻译.
+
+最重要的一句.
+
+> The recommendation is to use the maximum value of 16M bytes or higher (kernel level dependent) especially for 10 
+> Gigabit adapters.  
+> 建议使用16 M字节或更高的最大值（取决于内核级别），特别是对于10千兆适配器。
+
+因此, 16M 256M 512M 这三个数值是我决定采用的.
+
 <br/>
 <br/>
 
@@ -296,7 +332,7 @@ tcp_keepalive_intvl = 75
 /proc/sys/net/ipv4/tcp_keepalive_intvl  
 该文件表示发送TCP探测的频率，乘以tcp_keepalive_probes表示断开没有相应的TCP连接的时间。  
 缺省设置：75（秒）  
-意思是如果某个TCP连接在idle 2个小时后,内核才发起probe.如果probe 9次(每次75秒)不成功,内核才彻底放弃,认为该连接已失效.对服务器而言,显然上述值太大.可调整到
+意思是如果某个TCP连接在idle 2个小时后,内核才发起probe.如果probe 9次(每次75秒)不成功,内核才彻底放弃,认为该连接已失效.对服务器而言,显然上述值太大.可调整到  
 net.ipv4.tcp_keepalive_time = 1200  
 net.ipv4.tcp_keepalive_probes = 3  
 net.ipv4.tcp_keepalive_intvl = 30  
