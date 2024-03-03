@@ -1,5 +1,9 @@
+### 最权威的手册
+
+https://docs.kernel.org/admin-guide/sysctl/
+
 默认的配置文件位置  
-/etc/sysctl.conf  
+/etc/sysctl.conf
 
 ### 【本机性能类】  
 <br/>
