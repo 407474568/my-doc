@@ -718,7 +718,7 @@ mdadm -D -s
 
 ![](images/dv65PWBGEhesFZKI29E71ipOdzNRTWjm.JPG)
 
-![](images/dv65PWBGEh8RyTmkYFPpS6MOj937JNKC.jpg)
+![](images/dv65PWBGEh8RyTmkYFPpS6MOj937JNKC.JPG)
 
 **2023-08-27**
 
