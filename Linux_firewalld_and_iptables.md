@@ -61,7 +61,14 @@ COMMIT
 多地址多端口的写法
 ![](images/HJd9Qgp1307vaCYNWQAi5qSZmVhJLXRg.png)
 
-iptables的保存
+```
+-A INPUT -p tcp -m iprange --src-range 192.3.208.119-192.3.208.119 -m multiport --dports 22,1000,6000,7000,9527,10001,10002,20023,20024,20025 -j ACCEPT
+-A INPUT -p tcp -m iprange --src-range 42.88.165.64-42.88.165.64 -m multiport --dports 22,1000,6000,7000,9527,10001,10002,20023,20024,20025 -j ACCEPT
+-A INPUT -p tcp -m iprange --src-range 192.168.2.1-192.168.2.254 -m multiport --dports 22,1000,6000,7000,9527,10001,10002,20023,20024,20025 -j ACCEPT
+-A INPUT -p tcp -m multiport --dports 22,1000,6000,7000,9527,10001,10002,20023,20024,20025 -j DROP
+```
+
+iptables的保存    
 RHEL / CentOS
 使用service iptables save即可
 SuSE 11
