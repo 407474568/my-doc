@@ -456,6 +456,14 @@ makedumpfile Failed.
 
 <h3 id="2">配置crash工具集环境</h3>  
 
+#### 启用 kdump
+
+红帽/CentOS/Rocky 以及再其基础上的山寨/换皮, 开启的方法在互联网上足够多了, 没有介绍必要
+
+SuSE Linux, 虽然步骤大同小异, 留个文档链接以备不时之需
+
+https://www.suse.com/support/kb/doc/?id=000016171
+
 #### 如果希望手动指定 crashkernel 的大小
 
 https://access.redhat.com/solutions/916043
