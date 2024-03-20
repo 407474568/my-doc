@@ -241,6 +241,9 @@ grep -w CONFIG_DEBUG_INFO_BTF .config
 grep -w CONFIG_BCACHE .config
 ```
 
+<font color=red>注意: .config 文件的版本变化速度非常之快, 所以 .config 文件生成时的版本与当前要编译的内核版本不一致时,
+需要提前验证, 是否有新增问答选项, 否则可能就会导致自动化流程的失败</font>
+
 编译内核--依次执行以下步骤,注意确认是否有报错  
 
 ```
