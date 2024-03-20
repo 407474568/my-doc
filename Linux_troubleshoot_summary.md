@@ -2,6 +2,7 @@
   * [CPU stuck for XXs](#1)
   * [查看被系统缓存的文件](#2)
   * [系统内核文件丢失](#3)
+  * [定位 iowait 的进程](#4)
 
 
 <h3 id="1">控制台上出现错误消息：NMI watchdog BUG soft lockup - CPU stuck for XXs</h3>
@@ -99,10 +100,42 @@ ln -sf /usr/local/bin/linux-fincore /usr/sbin/linux-fincore
 
 https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-verifying_the_initial_ram_disk_image
 
-存在有时发现系统内核文件丢失的情况, 即 /boot/initxxxx.img 的文件不知所踪
+存在有时发现系统内核文件丢失的情况, 即 ```/boot/initramfs-<xxxx>.img``` 的文件不知所踪
 
 在当前系统还可用的前提下, 其实有补救措施.
 
 ```
 dracut "initramfs-$(uname -r).img" $(uname -r)
 ```
+
+<h3 id="4">定位 iowait 的进程</h3>
+
+这篇文章是转载和翻译, 引用源链接已失效  
+https://blog.csdn.net/G7N3F/article/details/52673077
+
+这是原文  
+https://bencane.com/troubleshooting-high-i-o-wait-in-linux-358080d57b69
+
+里面介绍到的一个标准工作流程:
+- 通过 ```iostat``` 定位到高IO的磁盘对象
+- 通过 ```top``` 可以定位到CPU的使用率是计算任务, 还是 iowait 事件
+- 通过 ```iotop``` 可以定位高IO的进程
+- 最有价值的部分: iotop 也不是各路发行版默认安装的, 如果没有的情况是否还有查询的方法? 答案自然是肯定的, 因为```iotop```
+也必然有数据来源, 实际通过比较 /proc/<进程PID>/io 里统计数据的差值
+
+<h3 id="5">iowait 提示"CONFIG_TASK_DELAY_ACCT and kernel.task_delayacct sysctl not enabled in kernel, cannot determine SWAPIN and IO %"</h3>
+
+https://superuser.com/questions/610581/iotop-complains-config-task-delay-acct-not-enabled-in-kernel-only-for-specific
+
+检查你的内核 ```.config``` 文件, 有可能实际上是 ```CONFIG_TASK_DELAY_ACCT=y```  
+如果是```CONFIG_TASK_DELAY_ACCT=n```, 则不在本节的讨论范围, 因为你需要重新编译内核才能打开此功能.  
+对于已经是```CONFIG_TASK_DELAY_ACCT=y```的情形, 值得借鉴的方式是:
+
+```
+sysctl kernel.task_delayacct=1
+iotop
+sysctl kernel.task_delayacct=0
+```
+
+即: 只在使用```iotop```时才打开```delayacct```, 用完即关, 而不是作为默认打开的配置项.  
+因为该参数有拖慢系统性能的可能性, 道理也很显而易见, 因为额外监控了进程的 swapin 和 swapout
