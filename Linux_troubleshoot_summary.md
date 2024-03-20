@@ -3,6 +3,7 @@
   * [查看被系统缓存的文件](#2)
   * [系统内核文件丢失](#3)
   * [定位 iowait 的进程](#4)
+  * [iotop 提示"CONFIG_TASK_DELAY_ACCT and ...](#5)
 
 
 <h3 id="1">控制台上出现错误消息：NMI watchdog BUG soft lockup - CPU stuck for XXs</h3>
@@ -123,7 +124,10 @@ https://bencane.com/troubleshooting-high-i-o-wait-in-linux-358080d57b69
 - 最有价值的部分: iotop 也不是各路发行版默认安装的, 如果没有的情况是否还有查询的方法? 答案自然是肯定的, 因为```iotop```
 也必然有数据来源, 实际通过比较 /proc/<进程PID>/io 里统计数据的差值
 
-<h3 id="5">iowait 提示"CONFIG_TASK_DELAY_ACCT and kernel.task_delayacct sysctl not enabled in kernel, cannot determine SWAPIN and IO %"</h3>
+<h3 id="5">iotop 提示"CONFIG_TASK_DELAY_ACCT and ...</h3>
+
+iotop 提示"CONFIG_TASK_DELAY_ACCT and kernel.task_delayacct sysctl not enabled in kernel, cannot determine 
+SWAPIN and IO %"
 
 https://superuser.com/questions/610581/iotop-complains-config-task-delay-acct-not-enabled-in-kernel-only-for-specific
 
