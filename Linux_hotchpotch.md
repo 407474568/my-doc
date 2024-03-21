@@ -15,9 +15,11 @@
   * [NFS服务对应的端口及iptables配置](#15)
   * [xfsdump 与 xfsrestore](#16)
   * [SuSE 杂录](#17)
+  * [grub2-mkconfig 的生成失败](#18)
 
 
 <h3 id="1">ASCII对照表</h3>  
+
 
 | ASCII值 | 控制字符 | ASCII值 | 控制字符 | ASCII值 | 控制字符 | ASCII值 | 控制字符 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -69,6 +71,48 @@
 | BS 退一格 | DC3 设备控制3 | RS 记录分隔符 |
 | HT 横向列表 | DC4 设备控制4 | US 单元分隔符 |
 | LF 换行 | NAK 否定 | DEL 删除 |
+
+
+<h3 id="18">grub2-mkconfig 的生成失败</h3>  
+
+在修改了 ```/etc/default/grub``` 以后通过 grub2-mkconfig 重新生成启动菜单时遇到了报错: 
+
+```
+[root@X9DRi-LN4F ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
+Generating grub configuration file ...
+device-mapper: reload ioctl on osprober-linux-sda1 (253:1) failed: Device or resource busy
+Command failed.
+device-mapper: reload ioctl on osprober-linux-md125 (253:1) failed: Device or resource busy
+Command failed.
+done
+```
+
+https://github.com/openzfs/zfs/discussions/9801
+
+根据以上帖子的讨论内容可知:  
+一是似乎是```ZFS```相关联, 因为有```ZFS```时, 且使用了 ```mdadm```--正巧我全中. 对其原理性的解释是, 在有两者并存时, 由于 ```ZFS``` 会
+锁定该磁盘对象,从而使 ```ioctl``` 的操作失败.  
+二是解决办法有两种, 一是没有用到 ```os-prober```, 那么可以卸载该包; 二是内核启动参数项移除它,配置语句为```GRUB_DISABLE_OS_PROBER=true```
+
+```
+[root@X9DRi-LN4F ~]# os-prober
+device-mapper: reload ioctl on osprober-linux-sda1 (253:1) failed: Device or resource busy
+Command failed.
+device-mapper: reload ioctl on osprober-linux-md125 (253:1) failed: Device or resource busy
+Command failed.
+
+
+[root@X9DRi-LN4F ~]# cat /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=0M-2G:0M,2G-8G:256M,8G-:512M rd.md.uuid=71ae2bbe:8e393454:5d6925a2:4f8c3b2e rd.md.uuid=f1c2424d:cf1da650:43601ece:4d41fd5a rd.lvm.lv=rootvg/lvroot rhgb quiet intel_iommu=on"
+GRUB_DISABLE_RECOVERY="true"
+GRUB_ENABLE_BLSCFG=true
+GRUB_DISABLE_OS_PROBER=true
+```
 
 <h3 id="17">SuSE 杂录</h3>  
 
