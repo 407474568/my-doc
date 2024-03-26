@@ -202,6 +202,52 @@ virsh snapshot-revert 虚拟机名称 快照名称
 # /var/lib/libvirt/qemu/snapshot
 ```
 
+#### 删除快照失败的一种场景
+
+创建快照时是加上了 ```--disk-only``` 参数
+
+```
+[root@5950x-node1 ~]# virsh snapshot-create-as kvm_host_simulator test --disk-only 
+Domain snapshot test created
+[root@5950x-node1 ~]# virsh snapshot-list kvm_host_simulator
+ Name   Creation Time               State
+---------------------------------------------------
+ test   2024-03-26 09:36:04 +0800   disk-snapshot
+```
+
+试图按常规方式删除时, 就出现了报错
+
+```
+[root@5950x-node1 ~]# virsh undefine kvm_host_simulator 
+error: Failed to undefine domain 'kvm_host_simulator'
+error: Requested operation is not valid: cannot delete inactive domain with 2 snapshots
+
+[root@5950x-node1 ~]# virsh snapshot-delete kvm_host_simulator test
+error: Failed to delete snapshot test
+error: unsupported configuration: deletion of 1 external disk snapshots not supported yet
+
+[root@5950x-node1 ~]# virsh snapshot-delete kvm_host_simulator test2 
+error: Failed to delete snapshot test2
+error: unsupported configuration: deletion of 1 external disk snapshots not supported yet
+```
+
+答案在此  
+https://serverfault.com/questions/721216/delete-orphan-libvirt-snapshot
+
+实际就是多个 ```--metadata``` 参数
+
+```
+[root@5950x-node1 ~]# virsh snapshot-delete kvm_host_simulator --metadata test2
+Domain snapshot test2 deleted
+
+[root@5950x-node1 ~]# virsh snapshot-delete kvm_host_simulator --metadata test
+Domain snapshot test deleted
+
+[root@5950x-node1 ~]# virsh snapshot-list kvm_host_simulator
+ Name   Creation Time   State
+-------------------------------
+```
+
 <h3 id="3">KVM运行环境的安装</h3>
 
 https://bynss.com/linux/591489.html  
