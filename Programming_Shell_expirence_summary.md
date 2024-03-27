@@ -35,16 +35,20 @@ https://blog.51cto.com/dywer/688810
 在这个场景下是否有简单一点的书写规则?  
 
 ```
-sed -i '/^# OPENSSL=/path/to/openssl/directory/{N;N;N;N;s/# //g}'  /tmp/${python_version}/Modules/Setup
+sed -i '/^# OPENSSL=\/path\/to\/openssl\/directory/{N;N;N;s/# //g}' /tmp/${python_version}/Modules/Setup
 sed -i "s/OPENSSL=/path/to/openssl/directory/# OPENSSL=/path/to/openssl/directory/g"  /tmp/${python_version}/Modules/Setup
 ```
 
-即: 用 ```# OPENSSL=/path/to/openssl/directory``` 作为关键字去搜索  
+即: 用 ```# OPENSSL=\/path\/to\/openssl\/directory``` 作为关键字去搜索, 由于关键字中包含 ```/``` 这种 sed 自身的关键字, 并且
+在此模式还不能像常规 sed 模式使用 ```@``` 之类替代 ```/```, 因此对关键字本身的```/``` 用转义表示  
 然后4个 ```N;``` 代表匹配的关键字之后的4行  
 再之后的 ```s/# //g``` 则跟常规的 sed 模式一样, 是文字替换规则  
 所以拆解之后, 解读此模式下的规则书写方法:  
 ```sed '/<关键字>/{<N个"N;"><替换规则s///>}'```  
 示例的第2行, 是把不应该取消注释的行又注释回去
+
+不过进一步的测试发现, ```N;``` 存在行为不一致的情形, 用3个或5个在此场景下竟然能得出相同的结果, 看来 sed 还有语法规则,
+留着以后更新.
 
 <font color=red>sed 跟行号有关的操作</font>
 
