@@ -4,8 +4,47 @@
     * [Shell里的细节](#02)  
     * [Shell比较运算符](#03)  
     * [Shell输出的格式控制](#04)  
+    * [杂项](#05)  
 
 <h4 id="05">杂项</h4>
+
+<font color=red>sed 匹配行及其后连续N行的操作</font>
+
+https://blog.csdn.net/qq_35751770/article/details/120506836
+https://blog.51cto.com/dywer/688810
+
+两篇文章文字表达能力都不咋地, 但综合一下, 可以总结出使用规律
+
+以下图为例
+
+![](images/微信图片_20240327203300.png)
+
+期望修改的文字是
+
+```
+# OPENSSL=/path/to/openssl/directory
+# _ssl _ssl.c \
+#     -I$(OPENSSL)/include -L$(OPENSSL)/lib \
+#     -lssl -lcrypto
+```
+
+取消 ```OPENSSL``` 下面三行行首的注释符  
+但又不能使用 sed 的全局匹配, 即加 g 参数, 因为更下方的行文字内容相同, 而它们又不是期望修改的对象  
+也尝试过把多行看作一行来处理, 即自行加上换行符, 但一是常规模式下的 sed 命令是逐行处理, 识别到换行符时已经切断.  
+另外 sed 里过于复杂的转义规则, 调试的时间成本, 书写的复杂度都过高.  
+在这个场景下是否有简单一点的书写规则?  
+
+```
+sed -i '/^# OPENSSL=/path/to/openssl/directory/{N;N;N;N;s/# //g}'  /tmp/${python_version}/Modules/Setup
+sed -i "s/OPENSSL=/path/to/openssl/directory/# OPENSSL=/path/to/openssl/directory/g"  /tmp/${python_version}/Modules/Setup
+```
+
+即: 用 ```# OPENSSL=/path/to/openssl/directory``` 作为关键字去搜索  
+然后4个 ```N;``` 代表匹配的关键字之后的4行  
+再之后的 ```s/# //g``` 则跟常规的 sed 模式一样, 是文字替换规则  
+所以拆解之后, 解读此模式下的规则书写方法:  
+```sed '/<关键字>/{<N个"N;"><替换规则s///>}'```  
+示例的第2行, 是把不应该取消注释的行又注释回去
 
 <font color=red>sed 跟行号有关的操作</font>
 
