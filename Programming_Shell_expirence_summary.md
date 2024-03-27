@@ -10,7 +10,7 @@
 
 <font color=red>sed 匹配行及其后连续N行的操作</font>
 
-https://blog.csdn.net/qq_35751770/article/details/120506836
+https://blog.csdn.net/qq_35751770/article/details/120506836  
 https://blog.51cto.com/dywer/688810
 
 两篇文章文字表达能力都不咋地, 但综合一下, 可以总结出使用规律
