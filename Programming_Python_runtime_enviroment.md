@@ -8,6 +8,31 @@
 
 <h3 id="1">Python 在Linux上的编译安装</h3>
 
+#### 2024-03-27 更新
+
+在 RHEL/Rocky 等红帽家族的发行版上, openssl 适配的版本是 3.x, 当该系统编译安装升级过 openssl, 那么 Python
+的编译安装又会遇到问题  
+因为截止目前, Python3 也尚未对 openssl 3.x 进行适配, 所以试图以 openssl 3.x 编译安装 Python3 是无解的.  
+不过变通的处理方式--提供一个指定的 openssl 的位置, 而这个 openssl 的位置甚至是完成了 make 编译的, 但区别在于不做 
+make install 等后续的一系列操作, 即仅仅只完成一个编译好的 openssl 可执行程序, 专供 Python3 编译程序使用.  
+这样做的好处是可以与系统使用 openssh openssl 版本分离开, 无需与系统使用版本进行捆绑.
+
+最后在 Python 内核实 openssl lib库的版本
+
+```
+[root@kvm-host-simulator ~]# python3
+Python 3.10.13 (main, Mar 27 2024, 12:52:02) [GCC 8.5.0 20210514 (Red Hat 8.5.0-20)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import ssl
+>>> print(ssl.OPENSSL_VERSION)
+OpenSSL 1.1.1k  FIPS 25 Mar 2021
+```
+
+但依然是系统自带的 1.1.1k  
+可见编译过程中 Python 依然从 openssl-devel 包中依赖了内容
+
+----------------------------------------------------------
+
 重点在以下参数
 
 ```
