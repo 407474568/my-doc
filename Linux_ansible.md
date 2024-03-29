@@ -15,6 +15,8 @@ https://micorochio.github.io/2017/05/31/ansible-learning-01/
   * [为playbook 增加一个显示执行时间的插件](#7)
   * [ansible配置文件ansible.cfg参数含义](#8)
   * [有关 playbook 里的 handler](#9)
+  * [异步任务](#10)
+
 
 <h3 id="1">免密连接受控端</h3>
 
@@ -326,3 +328,134 @@ https://blog.51cto.com/u_11726212/2378616
 ![](images/nUVHT5gpLlkEvnMsC2RXKPidTlxSzVLY.webp)
 
 
+<h3 id="10">异步任务</h3>
+
+https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_async.html
+
+以下原文确认两点:
+- async 就是超时时长
+- poll 就是探测间隔
+
+> Playbooks also support asynchronous mode and polling, with a simplified syntax. You can use asynchronous mode in 
+> playbooks to avoid connection timeouts or to avoid blocking subsequent tasks. The behavior of asynchronous mode in a playbook depends on the value of poll.
+
+> Avoid connection timeouts: poll > 0
+> If you want to set a longer timeout limit for a certain task in your playbook, use async with poll set to a 
+> positive value. Ansible will still block the next task in your playbook, waiting until the async task either completes, fails or times out. However, the task will only time out if it exceeds the timeout limit you set with the async parameter.
+
+> To avoid timeouts on a task, specify its maximum runtime and how frequently you would like to poll for status:
+
+ansible 的 AD-HOC 模式
+
+> You can execute long-running operations in the background with ad hoc tasks. For example, to execute 
+> long_running_operation asynchronously in the background, with a timeout (-B) of 3600 seconds, and without polling (-P):
+
+```
+$ ansible all -B 3600 -P 0 -a "/usr/bin/long_running_operation --do-stuff"
+```
+
+> To check on the job status later, use the async_status module, passing it the job ID that was returned when you ran 
+> the original job in the background:
+
+```
+$ ansible web1.example.com -m async_status -a "jid=488359678239.2844"
+```
+
+> Ansible can also check on the status of your long-running job automatically with polling. In most cases, Ansible 
+> will keep the connection to your remote node open between polls. To run for 30 minutes and poll for status every 60 seconds:
+
+```
+$ ansible all -B 1800 -P 60 -a "/usr/bin/long_running_operation --do-stuff"
+```
+
+> Poll mode is smart so all jobs will be started before polling begins on any machine. Be sure to use a high enough 
+> --forks value if you want to get all of your jobs started very quickly. After the time limit (in seconds) runs out (-B), the process on the remote nodes will be terminated.
+
+> Asynchronous mode is best suited to long-running shell commands or software upgrades. Running the copy module 
+> asynchronously, for example, does not do a background file transfer.
+
+
+playbook 的写法示例
+
+```
+---
+
+- hosts: all
+  remote_user: root
+
+  tasks:
+  - name: Simulate long running op (15 sec), wait for up to 45 sec, poll every 5 sec
+    ansible.builtin.command: /bin/sleep 15
+    async: 45
+    poll: 5
+```
+
+<h3 id="11">playbook的复用</h3>
+
+关于复用, 这个文档有质量不错的介绍
+
+https://getansible.com/advance/playbook/includeyu_ju
+
+对使用场景还不了解的, 可以看
+
+https://developer.aliyun.com/article/661091
+
+原本是打算按照 ansible 的规则来复用 ansible-playbook  
+模块化拆解, 然后流程组装上不同的组合以满足不同的场景  
+但上述文档看了下来, 遵守它规则的代价以及其他一些限制, 使我放弃了这个想法  
+正如同我不会按照 ansible 的 role 模式去写的理由一样--不与 ansible 深度绑定, shell 脚本可以精细打磨, 但可以做到广泛适配的
+可被调用  
+ansible 之于我的核心功能, 依然是批量指令, 变量传递, 流程调度  
+所以原本多个playbook想整合到一个总的playbook中来进行总调度, 但最后还是用的一个 shell 脚本分别执行这多个 playbook.  
+原意是最外层的调度, 可以灵活的修改这些 playbook 的变量值.  
+目前这个模式也并不算完美, 待更新.
+
+<h3 id="12">等待事件</h3>
+
+https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_module.html
+
+等待目标机上的一个事件
+
+最终的 playbook
+
+```
+---
+- name: 等待目标机器重启完成
+  hosts: "{{ target }}"
+  gather_facts: false
+  tasks:
+  - name: wait for port 22 close
+    ansible.builtin.wait_for:
+      port: 22
+      host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+      state: stopped
+      # 20分钟关不下来就该人工介入了
+      timeout: 1200
+#    等待端口关闭, 反而不应该使用 connection: local
+    connection: local
+    ignore_errors: true
+
+
+  - name: wait for port 22 open
+    ansible.builtin.wait_for:
+      port: 22
+      host: "{{ ansible_ssh_host | default(inventory_hostname) }}"
+      state: started
+      # 20分钟还没启动起来就该人工介入了
+      timeout: 1200
+    connection: local
+```
+
+当然也包括了一些摸索得出的规律
+
+```connection: local``` 是探测指令是由 ansible 主机本地发出, 如果不加这个参数, 默认是ansible主机会ssh登陆到对端
+再执行相关指令, 显然在 reboot 这种场景下就不适合.
+
+另外一个非常重要的, 在 ```task``` 里的 ```ansible.builtin.wait_for``` 里的 ```host```  
+最初我用的 ```{{ target }}```, 即我 playbook 顶部定义的```hosts```, 但实测死活有些问题  
+最后抱着试一试的心态, 尝试了文档里示例给的 ```"{{ ansible_ssh_host | default(inventory_hostname) }}"``` 果然结果如同预期.
+虽然文档里也有提到这么一句  
+
+> Do not assume the inventory_hostname is resolvable and delay 10 seconds at start
+
+但着实看得还是有些云里雾里.
