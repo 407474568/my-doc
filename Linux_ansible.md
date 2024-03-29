@@ -16,6 +16,8 @@ https://micorochio.github.io/2017/05/31/ansible-learning-01/
   * [ansible配置文件ansible.cfg参数含义](#8)
   * [有关 playbook 里的 handler](#9)
   * [异步任务](#10)
+  * [playbook的复用](#11)
+  * [等待事件](#12)
 
 
 <h3 id="1">免密连接受控端</h3>
