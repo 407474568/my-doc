@@ -454,14 +454,11 @@ https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_mod
 再执行相关指令, 显然在 reboot 这种场景下就不适合.
 
 另外一个非常重要的, 在 ```task``` 里的 ```ansible.builtin.wait_for``` 里的 ```host```  
-最初我用的  
+最初我用的 ``` &#123;&#123; target &#125;&#125; ```
 
-```
-&#123;&#123; target &#125;&#125;
-```
 
 即我 playbook 顶部定义的```hosts```, 但实测死活有些问题  
-最后抱着试一试的心态, 尝试了文档里示例给的 ```"{{ ansible_ssh_host | default(inventory_hostname) }}"``` 果然结果如同预期.
+最后抱着试一试的心态, 尝试了文档里示例给的 ``` "{{ ansible_ssh_host | default(inventory_hostname) }}" ``` 果然结果如同预期.
 虽然文档里也有提到这么一句  
 
 > Do not assume the inventory_hostname is resolvable and delay 10 seconds at start
