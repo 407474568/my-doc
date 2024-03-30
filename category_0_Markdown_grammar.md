@@ -339,7 +339,8 @@ HTML 的转义字符
 
 https://blog.ifzm.cn/2017/09/02/html-escape/
 
-<!-- 常用转义符 -->
+- 常用转义符
+
 | 原字符 | 转义字符  | 中文描述 |
 |-----|-------| ------ |
 |     | ```&nbsp;``` | 空格 |
@@ -347,3 +348,55 @@ https://blog.ifzm.cn/2017/09/02/html-escape/
 | &   | ```&amp;``` | 且号 |
 | <   | ```&lt;``` | 小于号 |
 | \>  | ```&gt;``` | 大于号|
+
+- 其他转义符
+
+| 原字符 | 转义字符  | 中文描述 |
+|-----|-------| ------ |
+| \t  | ```&#09;```  | 制表符Horizontal tab  |
+| \n  | ```&#10;```  | 换行Line feed  |
+| \r  | ```&#13;```  | 回车Carriage Return  |
+|     | ```&#32;```  | 空格 Space  |
+| !   | ```&#33;```  | 惊叹号Exclamation mark  |
+| "   | ```&#34;```  | &quot; 双引号Quotation mark  |
+| #   | ```&#35;```  |  数字标志Number sign  |
+| $   | ```&#36;```  |  美元标志Dollar sign  |
+| %   | ```&#37;```  |  百分号Percent sign  |
+| &   | ```&#38;```  | &amp; Ampersand  |
+| '   | ```&#39;```  |  单引号Apostrophe  |
+| (   | ```&#40;```  |  小括号左边部分Left parenthesis  |
+| )   | ```&#41;```  |  小括号右边部分Right parenthesis  |
+| *   | ```&#42;```  |  星号Asterisk  |
+| +   | ```&#43;```  |  加号Plus sign  |
+| ,   | ```&#44;```  |  逗号Comma  |
+| -   | ```&#45;```  |  连字号Hyphen  |
+| .   | ```&#46;```  |  句号Period (fullstop)  |
+| /   | ```&#47;```  |  斜杠Solidus (slash)  |
+| :   | ```&#58;```  |  冒号Colon  |
+| ;   | ```&#59;```  |  分号Semicolon  |
+| <   | ```&#60;```  | &lt; 小于号Less than  |
+| =   | ```&#61;```  |  等于符号Equals sign  |
+| \>  | ```&#62;```  | &gt; 大于号Greater than  |
+| ?   | ```&#63;```  |  问号Question mark  |
+| @   | ```&#64;```  |  Commercial at  |
+| {   | ```&#123;``` | 大括号左边部分Left curly brace  |
+| \|  | ```&#124;``` | 竖线Vertical bar  |
+| }   | ```&#125;``` | 大括号右边部分Right curly brace  |
+| ~   | ```&#126;``` | Tilde  |
+| [   | ```&#91;```  | 中括号左边部分Left square bracket  |
+| \   | ```&#92;```  | 反斜杠Reverse solidus (backslash)  |
+| ]   | ```&#93;```  | 中括号右边部分Right square bracket  |
+| ^   | ```&#94;```  | Caret  |
+| _   | ```&#95;```  | 下划线Horizontal bar (underscore)  |
+| `   | ```&#96;``` | 尖重音符Acute accent |
+| 0   | ```&#48;```  | 数字0 Digit 0  |
+| 1   | ```&#49;```  | 数字1 Digit 1  |
+| 2   | ```&#50;```  | 数字2 Digit 2  |
+| 3   | ```&#51;```  | 数字3 Digit 3  |
+| 4   | ```&#52;```  | 数字4 Digit 4  |
+| 5   | ```&#53;```  | 数字5 Digit 5  |
+| 6   | ```&#54;```  | 数字6 Digit 6  |
+| 7   | ```&#55;```  | 数字7 Digit 7  |
+| 8   | ```&#56;```  | 数字8 Digit 8  |
+| 9   | ```&#57;```  | 数字9 Digit 9 |
+
