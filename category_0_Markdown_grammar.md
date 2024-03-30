@@ -335,6 +335,8 @@ markdown 的转义字符
 
 https://markdown.com.cn/basic-syntax/escaping-characters.html
 
+纯 markdown 的转义字符, 仅仅是用 \ 已能应付大多数场景, 然而一旦用markdown生成成 HTML, 受 HTML 语法影响, 就会复杂许多.
+
 HTML 的转义字符
 
 https://blog.ifzm.cn/2017/09/02/html-escape/
