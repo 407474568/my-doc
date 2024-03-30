@@ -457,7 +457,7 @@ https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_mod
 最初我用的  
 
 ```
-{amp;{amp; target amp;}amp;}
+\\{\\{ target \\}\\}
 ```
 
 即我 playbook 顶部定义的```hosts```, 但实测死活有些问题  
