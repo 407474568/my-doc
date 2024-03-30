@@ -7,6 +7,8 @@
   * [docker 的几种网络模式](#6)
   * [docker 的 save 与 export 以及 load 和 import 的区别](#7)
   * [容器的DNS的指派](#8)
+  * [Docker数据卷挂载命令volume(-v)与mount的区别](#9)
+  * [与iptables共存](#10)
 
 
 <h3 id="1">环境安装</h3>
@@ -408,10 +410,33 @@ avocado-cloud:latest /bin/bash
 | 可移植性 | 一般（自行维护） | 强（docker托管） |
 | 宿主直接访问 | 容易（仅需chown） | 受限（需登陆root用户）* |
 
-*注释：Docker无法简单地通过sudo chown someuser: -R /var/lib/docker/volumes/somevolume来将volume的内容开放给主机上的普通用户访问，如果开放更多权限则有安全风险。而这点上Podman的设计就要理想得多，volume存放在$HOME/.local/share/containers/storage/volumes/路径下，即提供了便捷性，又保障了安全性。无需root权限即可运行容器，这正是Podman的优势之一，实际使用过程中的确受益良多。
+> 注释：Docker无法简单地通过  
+```sudo chown someuser: -R /var/lib/docker/volumes/somevolume```  
+来将volume的内容开放给主机上的普通用户访问，如果开放更多权限则有安全风险。而这点上Podman的设计就要理想得多，volume存放在$HOME/.
+local/share/containers/storage/volumes/路径下，既提供了便捷性，又保障了安全性。无需root权限即可运行容器，这正是Podman的优势之一，实际使用过程中的确受益良多。
 
 创建bind mount时使用--volume和--mount的比较
 
 | 对比项 | --volume 或 -v | --mount type=bind |
 | --- | --- | --- |
 | 如果主机路径不存在 | 自动创建 | 命令报错 |
+
+<h3 id="10">与iptables共存</h3>
+
+在 RHEL 家族的发行版上, 禁用 firewalld 并启用 iptables 可以安装包名为 iptables-services  
+此后会创建一个 iptables.service 的 systemctl 管理的服务项  
+使用上就完全是 iptables 的习惯与方式.  
+但 docker 也是使用 iptables 来进行容器的端口转发, 所以最稳妥的方式是将 iptables.service 添加到 docker 的服务依赖项上去.
+
+```
+[root@CQ-docker-02 ~]# cat /usr/lib/systemd/system/docker.service
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service containerd.service time-set.target iptables.service
+Wants=network-online.target containerd.service
+Requires=docker.socket
+```
+
+其中 ```After=``` 尾部添加 ```iptables.service```  
+以此确保 docker 的守护进程一定是在 iptables 之后启动.
