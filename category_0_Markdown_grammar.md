@@ -380,7 +380,7 @@ https://blog.ifzm.cn/2017/09/02/html-escape/
 | ?        | ```&#63;```  |  问号Question mark  |
 | @        | ```&#64;```  |  Commercial at  |
 | {        | ```&#123;``` | 大括号左边部分Left curly brace  |
-| ```\|``` | ```&#124;``` | 竖线Vertical bar  |
+| &#124; | ```&#124;``` | 竖线Vertical bar  |
 | }        | ```&#125;``` | 大括号右边部分Right curly brace  |
 | ~        | ```&#126;``` | Tilde  |
 | [        | ```&#91;```  | 中括号左边部分Left square bracket  |
