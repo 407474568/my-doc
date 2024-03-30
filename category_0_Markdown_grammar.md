@@ -328,3 +328,22 @@ https://www.zhihu.com/question/23378396
 ```
 <img src="https://www.google.com/doodles/kamma-rahbeks-241st-birthday" style="zoom:50%" />
 ```
+
+#### 转义
+
+markdown 的转义字符
+
+https://markdown.com.cn/basic-syntax/escaping-characters.html
+
+HTML 的转义字符
+
+https://blog.ifzm.cn/2017/09/02/html-escape/
+
+<!-- 常用转义符 -->
+| 原字符 | 转义字符    | 中文描述 |
+| ------ |---------| ------ |
+|   | &nbsp; | 空格
+| " | &quot;  | 双引号
+| & | &amp;	  | 且号
+| < | &lt;	   | 小于号
+| > | &gt;	   | 大于号
