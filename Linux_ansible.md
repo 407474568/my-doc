@@ -457,7 +457,7 @@ https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_mod
 最初我用的 &#123;&#123; target &#125;&#125;  
 
 即我 playbook 顶部定义的```hosts```, 但实测死活有些问题  
-最后抱着试一试的心态, 尝试了文档里示例给的  "{{ ansible_ssh_host | default(inventory_hostname) }}" 果然结果如同预期.
+最后抱着试一试的心态, 尝试了文档里示例给的  "&#123;&#123; ansible_ssh_host | default(inventory_hostname) &#125;&#125;" 果然结果如同预期.
 虽然文档里也有提到这么一句  
 
 > Do not assume the inventory_hostname is resolvable and delay 10 seconds at start
