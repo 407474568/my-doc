@@ -873,6 +873,7 @@ make install  # default location /usr/local/bin/qemu-system-aarch64
 https://github.com/ninja-build/ninja/releases  
 下载后放到可被执行的目录如/bin , /sbin, /usr/sbin 等, 或是配置环境变量皆可    
 实际上我执行的
+
 ```
 yum groupinstall 'Development Tools' -y
 yum groupinstall "Virtualization Host" -y
@@ -890,13 +891,13 @@ do
 done
 ```
 
-
 3) 下载uefi bios文件  
 没有找到git等地址  
 https://rpmfind.net/linux/rpm2html/search.php?query=edk2-aarch64  
 下载后用yum安装, 未发现有包依赖  
 安装后需要编辑 /etc/libvirt/qemu.conf
 取消原有的注释
+
 ```
 770 nvram = [
 771    "/usr/share/OVMF/OVMF_CODE.fd:/usr/share/OVMF/OVMF_VARS.fd",
@@ -905,12 +906,15 @@ https://rpmfind.net/linux/rpm2html/search.php?query=edk2-aarch64
 774    "/usr/share/AAVMF/AAVMF32_CODE.fd:/usr/share/AAVMF/AAVMF32_VARS.fd"
 775 ]
 ```
+
 完成后需要重启 libvirt
+
 ```
 systemctl restart libvirtd
 ```
 
 4) libvirt 建立虚拟机的示例
+
 ```
 virt-install \
 --name kylin-aarch64 --vcpus 4 --ram 4096 --arch aarch64 --os-variant rhel7.9 \
@@ -919,6 +923,29 @@ virt-install \
 --cdrom /mnt/ISO/银河麒麟_Kylin-Server-10-SP2-aarch64-Release-Build09-20210524.iso \
 --disk path=/vm/kylin-aarch64.qcow2,size=20,bus=virtio,format=qcow2
 ```
+
+#### 模拟的异构虚拟机在移除时报错
+
+创建了模拟的异构虚拟机, 在移除时却遇到了报错
+
+```
+[root@5950x-node1 ~]# virsh undefine kylin-aarch64-test 
+error: Failed to undefine domain 'kylin-aarch64-test'
+error: Requested operation is not valid: cannot undefine domain with nvram
+```
+
+解决办法  
+https://bugzilla.redhat.com/show_bug.cgi?id=1195667
+
+我本人实测, 帖子中说到的其中一种方法, 删除 ```nvram``` 的一行, 并不有效, 因为编辑完以后竟然自动又被还原了, 此时虚拟机已是关机状态.
+
+有效方法
+
+```
+virsh undefine --nvram <虚拟机名称>
+```
+
+帖子中说到, 为已知BUG, 但即使有人已经提供了补丁, 却未被采纳.
 
 <h3 id="8">内存膨胀</h3>
 
