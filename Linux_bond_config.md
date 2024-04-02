@@ -105,6 +105,10 @@ https://blog.csdn.net/watermelonbig/article/details/53127165
 | #define BOND_MODE_TLB           |  5  | 自适应传输负载均衡模式 |
 | #define BOND_MODE_ALB           |  6  | 网卡虚拟化方式
 
+#### bond 对交换机的要求
+
+![](images/微信图片_20240402165738.jpg)
+
 #### Red Hat 目前主推的nmcli 命令行方式  
 [文章链接](https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/networking_guide/ch-configure_network_bonding)
 
