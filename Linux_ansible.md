@@ -18,6 +18,7 @@ https://micorochio.github.io/2017/05/31/ansible-learning-01/
   * [异步任务](#10)
   * [playbook的复用](#11)
   * [等待事件](#12)
+  * [特殊字符的转义](#13)
 
 
 <h3 id="1">免密连接受控端</h3>
@@ -463,3 +464,62 @@ https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_mod
 > Do not assume the inventory_hostname is resolvable and delay 10 seconds at start
 
 但着实看得还是有些云里雾里.
+
+<h3 id="13">特殊字符的转义</h3>
+
+ansible-playbook 里的转义, 其实也就是```yaml```的转义的语法解析, 也有它的坑处
+看了好些文章, 从官方手册到各路讨论
+
+https://cn-ansibledoc.readthedocs.io/zh-cn/latest/reference_appendices/YAMLSyntax.html
+
+https://serverfault.com/questions/1074361/ansible-2-9-21-unwanted-escape-char-is-added-in-shell-command
+
+https://medium.com/@_muhammadardhi/escaping-all-special-characters-using-ansible-shell-ed10007f2517
+
+示例性的需求如下:
+
+为了修改 ulimit 的限制值, 现在打算操作 /etc/security/limits.conf 文件  
+如果它不存在一条```*               -	nproc           65536```的语句,则为其添加  
+如果存在则不满足该值就修改.
+
+难就难在它包含特殊字符```*```  
+上述文章虽然没有找到直接答案, 但最终琢磨出的结果如下
+
+```
+  # 设置 ulimit 的两个配置
+  - name: config ulimit value
+    lineinfile:
+      path: /etc/security/limits.conf
+      regexp: "^'*'.*nproc.*"
+      line: "*\t\t-\tnproc\t\t65536"
+```
+
+也即不是用 ```\*``` 来实现转义, 而是 ```'*'```  
+而在 ```line:``` 行, 是写入文本的内容, ```*``` 号并没有用到转义
+
+以上是第一版, 在上述基础上, 与chatgpt调试出第二版
+
+```
+---
+- name: test
+  hosts: rhel-7-9
+  tasks:
+    - name: ulimit 配置过通配用户nproc的情形
+      lineinfile:
+        path: /etc/security/limits.conf
+        regexp: ".*nproc.*"
+        line: "*\t\t-\tnproc\t\t65536"
+        state: present
+      when: "'nproc' in lookup('file', '/etc/security/limits.conf')"
+    
+    - name: ulimit 未配置过通配用户nproc的情形
+      lineinfile:
+        path: /etc/security/limits.conf
+        line: "*\t\t-\tnproc\t\t65536"
+        state: present
+      when: "'nproc' not in lookup('file', '/etc/security/limits.conf')"
+```
+
+目的是要实现 "如果存在一条匹配的记录的行, 则进行修改; 如果不存在, 则新增"  
+这一版也很难称之为完美, 因为就这一案例而言, nproc 原本可能有值, 而配置值的形式可能是千奇百怪, 可能不是 制表符```\t```而是其他,
+又涉及正则表达式要精调了.
