@@ -523,3 +523,32 @@ https://medium.com/@_muhammadardhi/escaping-all-special-characters-using-ansible
 目的是要实现 "如果存在一条匹配的记录的行, 则进行修改; 如果不存在, 则新增"  
 这一版也很难称之为完美, 因为就这一案例而言, nproc 原本可能有值, 而配置值的形式可能是千奇百怪, 可能不是 制表符```\t```而是其他,
 又涉及正则表达式要精调了.
+
+第三版  
+其实chatgpt机器人也在误导, ```when``` 语句 ```not in``` 这一段根本是冗余的
+
+```
+  # 设置 ulimit 的两个配置
+  - name: ulimit 配置过nproc的情形
+    lineinfile:
+      path: /etc/security/limits.conf
+      regexp: "^\\*.*nproc.*"
+      line: "*\t\t-\tnproc\t\t65536"
+      state: present
+    when: "'nproc' in lookup('file', '/etc/security/limits.conf')"
+
+  - name: ulimit 配置过nofile的情形
+    lineinfile:
+      path: /etc/security/limits.conf
+      regexp: "^\\*.*nofile.*"
+      line: "*\t\t-\tnofile\t\t65536"
+      state: present
+    when: "'nofile' in lookup('file', '/etc/security/limits.conf')"
+```
+
+实测了以下三种情形:  
+- 文件中不存在带 ```nproc``` 的行, playbook做到了新增
+- 文件中存在 ```*   -   nproc   <数值>``` 这样的行, playbook做到了把值替换成指定的
+- 文件中不存在 ```*   -   nproc   <数值>``` 这样的行, 但存在 ```oracle   -   nproc   <数值>```, playbook 做到了不覆盖该行, 另新增了行
+
+行为符合预期
