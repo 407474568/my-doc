@@ -525,7 +525,8 @@ https://medium.com/@_muhammadardhi/escaping-all-special-characters-using-ansible
 又涉及正则表达式要精调了.
 
 第三版  
-其实chatgpt机器人也在误导, ```when``` 语句 ```not in``` 这一段根本是冗余的
+其实chatgpt机器人也在误导, ```when``` 语句 ```not in``` 这一段根本是冗余的  
+另外, 非常重要的一点, 在 ```regexp``` 语句内的转义, 还是会用到 ```\\*```, 否则ansible-playbook执行时依然有报错
 
 ```
   # 设置 ulimit 的两个配置
@@ -552,3 +553,16 @@ https://medium.com/@_muhammadardhi/escaping-all-special-characters-using-ansible
 - 文件中不存在 ```*   -   nproc   <数值>``` 这样的行, 但存在 ```oracle   -   nproc   <数值>```, playbook 做到了不覆盖该行, 另新增了行
 
 行为符合预期
+
+
+在 ```regexp``` 语句里涉及到特殊字符, 但又没用 ```\\``` 转义时, ansible-playbook 的报错样例.
+
+```
+TASK [ulimit 配置过nofile的情形] ***************************************************************************************************************************************************************************************
+Tuesday 09 April 2024  09:21:29 +0800 (0:00:00.063)       0:00:02.277 ********* 
+An exception occurred during task execution. To see the full traceback, use -vvv. The error was: sre_constants.error: nothing to repeat
+fatal: [rhel-7-9]: FAILED! => {"changed": false, "module_stderr": "Shared connection to 192.168.1.174 closed.\r\n", "module_stdout": "Traceback (most recent call last):\r\n  File \"/root/.ansible/tmp/ansible-tmp-1712625689.68-21486-39076366555017/AnsiballZ_lineinfile.py\", line 102, in <module>\r\n    _ansiballz_main()\r\n  File \"/root/.ansible/tmp/ansible-tmp-1712625689.68-21486-39076366555017/AnsiballZ_lineinfile.py\", line 94, in _ansiballz_main\r\n    invoke_module(zipped_mod, temp_path, ANSIBALLZ_PARAMS)\r\n  File \"/root/.ansible/tmp/ansible-tmp-1712625689.68-21486-39076366555017/AnsiballZ_lineinfile.py\", line 40, in invoke_module\r\n    runpy.run_module(mod_name='ansible.modules.files.lineinfile', init_globals=None, run_name='__main__', alter_sys=True)\r\n  File \"/usr/lib64/python2.7/runpy.py\", line 176, in run_module\r\n    fname, loader, pkg_name)\r\n  File \"/usr/lib64/python2.7/runpy.py\", line 82, in _run_module_code\r\n    mod_name, mod_fname, mod_loader, pkg_name)\r\n  File \"/usr/lib64/python2.7/runpy.py\", line 72, in _run_code\r\n    exec code in run_globals\r\n  File \"/tmp/ansible_lineinfile_payload_qRPUhH/ansible_lineinfile_payload.zip/ansible/modules/files/lineinfile.py\", line 573, in <module>\r\n  File \"/tmp/ansible_lineinfile_payload_qRPUhH/ansible_lineinfile_payload.zip/ansible/modules/files/lineinfile.py\", line 564, in main\r\n  File \"/tmp/ansible_lineinfile_payload_qRPUhH/ansible_lineinfile_payload.zip/ansible/modules/files/lineinfile.py\", line 277, in present\r\n  File \"/usr/lib64/python2.7/re.py\", line 190, in compile\r\n    return _compile(pattern, flags)\r\n  File \"/usr/lib64/python2.7/re.py\", line 242, in _compile\r\n    raise error, v # invalid expression\r\nsre_constants.error: nothing to repeat\r\n", "msg": "MODULE FAILURE\nSee stdout/stderr for the exact error", "rc": 1}
+
+PLAY RECAP *******************************************************************************************************************************************************************************************************
+rhel-7-9                   : ok=2    changed=0    unreachable=0    failed=1    skipped=1    rescued=0    ignored=0   
+```
