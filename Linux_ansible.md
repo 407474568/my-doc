@@ -467,7 +467,7 @@ https://docs.ansible.com/ansible/latest/collections/ansible/builtin/wait_for_mod
 
 <h3 id="13">特殊字符的转义</h3>
 
-ansible-playbook 里的转义, 其实也就是```yaml```的转义的语法解析, 也有它的坑处
+ansible-playbook 里的转义, 其实也就是```yaml```的转义的语法解析, 也有它的坑处  
 看了好些文章, 从官方手册到各路讨论
 
 https://cn-ansibledoc.readthedocs.io/zh-cn/latest/reference_appendices/YAMLSyntax.html
