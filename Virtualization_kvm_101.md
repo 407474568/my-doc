@@ -443,6 +443,18 @@ https://www.codenong.com/cs109611731/
 
 http://www.4k8k.xyz/article/qq_42596792/103291249  
 
+速查:
+
+```
+nmcli connection add type bridge autoconnect yes con-name br0 ifname br0 ipv4.addresses 192.168.1.101/24 ipv4.method manual ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.50,8.8.8.8
+nmcli connection del eno3
+nmcli connection add type bridge-slave autoconnect yes con-name eno3 ifname eno3 master br0
+nmcli con up eno3
+nmcli con up br0
+```
+
+详细如下:
+
 KVM的软件包会创建一个NAT类型网络的配置定义文件, 也就KVM安装默认就有virbr0网络.  
 其位于 /usr/share/libvirt/networks/default.xml  
 可将其复制, 做自定义修改, 再通过 virsh net-define 导入到KVM的网络定义中去  
