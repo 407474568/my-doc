@@ -13,7 +13,60 @@ https://openzfs.org/wiki/Main_Page
   * [池特性升级](#3)
   * [如果开机没有自动导入池](#4)
   * [限制ARC对内存的消耗大小](#5)
+  * [基础命令](#6)
 
+
+<h3 id="6">基础命令</h3>
+
+#### 创建池
+
+https://docs.oracle.com/cd/E19253-01/819-5461/gaynr/index.html
+
+```
+zpool create <池名> <容错基本> <成员设备1> <成员设备2> <成员设备3>...
+```
+
+#### 添加cache设备
+
+```
+zpool add <池名> <设备类别: cache或log> <成员设备1> <成员设备2>...
+```
+
+```
+[root@X9DRi-LN4F ~]# zpool status
+  pool: SAS-4T-group01
+ state: ONLINE
+config:
+
+	NAME            STATE     READ WRITE CKSUM
+	SAS-4T-group01  ONLINE       0     0     0
+	  raidz1-0      ONLINE       0     0     0
+	    bcache3     ONLINE       0     0     0
+	    bcache1     ONLINE       0     0     0
+	    bcache4     ONLINE       0     0     0
+	    bcache2     ONLINE       0     0     0
+	    bcache0     ONLINE       0     0     0
+
+errors: No known data errors
+[root@X9DRi-LN4F ~]# zpool add SAS-4T-group01 cache /dev/sdc
+[root@X9DRi-LN4F ~]# zpool status
+  pool: SAS-4T-group01
+ state: ONLINE
+config:
+
+	NAME            STATE     READ WRITE CKSUM
+	SAS-4T-group01  ONLINE       0     0     0
+	  raidz1-0      ONLINE       0     0     0
+	    bcache3     ONLINE       0     0     0
+	    bcache1     ONLINE       0     0     0
+	    bcache4     ONLINE       0     0     0
+	    bcache2     ONLINE       0     0     0
+	    bcache0     ONLINE       0     0     0
+	cache
+	  sdc           ONLINE       0     0     0
+
+errors: No known data errors
+```
 
 <h3 id="1">两种安装方式</h3>
 
