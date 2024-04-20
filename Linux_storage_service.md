@@ -599,6 +599,110 @@ https://unix.stackexchange.com/questions/152408/using-multiple-ssds-as-cache-dev
 
 读写分离式的 bcache, 经过实测验证了可行性, 但预期收益没达到预期效果, 有待后续跟进.
 
+#### 重装系统后恢复之前的bcache设备对象
+
+重要前提:  
+以下论述均基于bcache设备在此前是```clean```状态, 非```clean```状态有可能导致操作失败或数据完整性
+
+```
+# 恢复后端
+echo /dev/sda > /sys/fs/bcache/register
+echo /dev/sdb > /sys/fs/bcache/register
+echo /dev/sdc > /sys/fs/bcache/register
+
+# 恢复cache盘状态
+先注销
+echo 1 > /sys/fs/bcache/cf785930-6410-40dc-8746-502a627348c1/stop
+echo 1 > /sys/fs/bcache/cf785930-6410-40dc-8746-502a627348c1/unregister
+
+# 清空原有文件系统元数据, 重新制作成bcache的cache设备
+wipefs -a /dev/md/nvme
+make-bcache -C /dev/md/nvme --wipe-bcache
+
+# 重新attach回后端设备
+echo <cache设备的cset.uuid> > /sys/block/bcache<x>/bcache/attach
+```
+
+部分操作上下文示例如下
+
+```
+Last login: Sun Apr 21 05:11:48 2024 from 172.16.100.1
+[root@localhost ~]# echo /dev/sda > /sys/fs/bcache/register
+[root@localhost ~]# echo /dev/sdb > /sys/fs/bcache/register
+[root@localhost ~]# echo /dev/sdc > /sys/fs/bcache/register
+[root@localhost ~]# lsblk
+NAME              MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda                 8:0    0  1000G  0 disk  
+└─bcache0         252:0    0  1000G  0 disk  
+sdb                 8:16   0  1000G  0 disk  
+└─bcache1         252:128  0  1000G  0 disk  
+sdc                 8:32   0  1000G  0 disk  
+└─bcache2         252:256  0  1000G  0 disk  
+sr0                11:0    1  12.8G  0 rom   
+nvme0n1           259:0    0    50G  0 disk  
+├─nvme0n1p1       259:1    0     1G  0 part  /boot
+└─nvme0n1p2       259:2    0    49G  0 part  
+  └─rootvg-lvroot 253:0    0    49G  0 lvm   /
+nvme0n2           259:3    0   100G  0 disk  
+└─md127             9:127  0 299.8G  0 raid0 
+nvme0n3           259:4    0   100G  0 disk  
+└─md127             9:127  0 299.8G  0 raid0 
+nvme0n4           259:5    0   100G  0 disk  
+└─md127             9:127  0 299.8G  0 raid0 
+
+[root@localhost ~]# bcache-super-show /dev/md/nvme
+sb.magic		ok
+sb.first_sector		8 [match]
+sb.csum			623B84C51C40FE8D [match]
+sb.version		3 [cache device]
+
+dev.label		(empty)
+dev.uuid		f0ff7a42-7190-4ee9-9067-e3b04d00359c
+dev.sectors_per_block	1
+dev.sectors_per_bucket	1024
+dev.cache.first_sector	1024
+dev.cache.cache_sectors	628745216
+dev.cache.total_sectors	628746240
+dev.cache.ordered	yes
+dev.cache.discard	no
+dev.cache.pos		0
+dev.cache.replacement	0 [lru]
+
+cset.uuid		e81f2c3e-7a9a-40e8-a6a5-a4a985707aae
+[root@localhost ~]# echo e81f2c3e-7a9a-40e8-a6a5-a4a985707aae > /sys/block/bcache0/bcache/attach
+[root@localhost ~]# echo e81f2c3e-7a9a-40e8-a6a5-a4a985707aae > /sys/block/bcache1/bcache/attach
+[root@localhost ~]# echo e81f2c3e-7a9a-40e8-a6a5-a4a985707aae > /sys/block/bcache2/bcache/attach
+[root@localhost ~]# 
+[root@localhost ~]# lsblk
+NAME              MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda                 8:0    0  1000G  0 disk  
+└─bcache0         252:0    0  1000G  0 disk  
+sdb                 8:16   0  1000G  0 disk  
+└─bcache1         252:128  0  1000G  0 disk  
+sdc                 8:32   0  1000G  0 disk  
+└─bcache2         252:256  0  1000G  0 disk  
+sr0                11:0    1  12.8G  0 rom   
+nvme0n1           259:0    0    50G  0 disk  
+├─nvme0n1p1       259:1    0     1G  0 part  /boot
+└─nvme0n1p2       259:2    0    49G  0 part  
+  └─rootvg-lvroot 253:0    0    49G  0 lvm   /
+nvme0n2           259:3    0   100G  0 disk  
+└─md127             9:127  0 299.8G  0 raid0 
+  ├─bcache0       252:0    0  1000G  0 disk  
+  ├─bcache1       252:128  0  1000G  0 disk  
+  └─bcache2       252:256  0  1000G  0 disk  
+nvme0n3           259:4    0   100G  0 disk  
+└─md127             9:127  0 299.8G  0 raid0 
+  ├─bcache0       252:0    0  1000G  0 disk  
+  ├─bcache1       252:128  0  1000G  0 disk  
+  └─bcache2       252:256  0  1000G  0 disk  
+nvme0n4           259:5    0   100G  0 disk  
+└─md127             9:127  0 299.8G  0 raid0 
+  ├─bcache0       252:0    0  1000G  0 disk  
+  ├─bcache1       252:128  0  1000G  0 disk  
+  └─bcache2       252:256  0  1000G  0 disk  
+```
+
 
 <h3 id="4">mdadm 的使用</h3>
 
