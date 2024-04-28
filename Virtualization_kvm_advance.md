@@ -10,6 +10,7 @@
   * [禁用不需要的启动项](#9)
   * [非典型网络拓扑架构下的通信/静态路由问题](#10)
   * [为虚拟机添加一个虚拟声卡](#11)
+  * [绑定CPU核心](#12)
   
 
 <h3 id="1">去除虚拟机特征</h3>
@@ -1126,3 +1127,77 @@ KVM 默认不会为 KVM 虚拟机创建声卡
 ```<audio id='1' type='none'/>``` 是本身已存在的
 
 ```address``` 可以不填, KVM会自动生成
+
+<h3 id="12">绑定CPU核心</h3>
+
+在数据库领域, 绑定CPU核心--准确的术语是CPU亲缘性--是非常常见的操作, 目的通过规避因CPU核心的切换而带来上下文切换, 从而产生额外的无畏的开销.
+
+在KVM领域实施虚拟机vcpu与物理机的CPU核心(逻辑CPU)的绑定  
+https://www.helloworld.net/p/8012478504
+
+分为临时性和持久化两种方式
+
+查看当前虚拟机所运行在的CPU核心
+
+```
+virsh vcpuinfo <VM的名称,domain-name>
+
+
+
+[root@Chia_KVM-01 ~]# virsh vcpuinfo CQ-docker-02
+VCPU:           0
+CPU:            N/A
+State:          N/A
+CPU time        N/A
+CPU Affinity:   yyyyyyyy
+
+VCPU:           1
+CPU:            N/A
+State:          N/A
+CPU time        N/A
+CPU Affinity:   yyyyyyyy
+
+VCPU:           2
+CPU:            N/A
+State:          N/A
+CPU time        N/A
+CPU Affinity:   yyyyyyyy
+
+VCPU:           3
+CPU:            N/A
+State:          N/A
+CPU time        N/A
+CPU Affinity:   yyyyyyyy
+```
+
+其中的```CPU Affinity```是该虚拟机可以在将其vcpu放置在哪一个逻辑CPU上运行, 一个```y```标记代表一个逻辑CPU
+
+
+临时性绑定, vm 重启后失效
+
+```
+# 将vm4的两个vcpu绑定在宿主机的第4号和第6号cpu上, cpu编号从0开始计数
+
+[root@yufu ~]# virsh vcpupin vm4 0 3
+
+[root@yufu ~]# virsh vcpupin vm4 1 5
+```
+
+持久化配置
+
+```
+  <cputune>
+    <vcpupin vcpu='0' cpuset='0'/>
+    <vcpupin vcpu='1' cpuset='1'/>
+    <vcpupin vcpu='2' cpuset='2'/>
+    <vcpupin vcpu='3' cpuset='3'/>
+  </cputune>
+```
+
+将其安插在
+
+```
+  <vcpu placement='static'>4</vcpu>
+```
+
+之后
