@@ -3,6 +3,7 @@
   * [注册Windows服务项](#2)
   * [mstsc 指定显示器](#3)
   * [清理arp条目](#4)
+  * [Windows上设置应用程序的CPU亲缘性](#5)
 
 
 <h3 id="1">IPSec实现防火墙功能</h3>
@@ -193,3 +194,53 @@ netsh interface IP delete arpcache
 删除特定arp条目
 arp -d <IP地址>
 ```
+
+
+<h3 id="5">Windows上设置应用程序的CPU亲缘性</h3>
+
+https://blog.csdn.net/WhoisPo/article/details/52078469
+https://blog.csdn.net/kongxx/article/details/79252866
+
+图形化设置CPU亲缘性, 没有太多值得赘述的, 网上文章也足够多  
+通过任务管理器对进程进行设置, Windows的术语叫"设置相关性"  
+缺点就是进程结束后需要重设  
+
+命令行设置的方法
+
+在 cmd 下执行,或是写成批处理文件
+
+```
+start /WAIT /affinity <标志位> <应用程序>
+```
+
+如:
+
+```
+start /WAIT /affinity 0xf notepad.exe
+start /WAIT /affinity 0xff notepad.exe
+start /affinity 0xf notepad.exe
+```
+
+其中  
+```0xf``` 是16进制, 然后会被windows转换成2进制为```1111```, 即掩码标识CPU核心数的位置  
+
+```
+start /WAIT /affinity 0x1 app.exe （只使用第一个CPU）(二进制: 0001)
+start /WAIT /affinity 0x2 app.exe （只使用第二个CPU）(二进制: 0010)
+start /WAIT /affinity 0x4 app.exe （只使用第三个CPU）(二进制: 0100)
+start /WAIT /affinity 0x8 app.exe （只使用第四个CPU）(二进制: 1000)
+start /WAIT /affinity 0x3 app.exe （只使用第1，2个CPU）(二进制: 0011)
+start /WAIT /affinity 0x7 app.exe （只使用第1，2，3个CPU）(二进制: 0111)
+start /WAIT /affinity 0xf app.exe （只使用第1，2，3，4个CPU）(二进制: 1111)
+```
+
+以上是4个核心的表示方式  
+网上的文章大都只提到了4个以内的表示方式, 那4个以上如何表示?  
+简单实验一下可知, 继续叠加即可, 即:  
+前8个核心为 ```0xff```  
+前12个核心为 ```0xfff```  
+以此类推
+
+至于 ```start /WAIT``` 参数的含义, 加与不加的区别是:  
+- 有 ```/WAIT```, CMD窗口是阻塞状态, 适用于批处理文件的执行方式 
+- 没有 ```/WAIT```, CMD窗口是非阻塞状态, 目标应用有可能因此结束运行, 根据实际情况选择 
