@@ -775,6 +775,13 @@ Formatting '/vm/pm983/chia-miner-02-data01.qcow2', fmt=qcow2 cluster_size=65536 
 ```metadata``` 分配后, 在宿主机操作系统上 ```du``` 将统计到的是实际数据量的大小.  
 这两者的区别适用于不同的场景和需求, 请注意自行分辨.
 
+#### KVM格式转VMware格式
+
+```
+qemu-img convert -f qcow2 <源文件> -O vmdk <目标文件>
+```
+
+
 <h3 id="9">光驱相关</h3>  
 
 #### 开机状态下的弹出/插入光驱
