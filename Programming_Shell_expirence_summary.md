@@ -8,6 +8,28 @@
 
 <h4 id="05">杂项</h4>
 
+<font color=red>SHELL脚本获取自身所在路径和名字</font>
+
+https://xvcat.com/post/1096
+
+错误的做法:
+
+```
+cd `dirname $0` ; pwd
+```
+
+是不可取的
+
+正确的做法:
+
+```
+# 获取脚本路径
+BasePath=$(cd `dirname ${BASH_SOURCE}` ; pwd)
+
+# 获取自身脚本名称
+BaseName=$(basename $BASH_SOURCE)
+```
+
 <font color=red>sed 匹配行及其后连续N行的操作</font>
 
 https://blog.csdn.net/qq_35751770/article/details/120506836  
