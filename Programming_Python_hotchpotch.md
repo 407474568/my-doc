@@ -5,6 +5,7 @@
   * [Python代码创建系统服务的形式运行](#4)
   * [字典选择第一个、最后一个元素的key或value](#5)
   * [pip使用代理](#6)
+  * [获取自身名称、路径以及调用者名称、路径](#7)
 
 
 <h3 id="1">Python 时间格式处理</h3>
@@ -360,4 +361,35 @@ source /etc/profile
 ```
 export http_proxy='http://代理服务器IP:端口号
 export https_proxy='http://代理服务器IP:端口号'
+```
+
+<h3 id="7">获取自身名称、路径以及调用者名称、路径</h3>
+
+获取自身名称、路径
+
+```
+os.path.realpath(__file__)
+```
+
+调用者名称、路径的样例
+
+```
+import time
+import inspect
+
+def time_wrapper(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        
+        caller_frame = inspect.stack()[1]
+        caller_module = inspect.getmodule(caller_frame[0])
+        caller_file = caller_module.__file__
+        
+        print("Function:", func.__name__)
+        print("File Path:", caller_file)
+        print("Execution Time:", end_time - start_time, "seconds")
+        return result
+    return wrapper
 ```
