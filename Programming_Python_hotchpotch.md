@@ -406,7 +406,7 @@ def time_wrapper(func):
 
 - ```<dict>.update``` 方法用于更新键, 如果键不存在不会报错, 会新增, 通常是更普适的选择
 
-- 删除键, 使用 ```pop()``` 如果键不存在不会报错, 会新增, 通常是更普适的选择 
+- 删除键, 使用 ```pop()``` 如果键不存在不会报错, 通常是更普适的选择 
 https://www.freecodecamp.org/chinese/news/how-to-remove-a-key-from-a-python-dictionary-delete-key-from-dict/
 
 示例:
