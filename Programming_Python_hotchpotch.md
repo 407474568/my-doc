@@ -6,6 +6,7 @@
   * [字典选择第一个、最后一个元素的key或value](#5)
   * [pip使用代理](#6)
   * [获取自身名称、路径以及调用者名称、路径](#7)
+  * [字典操作备忘录](#8)
 
 
 <h3 id="1">Python 时间格式处理</h3>
@@ -392,4 +393,24 @@ def time_wrapper(func):
         print("Execution Time:", end_time - start_time, "seconds")
         return result
     return wrapper
+```
+
+<h3 id="8">字典操作备忘录</h3>
+
+- has_key() 是已经被移除的方法
+
+- python 3.7 开始, 字典已会自行排序, 是有序字典
+
+- https://cloud.tencent.com/developer/article/1820102
+这篇文章对比了判断键是否存在的三种方法的性能表现, ```<key> in <dict>``` 仍是最优解
+
+- ```<dict>.update``` 方法用于更新键, 如果键不存在不会报错, 会新增, 通常是更普适的选择
+
+- 删除键, 使用 ```pop()``` 如果键不存在不会报错, 会新增, 通常是更普适的选择 
+https://www.freecodecamp.org/chinese/news/how-to-remove-a-key-from-a-python-dictionary-delete-key-from-dict/
+
+示例:
+
+```
+my_dict.pop("Book", 'Key does not exist')
 ```
