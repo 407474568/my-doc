@@ -66,7 +66,7 @@ https://zhuanlan.zhihu.com/p/56889337
 ![](images/微信图片_20240510182055-1.jpg)
 
 
-<h3 id="1">内存读写</h3>
+<h3 id="2">内存读写</h3>
 
 内存读写的测试工具同样是 ```sysbench```, 因此安装过程略过
 
@@ -75,3 +75,86 @@ https://zhuanlan.zhihu.com/p/56889337
 同样的, 自动化测试的shell脚本已在前文中提供, 汇报输出格式如下所示  
 
 ![](images/微信图片_20240510182055-2.jpg)
+
+
+<h3 id="3">磁盘读写</h3>
+
+详细了解可参见本站文档"IO性能的基准测试"
+
+测试磁盘IO的性能基准, sysbench 同样也提供, 并且调用的也是 ```fio```  
+不过这里我们直接使用```fio```工具本身.  
+同样的, 麒麟的```yum源```也可以安装得到 ```fio``` 及其依赖
+
+提供自动化的测试脚本与其配置文件
+
+<a href="files/fio_auto_bench_and_report.sh" target="_blank">fio_auto_bench_and_report.sh</a>  
+<a href="files/fio_auto_bench_and_report.ini" target="_blank">fio_auto_bench_and_report.ini</a>
+
+其中, 配置文件 ```fio_auto_bench_and_report.ini``` 用于用户可以自定义测试项目与规格
+
+- file_target 是文件测试对象, 是在文件系统之上的文件对象进行读写, shell 脚本会根据填写值进行自动创建.
+特别需要申明的是: fio 可以对裸磁盘对象进行读写操作, <font color=red>但务必请确保该操作不会引发灾难性的后果</font>
+- file_size 是被测试文件对象的大小, 即生成多大的文件
+- runtime 是每个测试项目的运行时间长度限制, 它可以是被注释状态, 如果注释, 则指定的文件大小达成后, 单个测试项目才会结束, 单位为秒
+
+以上3个参数, 包含了基本的必要信息, 如果没有自定义需求, 则脚本与配置文件放置在同一目录下就可以开始执行.
+
+其他如 块IO大小, 线程数等则用于有其他明确修改需求的场景.
+
+该shell脚本将自动汇报测试结果, 输出格式如下所示:
+
+![](images/uOGdaJhr1iEOYVpKZWn0J4oxQstD1vMh.jpg)
+
+<h3 id="4">网络IO</h3>
+
+网络IO, 测量物理网卡的吞吐能力, 例如:
+- 在物理机上是否能达到标称的带宽速率?
+- 在虚拟化平台上, 折损率在什么程度, 能有物理机的几成? 
+
+使用到的工具为 ```iperf3```, 同样麒麟的```yum源```也已提供
+
+```iperf3```的使用, 分为 server 端和 client 端两个角色
+
+server 端通常使用命令 ```iperf3 -s``` 即可启动, 不指定端口的情况下, 默认端口为5201  
+
+```
+[root@localhost ~]# iperf3 -s
+-----------------------------------------------------------
+Server listening on 5201
+```
+
+此时 server端即就绪状态, 等待客户端连的连入
+
+client 通常执行命令 ```iperf3 -c <server端IP地址>``` 之后测试将自动开始.
+
+执行结果输出如下
+
+```
+[root@localhost ~]# iperf3 -c 192.168.1.221
+Connecting to host 192.168.1.221, port 5201
+[  5] local 192.168.1.221 port 52830 connected to 192.168.1.221 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   270 MBytes  2.26 Gbits/sec   16   2.19 MBytes       
+[  5]   1.00-2.00   sec   252 MBytes  2.12 Gbits/sec   48   2.00 MBytes       
+[  5]   2.00-3.01   sec   262 MBytes  2.20 Gbits/sec    0   2.69 MBytes       
+[  5]   3.01-4.00   sec   272 MBytes  2.29 Gbits/sec    3   3.00 MBytes       
+[  5]   4.00-5.00   sec   260 MBytes  2.19 Gbits/sec    3   3.12 MBytes       
+[  5]   5.00-6.00   sec   245 MBytes  2.05 Gbits/sec    0   3.12 MBytes       
+[  5]   6.00-7.01   sec   254 MBytes  2.12 Gbits/sec   14   3.12 MBytes       
+[  5]   7.01-8.01   sec   251 MBytes  2.11 Gbits/sec    1   3.12 MBytes       
+[  5]   8.01-9.00   sec   260 MBytes  2.19 Gbits/sec    1   3.12 MBytes       
+[  5]   9.00-10.00  sec   278 MBytes  2.33 Gbits/sec   24   3.12 MBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  2.54 GBytes  2.18 Gbits/sec  110             sender
+[  5]   0.00-10.04  sec  2.54 GBytes  2.18 Gbits/sec                  receiver
+
+iperf Done.
+```
+
+以上结果在 server 端和 client 端两端都会打印相同的内容.
+
+从输出结果我们也可以读出的信息为:
+- 共测试10次,每次1秒
+- Transfer 为传输的字节数, MBytes, 兆字节, 即通常所说的大B
+- Bitrate 为比特率/位速率, Gbits/sec, 位每秒, 即通常所说的小b
