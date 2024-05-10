@@ -55,6 +55,7 @@
     * [vCenter操作相关](Virtualization_vcenter_relates.md)
     * [VMware Workstation汇总](Virtualization_vmware_workstation_summary.md)
 * [其他 / 杂项](category_9_Others.md)
+    * [基准性能测试](Others_performance_benchmark.md)
     * [IO性能的基准测试](Others_io_performance_benchmark.md)
     * [未分类项](Others_unclassed_stuff.md)
     * [Windows 大杂烩](Others_windows_hotchpotch.md)
