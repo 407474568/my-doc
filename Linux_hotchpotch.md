@@ -16,6 +16,7 @@
   * [xfsdump 与 xfsrestore](#16)
   * [SuSE 杂录](#17)
   * [grub2-mkconfig 的生成失败](#18)
+  * [OOM 合集](#19)
 
 
 <h3 id="1">ASCII对照表</h3>  
@@ -72,6 +73,40 @@
 | HT 横向列表 | DC4 设备控制4 | US 单元分隔符 |
 | LF 换行 | NAK 否定 | DEL 删除 |
 
+
+<h3 id="19">OOM 合集</h3>  
+
+#### OOM 的计算公式
+
+https://serverfault.com/questions/571319/how-is-kernel-oom-score-calculated  
+https://www.baeldung.com/linux/memory-overcommitment-oom-killer  
+https://lwn.net/Articles/317814/  
+https://blog.csdn.net/u010278923/article/details/105688107  
+https://medium.com/@adilrk/linux-oom-out-of-memory-killer-74fbae6dc1b0
+
+```
+进程的内存使用量 = RSS + swap-size
+系统的可用内存 = RAM + SWAP-total
+oom_score = 进程的内存使用量 / 系统的可用内存
+```
+
+这是以上各种文档, 大致一致的结论, 但与我实际验证的不符  
+至少在 4.18.x 和 6.1.x 两个内核版本上是如此  
+内核源码关于这一部分的代码也有, 不难找到, 也可以看出因子并不仅限于上述几个  
+不过, 调整 ```oom_score_adj``` 的确是有效手段  
+当 ```oom_score_adj``` 为 ```-1000``` 时,则将免疫 OOM KILL--永远不会选中
+
+#### 在 systemctl服务项调整 oom_score_adj
+
+https://stromasys.atlassian.net/wiki/spaces/KBP/pages/151158785/How+to+prevent+Linux+OOM+from+killing+Charon+processes
+
+```
+...
+[Service]
+OOMScoreAdjust=-1000
+Type=forking
+...
+```
 
 <h3 id="18">grub2-mkconfig 的生成失败</h3>  
 
