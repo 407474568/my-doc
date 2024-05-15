@@ -1,4 +1,5 @@
 #### tcpdump参数介绍:
+
 http://www.ha97.com/4550.html
 
 https://blog.51cto.com/victor1980/701764
@@ -22,6 +23,7 @@ tcpdump -i any src host 192.168.10.2 and dst host 192.168.10.3 and dst port 22  
 tcpdump中的 源 / 目标 地址, 源 / 目标 端口, 协议 使用与 / 或 / 非 关键词连接, 关于tcpdump的表达式介绍如下
 
 #### tcpdump的表达式介绍  
+
 表达式是一个正则表达式，tcpdump利用它作为过滤报文的条件，如果一个报文满足表 达式的条件，则这个报文将会被捕获。如果没有给出任何条件，则网络上所有的信息包 将会被截获。  
 在表达式中一般如下几种类型的关键字：  
 第一种是关于类型的关键字，主要包括host，net，port，例如 host 210.27.48.2， 指明 210.27.48.2是一台主机，net 202.0.0.0指明202.0.0.0是一个网络地址，port 23 指明端口号是23。如果没有指定类型，缺省的类型是host。  
@@ -30,6 +32,7 @@ tcpdump中的 源 / 目标 地址, 源 / 目标 端口, 协议 使用与 / 或 /
 除了这三种类型的关键字之外，其他重要的关键字如下：gateway， broadcast，less， greater， 还有三种逻辑运算，取非运算是 ‘not ‘ ‘! ‘， 与运算是’and’，’&&’;或运算是’or’ ，’&#124;&#124;’； 这些关键字可以组合起来构成强大的组合条件来满足人们的需要。
 
 #### tcpdump的输出  
+
 将tcpdump输出到文件(输出到文件时，不会同时输出到屏幕)：  
 有两种选择：输出为二进制文件，输出为文本文件。
 
@@ -48,6 +51,7 @@ https://blog.csdn.net/cbbbc/article/details/48897367  例子不错,字小得发�
 https://arthurchiao.github.io/blog/tcpdump-practice-zh/ 
 
 #### Wireshark
+
 下载地址和UserGuide  
 https://www.wireshark.org/download.html  
 https://www.wireshark.org/docs/wsug_html/#ChUseFileMenuSection  
@@ -76,3 +80,13 @@ https://blog.csdn.net/lixiangminghate/article/details/81663628
 同样使用 与 / 或 / 非 运算符  
 以下示例包含 非 运算符的使用---成对小括号  
 ![](/images/b6be90b3gy1gj52832u1uj212g0660ua.jpg)
+
+#### 不等于的用法示例
+
+示例: 查看目标端口为22, 但IP地址不为XXX的数据包
+
+```
+tcpdump -i any ip host \!192.168.2.64 and dst port 22 -e -v -tttt -n -nn -S
+```
+
+在```tcpdump```中是用```!```表示"非", 不过又因为是在shell环境下, ```!```有其自身表达的含义, 所以需要反斜杠转义
