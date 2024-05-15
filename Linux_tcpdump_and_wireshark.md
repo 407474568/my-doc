@@ -83,6 +83,8 @@ https://blog.csdn.net/lixiangminghate/article/details/81663628
 
 #### 不等于的用法示例
 
+https://www.cnblogs.com/jiujuan/p/9017495.html
+
 示例: 查看目标端口为22, 但IP地址不为XXX的数据包
 
 ```
