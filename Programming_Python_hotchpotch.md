@@ -205,41 +205,6 @@ print(dom.xpath('//*[@id="firstHeading"]')[0].text)
 2) 经过```etree```处理, 以xpath 提取后的结果是个列表对象, 内容在下标 [0] 里
 
 
-<h3 id="4">获取Python自身的文件名 函数名 代码行</h3>
-
-https://www.modb.pro/db/108025
-
-```
-import sys
-import os
-import traceback
-
-# 获取函数名称
-print('函数名称：', sys._getframe().f_code.co_name)
-
-# 获取函数所在模块文件名
-print('获取函数所在模块文件名：', sys._getframe().f_code.co_filename)
-
-result = traceback.extract_stack()
-caller = result[len(result)-2]
-
-# 获取调用函数的模块文件绝对路径
-file_path_of_caller = str(caller).split(',')[0].lstrip('<FrameSummary file ')
-print('调用函数的模块文件绝对路径：', file_path_of_caller)
-
-# 调用函数的模块文件名
-file_name_of_caller = os.path.basename(file_path_of_caller) # 获取被调用函数所在模块文件名称
-print('调用函数的模块文件名：', file_name_of_caller)
-
-# 获取函数被调用时所处模块的代码行
-# 方法1
-print('函数被调用时所处模块的代码行：', sys._getframe().f_back.f_lineno)
-
-# 方法2
-code_line_when_called = sys._getframe().f_back.f_lineno
-print('函数在被调用时所处代码行数：',code_line_when_called)
-```
-
 
 <h3 id="4">Python代码创建系统服务的形式运行</h3>
 
@@ -365,6 +330,42 @@ export https_proxy='http://代理服务器IP:端口号'
 ```
 
 <h3 id="7">获取自身名称、路径以及调用者名称、路径</h3>
+
+获取Python自身的文件名 函数名 代码行
+
+https://www.modb.pro/db/108025
+
+```
+import sys
+import os
+import traceback
+
+# 获取函数名称
+print('函数名称：', sys._getframe().f_code.co_name)
+
+# 获取函数所在模块文件名
+print('获取函数所在模块文件名：', sys._getframe().f_code.co_filename)
+
+result = traceback.extract_stack()
+caller = result[len(result)-2]
+
+# 获取调用函数的模块文件绝对路径
+file_path_of_caller = str(caller).split(',')[0].lstrip('<FrameSummary file ')
+print('调用函数的模块文件绝对路径：', file_path_of_caller)
+
+# 调用函数的模块文件名
+file_name_of_caller = os.path.basename(file_path_of_caller) # 获取被调用函数所在模块文件名称
+print('调用函数的模块文件名：', file_name_of_caller)
+
+# 获取函数被调用时所处模块的代码行
+# 方法1
+print('函数被调用时所处模块的代码行：', sys._getframe().f_back.f_lineno)
+
+# 方法2
+code_line_when_called = sys._getframe().f_back.f_lineno
+print('函数在被调用时所处代码行数：',code_line_when_called)
+```
+
 
 获取自身名称、路径
 
