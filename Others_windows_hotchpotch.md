@@ -100,8 +100,14 @@ https://blog.csdn.net/liujiayu2/article/details/47722423
 
 instsrv+srvany 看起来有更广泛的普适性, 使用sc创建的服务, 后端有一些类型的exe程序在启动服务时会报错
 
-64位的Windows, 将包内2个文件 ```instsrv.exe``` 和 ```srvany.exe``` 释放到 ```C:\WINDOWS\SysWOW64```  
-32位的位置为 ```C:\WINDOWS\system32```
+~~64位的Windows, 将包内2个文件 ```instsrv.exe``` 和 ```srvany.exe``` 释放到 ```C:\WINDOWS\SysWOW64```~~  
+~~32位的位置为 ```C:\WINDOWS\system32```~~
+
+更正:  
+64位的Windows, 将包内2个文件 ```instsrv.exe``` 和 ```srvany.exe``` 释放到 ```C:\WINDOWS\system32```  
+32位的位置为 ```C:\WINDOWS\SysWOW64```  
+这是Windows的历史遗留问题
+
 
 创建服务
 
