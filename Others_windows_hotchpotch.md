@@ -106,13 +106,13 @@ instsrv+srvany 看起来有更广泛的普适性, 使用sc创建的服务, 后�
 更正:  
 64位的Windows, 将包内2个文件 ```instsrv.exe``` 和 ```srvany.exe``` 释放到 ```C:\WINDOWS\system32```  
 32位的位置为 ```C:\WINDOWS\SysWOW64```  
-这是Windows的历史遗留问题
+这是Windows的历史遗留问题, 有关于为什么32位是SysWOW64, 64位反而是system32, 网上已经有足够多的科普介绍.
 
 
 创建服务
 
 ```
-C:\WINDOWS\SysWOW64\instsrv.exe <自定义的服务名称> C:\WINDOWS\SysWOW64\srvany.exe
+C:\WINDOWS\system32\instsrv.exe <自定义的服务名称> C:\WINDOWS\system32\srvany.exe
 ```
 
 删除服务
