@@ -103,11 +103,14 @@ instsrv+srvany 看起来有更广泛的普适性, 使用sc创建的服务, 后�
 ~~64位的Windows, 将包内2个文件 ```instsrv.exe``` 和 ```srvany.exe``` 释放到 ```C:\WINDOWS\SysWOW64```~~  
 ~~32位的位置为 ```C:\WINDOWS\system32```~~
 
-更正:  
-64位的Windows, 将包内2个文件 ```instsrv.exe``` 和 ```srvany.exe``` 释放到 ```C:\WINDOWS\system32```  
+补充:  
+一般情况而言:  
+64位的Windows, 64位的程序应当释放到 ```C:\WINDOWS\system32```  
 32位的位置为 ```C:\WINDOWS\SysWOW64```  
 这是Windows的历史遗留问题, 有关于为什么32位是SysWOW64, 64位反而是system32, 网上已经有足够多的科普介绍.
 
+但是这里的 instsrv+srvany , 是32位的程序, 所以  
+<font color=red>将包内2个文件 ```instsrv.exe``` 和 ```srvany.exe``` 释放到 ```C:\WINDOWS\SysWOW64```</font>
 
 创建服务
 
