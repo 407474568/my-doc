@@ -1,0 +1,164 @@
+### 官网  
+
+
+
+
+* [目录](#0)
+  * [集群初始化](#1)
+  * [cat API 的使用](#2)
+
+
+<h3 id="1">集群初始化</h3>
+
+- 在集群初始化时, keystore 只需要在任意一个节点上运行, 并将生成的 ```elasticsearcy.keystore``` 推送至所有节点上
+
+
+- 以 docker 容器方式运行时, 通过 ```-e 'KEYSTORE_PASSWORD=xxxxxx'``` 形式传递的环境变量, 其中双引号是多数互联网上文章都提到的,将password包起来的书写方式
+
+即 ```-e 'KEYSTORE_PASSWORD="xxxxxx"'```  
+然而这在我的实测中(版本8.9.2 和 8.13.4)是会引起错误的  
+报错内容为 ```Provided keystore password was incorrect```
+
+所以, 正确的书写为以下
+
+```-e 'KEYSTORE_PASSWORD=xxxxxx'```
+
+错误的书写为以下
+
+```-e 'KEYSTORE_PASSWORD="xxxxxx"'```  
+
+
+#### 初始化时, 创建keystore
+
+```
+docker run --rm -it \
+-v /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime \
+--mount type=bind,source=/docker/elastic-master-node-01/data,destination=/usr/share/elasticsearch/data \
+--mount type=bind,source=/docker/elastic-master-node-01/config,destination=/usr/share/elasticsearch/config \
+-p 9200:9200 -p 9300:9300 --name=elastic-master-node-01 \
+elasticsearch:8.13.4 \
+bin/elasticsearch-keystore create -p
+```
+
+
+#### 首次初始化的 elasticsearch.yml 文件内容
+
+```
+# 集群名称
+cluster.name: "elastic-cluster"
+
+# 负责暴露http和传输流量的监听地址, 在docker iamge里也是默认配置
+network.host: 0.0.0.0
+network.publish_host: 172.16.0.31
+http.port: 9201
+transport.port: 9301
+
+# 内存锁定, 不允许交换到swap, 官方文档推荐, 即使本身也已swapoff
+bootstrap.memory_lock: true
+
+# 节点自身名称
+node.name: elastic-data-node-01
+
+# 节点角色
+node.roles: [ data ]
+# node.roles: [ master ]
+
+# 集群发现, 在生产是作为标准推荐, 本意是发现其他主机上的节点--否则只在本机的9300-9305端口上进行发现
+# 只应写入具备master资格的节点, 如果是仅存放data的节点, 则不要写入
+discovery.seed_hosts:
+    - 172.16.0.31:9300
+    - 172.16.0.32:9300
+    - 172.16.0.33:9300
+    - 172.16.0.34:9300
+    - 172.16.0.35:9300
+    - 172.16.0.36:9300
+    - 172.16.0.37:9300
+    - 172.16.0.38:9300
+    - 172.16.0.39:9300
+
+# 使用自签名证书方式, 所需的配置语句
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup.html#security-basic-setup
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: config/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: config/elastic-certificates.p12
+
+# 集群首次搭建时需要, 在组合完成后, 该语句需要移除
+cluster.initial_master_nodes: elastic-master-node-01
+```
+
+
+<h3 id="2">cat API 的使用</h3>
+
+https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/cat.html
+
+官网文档对URL的书写格式, 均采用了简写方式, 即你都需要自行添加上自己的单机/集群IP与端口, 例如:
+
+```
+GET _cat/master?v=true
+```
+
+实际上的请求地址为
+
+```
+GET http://<your_ip>:<your_port>/_cat/master?v=true
+```
+
+详细输出
+
+在所有的URL后面接一个 ```?v``` 为 verbose, 即详细输出, 实际就是打印表头, 例如:
+
+```
+GET /_cat/master?v
+```
+
+使用帮助
+
+在URL后方接 ```?help```
+
+```
+GET /_cat/master?help
+```
+
+#### cat 目录
+
+| URL | 含义/用途                                                                                                                                                                                                                                                                                                                                                                                                    | 
+|-----|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| /_cat/allocation | Provides a snapshot of the number of shards allocated to each data node and their disk space.<br>提供分配给每个数据节点的分片数及其磁盘空间的快照。                                                                                                                                                                                                                                                                               |
+| /_cat/shards | The shards command is the detailed view of what nodes contain which shards. It will tell you if it’s a primary or replica, the number of docs, the bytes it takes on disk, and the node where it’s located.<br>该 shards 命令是哪些节点包含哪些分片的详细视图。它会告诉你它是主数据库还是副本数据库、文档数量、它在磁盘上占用的字节数以及它所在的节点。<br>For data streams, the API returns information about the stream’s backing indices.<rb>对于数据流，API 返回有关流的支持索引的信息。 |
+| /_cat/shards/{index} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/master |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/nodes |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/tasks |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/indices |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/indices/{index} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/segments |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/segments/{index} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/count |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/count/{index} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/recovery |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/recovery/{index} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/health |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/pending_tasks |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/aliases |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/aliases/{alias} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/thread_pool |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/thread_pool/{thread_pools} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/plugins |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/fielddata |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/fielddata/{fields} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/nodeattrs |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/repositories |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/snapshots/{repository} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/templates |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/component_templates/_cat/ml/anomaly_detectors |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/ml/anomaly_detectors/{job_id} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/ml/datafeeds |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/ml/datafeeds/{datafeed_id} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/ml/trained_models |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/ml/trained_models/{model_id} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/ml/data_frame/analytics |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/ml/data_frame/analytics/{id} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/transforms |                                                                                                                                                                                                                                                                                                                                                                                                          |
+| /_cat/transforms/{transform_id} |                                                                                                                                                                                                                                                                                                                                                                                                          |
