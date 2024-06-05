@@ -39,6 +39,7 @@
     * [kubernetes 之 etcd](Container_etcd.md)
     * [docker 单机日常事务](Container_docker_routing_work.md)
 * [服务应用](category_3_service_application.md)
+    * [elastic](Service_elastic.md)
     * [Zabbix 汇总](Service_zabbix.md)
     * [Prometheus 汇总](Service_prometheus.md)
     * [grafana 汇总](Service_grafana.md)
