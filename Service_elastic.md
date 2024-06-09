@@ -86,6 +86,11 @@ xpack.security.transport.ssl.truststore.path: config/elastic-certificates.p12
 
 # 集群首次搭建时需要, 在组合完成后, 该语句需要移除
 cluster.initial_master_nodes: elastic-master-node-01
+
+# 用于http通信层的SSL加密, 使用该语句的前提是已为集群生成http的SSL证书, 且分发到了对应路径下
+# https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/security-basic-setup-https.html
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: http.p12
 ```
 
 
