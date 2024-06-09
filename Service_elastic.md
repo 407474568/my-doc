@@ -6,6 +6,7 @@
 * [目录](#0)
   * [集群初始化](#1)
   * [cat API 的使用](#2)
+  * [配置http层和传输层的SSL加密通信](#3)
 
 
 <h3 id="1">集群初始化</h3>
@@ -167,3 +168,54 @@ GET /_cat/master?help
 | /_cat/ml/data_frame/analytics/{id} |                                                                                                                                                                                                                                                                                                                                                                                                          |
 | /_cat/transforms | Returns configuration and usage information about transforms.<br>返回有关转换的配置和使用情况信息。                                                                                                                                                                                                                                                                                                                       |
 | /_cat/transforms/{transform_id} |                                                                                                                                                                                                                                                                                                                                                                                                          |
+
+
+
+<h3 id="3">配置http层和传输层的SSL加密通信</h3>
+
+这两个是主要依赖的文档
+
+https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/security-basic-setup.html#security-basic-setup
+
+https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/security-basic-setup-https.html
+
+
+本次尚未弄清的问题  
+- keystore 文件是否可以一个节点配置, 其他节点分发即可, 即无需每个节点单独执行
+- 如果前一点不可行, 则免交互式的添加方法需要具备, 以实现自动化的配置操作, 否则工作量随节点规模线性增加, 不太能接受
+
+
+
+
+用shell 脚本分发集群中所有节点的http证书
+
+```
+for num in `seq 1 9`
+do
+    ansible docker-cluster-node"$num" -m copy -a "src=/root/elk/elasticsearch/elastic-master-node-0$num/http.p12 dest=/docker/elastic-master-node-0$num/config/"
+    ansible docker-cluster-node"$num" -m copy -a "src=/root/elk/elasticsearch/elastic-data-node-0$num/http.p12 dest=/docker/elastic-data-node-0$num/config/"
+done
+```
+
+分发完成后的再次核对
+
+```
+for num in `seq 1 9`
+do
+    md5sum /root/elk/elasticsearch/elastic-master-node-0$num/http.p12
+    ansible docker-cluster-node"$num" -m shell -a "md5sum /docker/elastic-master-node-0$num/config/http.p12"
+    
+    md5sum /root/elk/elasticsearch/elastic-data-node-0$num/http.p12
+    ansible docker-cluster-node"$num" -m shell -a "md5sum /docker/elastic-data-node-0$num/config/http.p12"
+done
+```
+
+
+keystore 口令不正确的提示
+
+```
+elasticsearch@elastic-master-node-01:~$ ./bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
+Enter password for the elasticsearch keystore : 
+
+ERROR: Provided keystore password was incorrect, with exit code 65
+```
