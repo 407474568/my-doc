@@ -213,6 +213,22 @@ Enter password for the elasticsearch keystore :
 ERROR: Provided keystore password was incorrect, with exit code 65
 ```
 
+在启用 SSL/TLS 以后, kibana 没有为其提供连接elastic的正确认证信息, 则会出现
+
+```
+[2024-06-16T01:32:08.557-05:00][ERROR][elasticsearch-service] Unable to retrieve version information from Elasticsearch nodes. security_exception
+	Root causes:
+		security_exception: missing authentication credentials for REST request [/_nodes?filter_path=nodes.*.version%2Cnodes.*.http.publish_address%2Cnodes.*.ip]
+[2024-06-16T01:32:09.680-05:00][INFO ][plugins.screenshotting.chromium] Browser executable: /usr/share/kibana/node_modules/@kbn/screenshotting-plugin/chromium/headless_shell-linux_x64/headless_shell
+[2024-06-16T01:51:58.546-05:00][ERROR][plugins.ruleRegistry] Error: Timeout: it took more than 1200000ms
+    at Timeout._onTimeout (/usr/share/kibana/node_modules/@kbn/alerting-plugin/server/alerts_service/lib/install_with_timeout.js:43:18)
+    at listOnTimeout (node:internal/timers:573:17)
+    at processTimers (node:internal/timers:514:7)
+[2024-06-16T01:51:58.550-05:00][ERROR][plugins.ruleRegistry] Error: Failure during installation of common resources shared between all indices. Timeout: it took more than 1200000ms
+    at installWithTimeout (/usr/share/kibana/node_modules/@kbn/alerting-plugin/server/alerts_service/lib/install_with_timeout.js:59:13)
+    at ResourceInstaller.installCommonResources (/usr/share/kibana/node_modules/@kbn/rule-registry-plugin/server/rule_data_plugin_service/resource_installer.js:42:5)
+```
+
 
 #### 静默模式下生成自签名SSL证书  
 
@@ -333,6 +349,21 @@ bin/elasticsearch-certutil cert --silent --in /tmp/instances.yml --out /tmp/elas
 有关 ```elasticsearch-certutil``` 的使用文档虽然介绍了它的参数用法, 但在其介绍中提到 ```http``` 模式有许多参数都不能使用.
 
 这带来的问题就是, 此时需要生成 ```http``` 模式的证书就不知道该如何实现免交互--根据文档内容,怀疑压根儿就没为 ```http``` 模式设计免交互模式
+
+```通义```得出的结论与我的观点相符
+
+> 它的文档在这里,
+> https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html  
+> 只不过在http模式下, 原本在cert 模式下可用的参数大部分都不可用
+
+> 您提供的链接指向的是Elasticsearch官方文档中关于`elasticsearch-certutil`的部分，确实说明了在不同的操作模式下（如`ca`、`cert`、`csr`、`http`）可用的参数有所不同。`http
+> `模式主要用于简化为Elasticsearch HTTP接口生成证书或证书请求的过程，它通过一系列互动提示来确定用户的需要，然后生成相应的文件集，这通常包括可能的CA、CSR、以及用于Elasticsearch和Kibana
+> 的证书和密钥。与`cert`模式相比，`http`模式的设计更偏向于引导用户通过问答形式完成配置，而不是直接通过命令行参数全面控制输出。  
+尽管如此，如果您希望在生成HTTP接口证书时实现类似`cert`模式下的非交互式操作，即不通过命令行问答而是直接通过参数指定所有细节，目前`elasticsearch-certutil`的`http
+> `模式并不直接支持这种方式。`http`模式更多是为了简化新手或偶尔进行此操作的用户的体验，它通过一系列问题来确定用户需求，最终生成一个包含所需文件的zip包，每个文件夹内还包含readme指导如何使用这些文件。  
+如果您的目标是在不进行任何交互的情况下为HTTP接口生成证书，您可能需要采取变通方法，比如先使用`cert`模式为HTTP接口生成证书（如果可以接受PKCS#12或PEM格式），或者利用`http
+> `模式生成一次证书后，根据实际需要手动调整或复制这些证书到相应位置。对于高度定制或自动化部署场景，考虑编写脚本来处理`cert`模式的证书生成可能会更加灵活和可控。  
+总之，当前版本的`elasticsearch-certutil`并未提供直接在`http`模式下通过命令行参数进行全面非交互式配置的功能。您可能需要根据具体情况选择合适的模式（如`cert`）并结合适当的参数来满足自动化部署的需求。
 
 不过, 实测得知, 可以多行提交, 也就是可以复制粘贴来节省一定的工作量
 
