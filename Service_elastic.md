@@ -214,11 +214,12 @@ ERROR: Provided keystore password was incorrect, with exit code 65
 ```
 
 
-#### 额外扩展  
-- keystore 文件是否可以一个节点配置, 其他节点分发即可, 即无需每个节点单独执行
+#### 静默模式下生成自签名SSL证书  
+
+- keystore 文件是否可以一个节点配置, 其他节点分发即可, 即无需每个节点单独执行?
 - 如果前一点不可行, 则免交互式的添加方法需要具备, 以实现自动化的配置操作, 否则工作量随节点规模线性增加, 不太能接受
 
-以下是机器人的回复, 尚未验证
+以下是机器人的回复, ~~尚未验证~~
 
 Q: elastic的 keystore文件, 我是否可以采取在集群中任意一个节点, 通过elasticsearch-certutil 工具生成以后, 再将keystore结果文件复制分发到每个节点上, 而不需要每个节点都运行一次 elasticsearch-certutil 工具
 
@@ -246,7 +247,139 @@ A: 是的，你可以采取这种方法。在Elasticsearch集群中，只要你�
 该回答除说明"一个节点生成证书, 复制分发到其他节点通用"的可行外, 命令行的参数也表明可以实现免交互.
 
 
+#### 验证
+
 实际上, 关于 ```elasticsearch-certutil``` 的手册在此处
 
 https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/certutil.html  
 
+
+
+我的 yaml 文件示例
+
+```
+instances:
+  - name: "elasic-master-node-01" 
+    ip: 
+      - "192.168.1.31"
+      - "172.16.0.31"
+    dns: 
+      - "elasic-master-node-01"
+    filename: "http"
+  - name: "elasic-master-node-02" 
+    ip: 
+      - "192.168.1.32"
+      - "172.16.0.32"
+    dns: 
+      - "elasic-master-node-02"
+    filename: "http"
+  - name: "elasic-master-node-03" 
+    ip: 
+      - "192.168.1.33"
+      - "172.16.0.33"
+    dns: 
+      - "elasic-master-node-03"
+    filename: "http"
+  - name: "elasic-master-node-04" 
+    ip: 
+      - "192.168.1.34"
+      - "172.16.0.34"
+    dns: 
+      - "elasic-master-node-04"
+    filename: "http"
+  - name: "elasic-master-node-05" 
+    ip: 
+      - "192.168.1.35"
+      - "172.16.0.35"
+    dns: 
+      - "elasic-master-node-05"
+    filename: "http"
+  - name: "elasic-master-node-06" 
+    ip: 
+      - "192.168.1.36"
+      - "172.16.0.36"
+    dns: 
+      - "elasic-master-node-06"
+    filename: "http"
+  - name: "elasic-master-node-07" 
+    ip: 
+      - "192.168.1.37"
+      - "172.16.0.37"
+    dns: 
+      - "elasic-master-node-07"
+    filename: "http"
+  - name: "elasic-master-node-08" 
+    ip: 
+      - "192.168.1.38"
+      - "172.16.0.38"
+    dns: 
+      - "elasic-master-node-08"
+    filename: "http"
+  - name: "elasic-master-node-09" 
+    ip: 
+      - "192.168.1.39"
+      - "172.16.0.39"
+    dns: 
+      - "elasic-master-node-09"
+    filename: "http"
+```
+
+执行 ```elasticsearch-certutil``` 的命令
+
+```
+bin/elasticsearch-certutil cert --silent --in /tmp/instances.yml --out /tmp/elasticsearch-ssl-http.zip --pass 63834516 --ca /tmp/elastic-stack-ca.p12
+```
+
+有关 ```elasticsearch-certutil``` 的使用文档虽然介绍了它的参数用法, 但在其介绍中提到 ```http``` 模式有许多参数都不能使用.
+
+这带来的问题就是, 此时需要生成 ```http``` 模式的证书就不知道该如何实现免交互--根据文档内容,怀疑压根儿就没为 ```http``` 模式设计免交互模式
+
+不过, 实测得知, 可以多行提交, 也就是可以复制粘贴来节省一定的工作量
+
+```
+## Which hostnames will be used to connect to elastic-master-node-01?
+
+These hostnames will be added as "DNS" names in the "Subject Alternative Name"
+(SAN) field in your certificate.
+
+You should list every hostname and variant that people will use to connect to
+your cluster over http.
+Do not list IP addresses here, you will be asked to enter them later.
+
+If you wish to use a wildcard certificate (for example *.es.example.com) you
+can enter that here.
+
+Enter all the hostnames that you need, one per line.
+When you are done, press <ENTER> once more to move on to the next step.
+
+elastic-master-node-01
+elastic-master-node-02
+elastic-master-node-03
+elastic-master-node-04
+elastic-master-node-05
+elastic-master-node-06
+elastic-master-node-07
+elastic-master-node-08
+elastic-master-node-09
+elastic-data-node-01
+elastic-data-node-02
+elastic-data-node-03
+elastic-data-node-04
+elastic-data-node-05
+elastic-data-node-06
+elastic-data-node-07
+elastic-data-node-08
+elastic-data-node-09
+```
+
+#### 更新证书
+
+用相同的CA
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-certs-same.html
+
+用不同的CA
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-certs-different.html
+
+如链接访问困难, 可以将 ```www.elastic.co``` 替换为 ```elastic.heyday.net.cn:1000```
