@@ -213,21 +213,6 @@ Enter password for the elasticsearch keystore :
 ERROR: Provided keystore password was incorrect, with exit code 65
 ```
 
-在启用 SSL/TLS 以后, kibana 没有为其提供连接elastic的正确认证信息, 则会出现
-
-```
-[2024-06-16T01:32:08.557-05:00][ERROR][elasticsearch-service] Unable to retrieve version information from Elasticsearch nodes. security_exception
-	Root causes:
-		security_exception: missing authentication credentials for REST request [/_nodes?filter_path=nodes.*.version%2Cnodes.*.http.publish_address%2Cnodes.*.ip]
-[2024-06-16T01:32:09.680-05:00][INFO ][plugins.screenshotting.chromium] Browser executable: /usr/share/kibana/node_modules/@kbn/screenshotting-plugin/chromium/headless_shell-linux_x64/headless_shell
-[2024-06-16T01:51:58.546-05:00][ERROR][plugins.ruleRegistry] Error: Timeout: it took more than 1200000ms
-    at Timeout._onTimeout (/usr/share/kibana/node_modules/@kbn/alerting-plugin/server/alerts_service/lib/install_with_timeout.js:43:18)
-    at listOnTimeout (node:internal/timers:573:17)
-    at processTimers (node:internal/timers:514:7)
-[2024-06-16T01:51:58.550-05:00][ERROR][plugins.ruleRegistry] Error: Failure during installation of common resources shared between all indices. Timeout: it took more than 1200000ms
-    at installWithTimeout (/usr/share/kibana/node_modules/@kbn/alerting-plugin/server/alerts_service/lib/install_with_timeout.js:59:13)
-    at ResourceInstaller.installCommonResources (/usr/share/kibana/node_modules/@kbn/rule-registry-plugin/server/rule_data_plugin_service/resource_installer.js:42:5)
-```
 
 
 #### 静默模式下生成自签名SSL证书  
@@ -414,3 +399,52 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-cert
 https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-certs-different.html
 
 如链接访问困难, 可以将 ```www.elastic.co``` 替换为 ```elastic.heyday.net.cn:1000```
+
+
+#### kibana 的加密
+
+https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/security-basic-setup-https.html#encrypt-kibana-elasticsearch
+
+第一步, 加密 kibana 与 elastic 主机之间的流量
+
+以下是用到的配置语句
+
+```
+[root@ansible-2-9 elk]# cat kibana.yml 
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+elasticsearch.ssl.certificateAuthorities: config/elasticsearch-ca.pem
+elasticsearch.hosts: [ "https://192.168.1.33:9200" ]
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "HlqKTz=TLhNpowi7arQL"
+```
+
+其中
+
+```
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "HlqKTz=TLhNpowi7arQL"
+```
+
+```kibana_system``` 是 kibana 用于连接elastic的默认内置账户
+
+该信息是 kibana 连接到 elastic 主机所必须的, 否则
+
+在启用 SSL/TLS 以后, kibana 没有为其提供连接elastic的正确认证信息, 则会出现
+
+```
+[2024-06-16T01:32:08.557-05:00][ERROR][elasticsearch-service] Unable to retrieve version information from Elasticsearch nodes. security_exception
+	Root causes:
+		security_exception: missing authentication credentials for REST request [/_nodes?filter_path=nodes.*.version%2Cnodes.*.http.publish_address%2Cnodes.*.ip]
+[2024-06-16T01:32:09.680-05:00][INFO ][plugins.screenshotting.chromium] Browser executable: /usr/share/kibana/node_modules/@kbn/screenshotting-plugin/chromium/headless_shell-linux_x64/headless_shell
+[2024-06-16T01:51:58.546-05:00][ERROR][plugins.ruleRegistry] Error: Timeout: it took more than 1200000ms
+    at Timeout._onTimeout (/usr/share/kibana/node_modules/@kbn/alerting-plugin/server/alerts_service/lib/install_with_timeout.js:43:18)
+    at listOnTimeout (node:internal/timers:573:17)
+    at processTimers (node:internal/timers:514:7)
+[2024-06-16T01:51:58.550-05:00][ERROR][plugins.ruleRegistry] Error: Failure during installation of common resources shared between all indices. Timeout: it took more than 1200000ms
+    at installWithTimeout (/usr/share/kibana/node_modules/@kbn/alerting-plugin/server/alerts_service/lib/install_with_timeout.js:59:13)
+    at ResourceInstaller.installCommonResources (/usr/share/kibana/node_modules/@kbn/rule-registry-plugin/server/rule_data_plugin_service/resource_installer.js:42:5)
+```
+
+以上, 第一步, 仅解决elastic集群已启用SSL/TLS加密后的连接问题
+
