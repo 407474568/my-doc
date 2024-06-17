@@ -1,6 +1,10 @@
-### 官网  
+### 官网手册  
 
+https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
 
+在本文后续都不再特别强调, 官网访问有困难, 可访问我本人的镜像站点, 非实时镜像, 定期更新.
+
+所有涉及的官网手册的链接将 `www.elastic.co` 替换 为 `elastic.heyday.net.cn:1000`
 
 
 * [目录](#0)
@@ -447,4 +451,81 @@ elasticsearch.password: "HlqKTz=TLhNpowi7arQL"
 ```
 
 以上, 第一步, 仅解决elastic集群已启用SSL/TLS加密后的连接问题
+
+第二步, 配置 kibana 与浏览器之间的流量加密
+
+根据官网文档内容  
+https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup-https.html#encrypt-kibana-browser  
+需要通过提交CSR给CA处理, 而在前期是通过 `elasticsearch-certutil` 创建的自己的CA, 应当如何处理, 文档里没提及(或者没找对地方)
+
+但从 `通义` 这里找到了答案
+
+Q:
+> https://elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup-https.html#encrypt-kibana-elasticsearch
+其中提到"Send the kibana-server.csr certificate signing request to your internal CA or trusted CA for signing to obtain a signed certificate. The signed file can be in different formats, such as a .crt file like kibana-server.crt"
+理解它的意图是将 csr 即签名请求发送内部CA以生成kibana的签名证书, 但它没有提到, 我是采用elasticsearch-certutil 创建的CA, 应当如何处理这个CSR签名请求, 步骤是什么
+
+A:  
+当你使用 `elasticsearch-certutil` 创建了一个 CA，并且为 Kibana 生成了 CSR（Certificate Signing Request），即 `kibana-server.csr` 文件后，下一步是让内部 CA 或受信任的外部 CA 对该 CSR 进行签名，从而获得一个有效的证书。既然你已经使用 `elasticsearch-certutil` 创建了自己的 CA，那么你可以直接使用这个 CA 来签署 CSR。以下是大致步骤：
+
+1. **准备CA密钥对**：
+   如果你还没有 CA 的私钥和证书（假设你已经通过 `elasticsearch-certutil ca` 命令创建了），确保你有这些文件，通常是一个 `.p12` 文件（如 `elastic-stack-ca.p12`）和相应的密码。
+
+2. **使用CA签署CSR**：
+   你需要使用你的 CA 私钥来签署 CSR。虽然 `elasticsearch-certutil` 直接提供的命令不包括签署 CSR 的功能，但你可以使用其他工具来完成这一步，比如 `openssl`。以下是使用 `openssl` 的基本步骤：
+
+   - 首先，从你的 CA 密钥库（`.p12` 文件）导出 CA 的私钥和证书到 PEM 格式。如果你的 CA 密钥库是 PKCS#12 格式的（例如 `elastic-stack-ca.p12`），可以这样做：
+     ```sh
+     openssl pkcs12 -in elastic-stack-ca.p12 -nocerts -nodes -out ca-key.pem
+     openssl pkcs12 -in elastic-stack-ca.p12 -nokeys -out ca-cert.pem
+     ```
+
+   - 使用 CA 的私钥和证书来签署 CSR：
+     ```sh
+     openssl x509 -req -in kibana-server.csr -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out kibana-server.crt -days 365
+     ```
+     这个命令会使用你的 CA 证书和私钥来签署 CSR，并生成一个有效期为一年（`-days 365`）的证书 `kibana-server.crt`。
+
+3. **配置Kibana使用签署后的证书**：
+   签名完成后，你需要在 Kibana 的配置文件（通常是 `kibana.yml`）中指定新生成的证书和对应的私钥：
+   ```yaml
+   server.ssl.certificate: $KBN_PATH_CONF/kibana-server.crt
+   server.ssl.key: $KBN_PATH_CONF/kibana-server.key
+   ```
+   确保将 `kibana-server.crt` 和 `kibana-server.key` 放置在正确的目录下，并且按照 Kibana 配置文件的路径进行指定。
+
+4. **重启Kibana**：
+   最后，重启 Kibana 以应用新的安全配置。
+
+这样，你就完成了使用自己创建的 CA 签署 Kibana CSR 并配置 Kibana 使用签署后证书的过程。
+
+以上是 ```通义``` 关于如何处理CSR的回答, 且经过验证, 内容无误
+
+基于以上, 需要为 `kibana.yml` 增加以下配置语句
+
+```
+server.ssl.certificate: config/kibana.crt
+server.ssl.key: config/kibana.key
+server.ssl.enabled: true
+````
+
+其中 ```server.ssl.enabled: true``` 决定了在有该语句以后, kibana 将只响应 `https` 而不再响应 `http` 的请求
+
+而示例中的 `kibana.crt` 和 `kibana.key` ,  
+对于容器部署环境, 需要解决文件映射到容器内的问题  
+对于传统部署环境, 需要解决文件分发问题
+
+此外, 对比了
+
+```
+elasticsearch.hosts: [ "https://192.168.1.33:9200" ]
+```
+
+```
+elasticsearch.hosts: [ "https://192.168.1.31:9200","https://192.168.1.32:9200","https://192.168.1.33:9200","https://192.168.1.34:9200","https://192.168.1.35:9200","https://192.168.1.36:9200","https://192.168.1.37:9200","https://192.168.1.38:9200","https://192.168.1.39:9200" ]
+```
+
+两种配置语句, 粗看行为是一致的, 从启动日志未发现明显差异  
+前者是 kibana 指向同一个docker宿主机的 elastic 节点, 但是不同的容器, 实际上还是走的网络访问  
+后者 kibana 指向了集群内全部的 elastic 节点的 web 接口, 适合批量部署而无需做修改
 
