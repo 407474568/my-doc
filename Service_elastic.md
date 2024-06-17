@@ -2,9 +2,9 @@
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
 
-在本文后续都不再特别强调, 官网访问有困难, 可访问我本人的镜像站点, 非实时镜像, 定期更新.
+在本文后续都不再特别强调, 如官网访问困难, 可访问我本人的镜像站点, 非实时镜像, 定期更新.
 
-所有涉及的官网手册的链接将 `www.elastic.co` 替换 为 `elastic.heyday.net.cn:1000`
+所有涉及的官网手册的链接将 `www.elastic.co` 替换 为 `elastic.heyday.net.cn:1000` 即可
 
 
 * [目录](#0)
@@ -335,6 +335,8 @@ instances:
 bin/elasticsearch-certutil cert --silent --in /tmp/instances.yml --out /tmp/elasticsearch-ssl-http.zip --pass 63834516 --ca /tmp/elastic-stack-ca.p12
 ```
 
+使用 `cert` 模式能为 elastic 的 http接口生成所需的SSL证书, 但却不知在 `http` 模式下的 kibana 证书是如何生成出来的. 此疑问待解决
+
 有关 ```elasticsearch-certutil``` 的使用文档虽然介绍了它的参数用法, 但在其介绍中提到 ```http``` 模式有许多参数都不能使用.
 
 这带来的问题就是, 此时需要生成 ```http``` 模式的证书就不知道该如何实现免交互--根据文档内容,怀疑压根儿就没为 ```http``` 模式设计免交互模式
@@ -402,8 +404,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-cert
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-certs-different.html
 
-如链接访问困难, 可以将 ```www.elastic.co``` 替换为 ```elastic.heyday.net.cn:1000```
-
+待补充
 
 #### kibana 的加密
 
