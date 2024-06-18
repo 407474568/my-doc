@@ -10,7 +10,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
 * [目录](#0)
   * [集群初始化](#1)
   * [cat API 的使用](#2)
-  * [配置http层和传输层的SSL加密通信](#3)
+  * [配置 elastic 和 kibana 的通信加密](#3)
 
 
 <h3 id="1">集群初始化</h3>
@@ -179,7 +179,9 @@ GET /_cat/master?help
 
 
 
-<h3 id="3">配置http层和传输层的SSL加密通信</h3>
+<h3 id="3">配置 elastic 和 kibana 的通信加密</h3>
+
+#### 配置 elastic 的http层和传输层的SSL加密通信
 
 这两个是主要依赖的文档
 
@@ -187,6 +189,13 @@ https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/secu
 
 https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/security-basic-setup-https.html
 
+流程概述:
+- 生成自签名证书的CA(如果不是使用已有CA), 默认名elastic-stack-ca.p12
+- 生成由自签名证书的CA(如果不是使用已有CA)签发传输层的密钥, 默认名elastic-certificates.p12
+- 修改 elastic 的配置文件, 默认名 elasticsearch.yml, 使其加载该密钥加密传输层通信
+- 生成由自签名证书的CA(如果不是使用已有CA)签发http层的密钥, 默认名 http.p12
+- 修改 elastic 的配置文件, 默认名 elasticsearch.yml, 使其加载该密钥加密http层通信
+- 核实 http 接口, 默认URL为 <host>:9200 , 是否只接受 https, 不再接受 http
 
 用shell 脚本分发集群中所有节点的http证书
 
