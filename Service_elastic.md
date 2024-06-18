@@ -32,6 +32,10 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
 
 ```-e 'KEYSTORE_PASSWORD="xxxxxx"'```  
 
+另外, 企业环境下对于容器启动时设置环境, `-e xxx=xxx` 这个方式, 对于口令这种敏感信息通常是不被接受的做法.  
+改进的选项之一是:  
+使用 docker 启动时的 `--env-file` 的形式传递
+
 
 #### 初始化时, 创建keystore
 
@@ -217,7 +221,10 @@ Enter password for the elasticsearch keystore :
 ERROR: Provided keystore password was incorrect, with exit code 65
 ```
 
+启用成功的标志
 
+- elastic 的 9200 端口不再响应 `http` 而只处理 `https` 的请求, 并且日志内也能找到相关记录, 大意为客户端发来了 `http` 不会被响应
+- 
 
 #### 静默模式下生成自签名SSL证书  
 
