@@ -356,12 +356,9 @@ Q:
 > 只不过在http模式下, 原本在cert 模式下可用的参数大部分都不可用
 
 A:
-> 您提供的链接指向的是Elasticsearch官方文档中关于`elasticsearch-certutil`的部分，确实说明了在不同的操作模式下（如`ca`、`cert`、`csr`、`http`）可用的参数有所不同。`http
-> `模式主要用于简化为Elasticsearch HTTP接口生成证书或证书请求的过程，它通过一系列互动提示来确定用户的需要，然后生成相应的文件集，这通常包括可能的CA、CSR、以及用于Elasticsearch和Kibana
-> 的证书和密钥。与`cert`模式相比，`http`模式的设计更偏向于引导用户通过问答形式完成配置，而不是直接通过命令行参数全面控制输出。  
+> 您提供的链接指向的是Elasticsearch官方文档中关于`elasticsearch-certutil`的部分，确实说明了在不同的操作模式下（如`ca`、`cert`、`csr`、`http`）可用的参数有所不同。`http` 模式主要用于简化为Elasticsearch HTTP接口生成证书或证书请求的过程，它通过一系列互动提示来确定用户的需要，然后生成相应的文件集，这通常包括可能的CA、CSR、以及用于Elasticsearch和Kibana的证书和密钥。与`cert`模式相比，`http`模式的设计更偏向于引导用户通过问答形式完成配置，而不是直接通过命令行参数全面控制输出。  
 尽管如此，如果您希望在生成HTTP接口证书时实现类似`cert`模式下的非交互式操作，即不通过命令行问答而是直接通过参数指定所有细节，目前`elasticsearch-certutil`的`http`模式并不直接支持这种方式。`http`模式更多是为了简化新手或偶尔进行此操作的用户的体验，它通过一系列问题来确定用户需求，最终生成一个包含所需文件的zip包，每个文件夹内还包含readme指导如何使用这些文件。  
-如果您的目标是在不进行任何交互的情况下为HTTP接口生成证书，您可能需要采取变通方法，比如先使用`cert`模式为HTTP接口生成证书（如果可以接受PKCS#12或PEM格式），或者利用`http
-> `模式生成一次证书后，根据实际需要手动调整或复制这些证书到相应位置。对于高度定制或自动化部署场景，考虑编写脚本来处理`cert`模式的证书生成可能会更加灵活和可控。  
+如果您的目标是在不进行任何交互的情况下为HTTP接口生成证书，您可能需要采取变通方法，比如先使用`cert`模式为HTTP接口生成证书（如果可以接受PKCS#12或PEM格式），或者利用`http` 模式生成一次证书后，根据实际需要手动调整或复制这些证书到相应位置。对于高度定制或自动化部署场景，考虑编写脚本来处理`cert`模式的证书生成可能会更加灵活和可控。  
 总之，当前版本的`elasticsearch-certutil`并未提供直接在`http`模式下通过命令行参数进行全面非交互式配置的功能。您可能需要根据具体情况选择合适的模式（如`cert`）并结合适当的参数来满足自动化部署的需求。
 
 不过, 实测得知, 可以多行提交, 也就是可以复制粘贴来节省一定的工作量
@@ -402,6 +399,67 @@ elastic-data-node-08
 elastic-data-node-09
 ```
 
+#### 免交互模式生成 elastic 和 kibana 的证书
+
+`通义` 给了一个看似可行的步骤, 待核实后进行步骤
+
+Q:
+> 就前面的问题, 你回答道"如果您的目标是在不进行任何交互的情况下为HTTP接口生成证书，您可能需要采取变通方法，比如先使用cert模式为HTTP接口生成证书（如果可以接受PKCS#12或PEM格式），或者利用http模式生成一次证书后，根据实际需要手动调整或复制这些证书到相应位置。对于高度定制或自动化部署场景，考虑编写脚本来处理cert模式的证书生成可能会更加灵活和可控。"  
+我就此一点还想展开  
+我也认同"先使用cert模式为HTTP接口生成证书" 这个做法应该才是正确的实现"在不进行任何交互的情况下为HTTP接口生成证书"的解决途径, 但该官网文档同样没解释的一个问题是, 在 http 模式下生成的kibana的证书, 那么当我选择了cert模式下的非交互模式, 又当如何为kibana创建证书
+
+A:  
+在非交互模式下使用 `elasticsearch-certutil` 的 `cert` 模式为 Kibana 生成证书，您可以按照以下步骤操作：
+
+### 准备工作
+1. **确保已有 CA 证书和密钥**：如果您打算使用现有的证书颁发机构 (CA) 来签署 Kibana 的证书，确保您已经有了 CA 的证书（`.pem` 文件）和密钥（同样为 `.pem` 文件）。如果没有，您需要先使用 `elasticsearch-certutil` 的 `ca` 模式生成一个 CA。
+
+### 生成 Kibana 证书
+2. **编写 YAML 配置文件**：为了在非交互模式下生成证书，您需要创建一个 YAML 文件来定义 Kibana 实例的详细信息。例如，创建一个名为 `kibana-instances.yml` 的文件，内容可能如下：
+
+   ```yaml
+   instances:
+     - name: "kibana-node1"
+       dns: ["kibana.example.com", "localhost"]
+       ip: ["127.0.0.1", "10.0.0.1"]
+   ```
+
+   这里，`name` 是实例的标识，`dns` 是期望在证书的 Subject Alternative Names (SANs) 中包含的域名，`ip` 列出了与 Kibana 相关联的 IP 地址。
+
+3. **生成证书**：使用 `cert` 模式并指定 YAML 文件作为输入，以及使用现有的 CA 证书和密钥来签署新证书。假设您的 CA 密钥库文件是 `elastic-stack-ca.p12`，并且您知道 CA 密码，执行以下命令：
+
+   ```sh
+   bin/elasticsearch-certutil cert \
+     --ca elastic-stack-ca.p12 \
+     --ca-pass <your_ca_password> \
+     --in kibana-instances.yml \
+     --out kibana-certificates.p12 \
+     --pass <your_certificate_password> \
+     --pem
+   ```
+
+   这里，`--ca` 指定 CA 的 PKCS#12 文件，`--ca-pass` 是 CA 密钥的密码，`--in` 是实例配置的 YAML 文件路径，`--out` 是输出的 PKCS#12 文件名，`--pass` 是新证书密钥的密码，`--pem` 表示输出 PEM 格式（如果您希望使用 PEM 格式而不是 PKCS#12）。
+
+### 部署到 Kibana
+4. **配置 Kibana**：一旦证书生成完成，您需要将 Kibana 配置文件（通常是 `kibana.yml`）更新为使用新证书。如果生成的是 PKCS#12 格式的证书，您可能需要指定期望的证书和密钥文件路径。如果是 PEM 格式，您可能需要分别指定证书和密钥的路径，同时指定 CA 的证书路径：
+
+   ```yaml
+   # 对于 PKCS#12
+   server.ssl.keystore.path: "path/to/kibana-certificates.p12"
+   server.ssl.keystore.password: "<your_certificate_password>"
+   
+   # 对于 PEM
+   server.ssl.certificate: "path/to/kibana-server.crt"
+   server.ssl.key: "path/to/kibana-server.key"
+   server.ssl.certificateAuthorities: ["path/to/elasticsearch-ca.pem"]
+   ```
+
+5. **重启 Kibana**：最后，重启 Kibana 以应用新的 SSL 配置。
+
+通过以上步骤，您就能在非交互模式下为 Kibana 生成并部署证书了。请注意，具体命令行参数和配置细节可能需要根据您的实际情况和版本做适当调整。
+
+<font color=red>以上是 `通义` 的回答</font>
+
 #### 更新证书
 
 用相同的CA
@@ -420,7 +478,7 @@ https://elastic.heyday.net.cn:1000/guide/en/elasticsearch/reference/current/secu
 
 第一步, 加密 kibana 与 elastic 主机之间的流量
 
-以下是用到的配置语句
+以下是 `kibana.yml` 用到的配置语句
 
 ```
 [root@ansible-2-9 elk]# cat kibana.yml 
@@ -516,7 +574,7 @@ A:
 server.ssl.certificate: config/kibana.crt
 server.ssl.key: config/kibana.key
 server.ssl.enabled: true
-````
+```
 
 其中 ```server.ssl.enabled: true``` 决定了在有该语句以后, kibana 将只响应 `https` 而不再响应 `http` 的请求
 
