@@ -22,6 +22,30 @@ tcpdump -i any src host 192.168.10.2 and dst host 192.168.10.3 and dst port 22  
 其中:  
 tcpdump中的 源 / 目标 地址, 源 / 目标 端口, 协议 使用与 / 或 / 非 关键词连接, 关于tcpdump的表达式介绍如下
 
+##### 排除特定地址
+
+当我可能需要排除某个地址时
+
+```
+[root@CQ-KVM-01 ~]# tcpdump -i any dst host 192.168.2.63 and src host \!192.168.2.60 and dst port 22  -e -v -tttt -n -nn -S
+dropped privs to tcpdump
+tcpdump: listening on any, link-type LINUX_SLL (Linux cooked v1), capture size 262144 bytes
+2024-07-26 10:34:50.935994  In 50:0f:f5:6f:02:90 ethertype IPv4 (0x0800), length 68: (tos 0x68, ttl 120, id 59161, offset 0, flags [DF], proto TCP (6), length 52)
+    123.147.247.146.49520 > 192.168.2.63.22: Flags [S], cksum 0xf352 (correct), seq 394818068, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+2024-07-26 10:34:51.938026  In 50:0f:f5:6f:02:90 ethertype IPv4 (0x0800), length 68: (tos 0x68, ttl 120, id 59166, offset 0, flags [DF], proto TCP (6), length 52)
+    123.147.247.146.49520 > 192.168.2.63.22: Flags [S], cksum 0xf352 (correct), seq 394818068, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+2024-07-26 10:34:53.955759  In 50:0f:f5:6f:02:90 ethertype IPv4 (0x0800), length 68: (tos 0x68, ttl 120, id 59204, offset 0, flags [DF], proto TCP (6), length 52)
+    123.147.247.146.49520 > 192.168.2.63.22: Flags [S], cksum 0xf352 (correct), seq 394818068, win 64240, options [mss 1360,nop,wscale 8,nop,nop,sackOK], length 0
+^C
+3 packets captured
+3 packets received by filter
+0 packets dropped by kernel
+```
+
+排除的语法, 在 ```tcpdump``` 里是 ```!```  
+由于 ```!``` 在shell里是内置变量, 另有含义  
+所以在 shell 环境下执行还需要加上转义符, 即 ```\!```
+
 #### tcpdump的表达式介绍  
 
 表达式是一个正则表达式，tcpdump利用它作为过滤报文的条件，如果一个报文满足表 达式的条件，则这个报文将会被捕获。如果没有给出任何条件，则网络上所有的信息包 将会被截获。  
