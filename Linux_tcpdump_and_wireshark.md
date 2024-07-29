@@ -105,14 +105,3 @@ https://blog.csdn.net/lixiangminghate/article/details/81663628
 以下示例包含 非 运算符的使用---成对小括号  
 ![](/images/b6be90b3gy1gj52832u1uj212g0660ua.jpg)
 
-#### 不等于的用法示例
-
-https://www.cnblogs.com/jiujuan/p/9017495.html
-
-示例: 查看目标端口为22, 但IP地址不为XXX的数据包
-
-```
-tcpdump -i any ip host \!192.168.2.64 and dst port 22 -e -v -tttt -n -nn -S
-```
-
-在```tcpdump```中是用```!```表示"非", 不过又因为是在shell环境下, ```!```有其自身表达的含义, 所以需要反斜杠转义
