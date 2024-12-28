@@ -476,12 +476,16 @@ trojan-RAKsmart-02     0.0.0.0:10052->10052/tcp                                 
 trojan-RAKsmart-03     0.0.0.0:10053->10053/tcp                                     Up 11 hours   6bce432e2196   centos:centos7.9.2009
 trojan-RAKsmart-04     0.0.0.0:10054->10054/tcp                                     Up 11 hours   a8dff40ccae0   centos:centos7.9.2009
 trojan-RAKsmart-05     0.0.0.0:10055->10055/tcp                                     Up 11 hours   0c5079fb81c9   centos:centos7.9.2009
+
 [root@docker-cluster-node1 ~]# telnet 127.0.0.1 10041
 Trying 127.0.0.1...
 Connected to 127.0.0.1.
 Escape character is '^]'.
 Connection closed by foreign host.
+
 [root@docker-cluster-node1 ~]# docker restart privoxy-RackNerd-01
 Error response from daemon: Cannot restart container privoxy-RackNerd-01: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/mnt/share/4_backup/Public/trojan/privoxy-RackNerd" to rootfs at "/usr/local/privoxy-RackNerd": stat /mnt/share/4_backup/Public/trojan/privoxy-RackNerd: host is down: unknown
-[root@docker-cluster-node1 ~]# 
+
+[root@docker-cluster-node1 ~]# cat /proc/mounts | grep /mnt/share
+//172.16.0.1/Windows_Data_Shadow/PC_to_storage /mnt/share cifs rw,relatime,vers=3.1.1,cache=strict,username=guest,uid=0,noforceuid,gid=0,noforcegid,addr=172.16.0.1,file_mode=0755,dir_mode=0755,soft,nounix,serverino,mapposix,rsize=4194304,wsize=4194304,bsize=1048576,echo_interval=60,actimeo=1 0 0
 ```
