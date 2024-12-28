@@ -9,6 +9,7 @@
   * [容器的DNS的指派](#8)
   * [Docker数据卷挂载命令volume(-v)与mount的区别](#9)
   * [与iptables共存](#10)
+  * [避免选择网络存储作为容器启动时的bind条目](#11)
 
 
 <h3 id="1">环境安装</h3>
@@ -440,3 +441,47 @@ Requires=docker.socket
 
 其中 ```After=``` 尾部添加 ```iptables.service```  
 以此确保 docker 的守护进程一定是在 iptables 之后启动.
+
+
+<h3 id="11">避免选择网络存储作为容器启动时的bind条目</h3>
+
+即规避容器捆绑网络存储进行启动, 否则当网络存储出现故障时, 会使该容器也无法正常对外服务
+
+以下示例即为一个证明, 绑定了一个cifs共享作为容器的数据(只读场景), 虽然容器不会因为cifs共享的失效而停止, 但服务端口已不可访问
+
+```
+[root@docker-cluster-node1 ~]# dockerps
+NAMES                  PORTS                                                        STATUS        CONTAINER ID   IMAGE
+api_send_wechat_msg    0.0.0.0:5000->5000/tcp                                       Up 11 hours   3af0130040f0   python:3.10.11
+privoxy-RackNerd-01    0.0.0.0:10041->10041/tcp                                     Up 11 hours   7fedcfbcaff8   centos:centos7.9.2009
+privoxy-RackNerd-02    0.0.0.0:10042->10042/tcp                                     Up 11 hours   ef04b35ef8a3   centos:centos7.9.2009
+privoxy-RackNerd-03    0.0.0.0:10043->10043/tcp                                     Up 11 hours   40354266ab3a   centos:centos7.9.2009
+privoxy-RackNerd-04    0.0.0.0:10044->10044/tcp                                     Up 11 hours   a06b323e625c   centos:centos7.9.2009
+privoxy-RackNerd-05    0.0.0.0:10045->10045/tcp                                     Up 11 hours   e16ec0ac28ee   centos:centos7.9.2009
+privoxy-RAKsmart-01    0.0.0.0:10061->10061/tcp                                     Up 11 hours   179c62776902   centos:centos7.9.2009
+privoxy-RAKsmart-02    0.0.0.0:10062->10062/tcp                                     Up 11 hours   c32ade017c2e   centos:centos7.9.2009
+privoxy-RAKsmart-03    0.0.0.0:10063->10063/tcp                                     Up 11 hours   81dd31f251cc   centos:centos7.9.2009
+privoxy-RAKsmart-04    0.0.0.0:10064->10064/tcp                                     Up 11 hours   9d834b62f2a3   centos:centos7.9.2009
+privoxy-RAKsmart-05    0.0.0.0:10065->10065/tcp                                     Up 11 hours   d220fb6b587f   centos:centos7.9.2009
+redis-cluster-node13   0.0.0.0:6393->6393/tcp, 6379/tcp, 0.0.0.0:16393->16393/tcp   Up 11 hours   6e9d5448f151   redis:6.2.10
+redis-cluster-node14   0.0.0.0:6394->6394/tcp, 6379/tcp, 0.0.0.0:16394->16394/tcp   Up 11 hours   ad4ddbed5965   redis:6.2.10
+redis-cluster-node15   0.0.0.0:6395->6395/tcp, 6379/tcp, 0.0.0.0:16395->16395/tcp   Up 11 hours   09c080ed8daa   redis:6.2.10
+trojan-RackNerd-01     0.0.0.0:10031->10031/tcp                                     Up 11 hours   5ca613d16156   centos:centos7.9.2009
+trojan-RackNerd-02     0.0.0.0:10032->10032/tcp                                     Up 11 hours   4a9d28e3bc70   centos:centos7.9.2009
+trojan-RackNerd-03     0.0.0.0:10033->10033/tcp                                     Up 11 hours   a7de31020a7e   centos:centos7.9.2009
+trojan-RackNerd-04     0.0.0.0:10034->10034/tcp                                     Up 11 hours   1915225268fb   centos:centos7.9.2009
+trojan-RackNerd-05     0.0.0.0:10035->10035/tcp                                     Up 11 hours   dfe5811888e5   centos:centos7.9.2009
+trojan-RAKsmart-01     0.0.0.0:10051->10051/tcp                                     Up 11 hours   ed17df68cc16   centos:centos7.9.2009
+trojan-RAKsmart-02     0.0.0.0:10052->10052/tcp                                     Up 11 hours   48c9a2cefb4d   centos:centos7.9.2009
+trojan-RAKsmart-03     0.0.0.0:10053->10053/tcp                                     Up 11 hours   6bce432e2196   centos:centos7.9.2009
+trojan-RAKsmart-04     0.0.0.0:10054->10054/tcp                                     Up 11 hours   a8dff40ccae0   centos:centos7.9.2009
+trojan-RAKsmart-05     0.0.0.0:10055->10055/tcp                                     Up 11 hours   0c5079fb81c9   centos:centos7.9.2009
+[root@docker-cluster-node1 ~]# telnet 127.0.0.1 10041
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+Connection closed by foreign host.
+[root@docker-cluster-node1 ~]# docker restart privoxy-RackNerd-01
+Error response from daemon: Cannot restart container privoxy-RackNerd-01: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "/mnt/share/4_backup/Public/trojan/privoxy-RackNerd" to rootfs at "/usr/local/privoxy-RackNerd": stat /mnt/share/4_backup/Public/trojan/privoxy-RackNerd: host is down: unknown
+[root@docker-cluster-node1 ~]# 
+```
