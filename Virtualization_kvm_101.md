@@ -4,13 +4,15 @@
   * [KVM运行环境的安装](#3)
   * [删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络](#4)
   * [创建NAT类型网桥](#5)
+  * [基于bond的KVM网桥](#12)
   * [KVM虚拟机控制台连接的方式](#6)
   * [KVM克隆虚拟机](#7)
   * [qemu-img 的几个相关用法](#8)
   * [光驱相关](#9)
   * [virtio 模式下安装Windows操作系统](#10)
   * [磁盘的热添加/删除](#11)
-  
+
+
 
 <h3 id="1">虚拟机启停等日常命令</h3>
 
@@ -568,6 +570,36 @@ PING www.wshifen.com (45.113.192.101) 56(84) bytes of data.
 9 packets transmitted, 8 received, 11% packet loss, time 8022ms
 rtt min/avg/max/mdev = 261.979/263.528/268.287/2.011 ms
 ```
+
+<h3 id="12">基于bond的KVM网桥</h3>
+
+根据 *通义* 给出的答案, 实测确实可行
+
+https://lxblog.com/qianwen/share?shareId=7f94cbe1-b7d6-4cac-813b-e6e4d05247c3
+
+与前文 
+<h5 id="5">删除默认的virbr0, 并新建一个网桥用于KVM虚拟机的桥接网络</h5>
+的区别仅在于
+
+```
+# 如果 br0先前存在 (假设用于虚拟机使用的网桥的nmcli配置名称为br0), 则删除重建, 因为类型可能不匹配
+# nmcli connection delete br0 
+# nmcli connection add type bridge autoconnect yes con-name br0 ifname br0
+# 将 bond0 作为 br0 的从属设备：
+# nmcli connection modify bond0 connection.master br0 connection.slave-type bridge
+```
+
+其中, bond 的配置略, 本站文档  
+[bond配置](./Linux_bond_config.md)
+
+此时, br0 已生效, 真实的"物理设备"为 bond0  
+使用br0作为虚拟机网卡进行通信的虚拟机已可以正常  
+对真正的两张物理网卡的网线进行拔线测试, 能得出以下结果
+
+![](images/D065CDBF1E466295E8E42AB7AF467A52.png)
+
+1) 宿主机, 与常规配置bond的物理机一样, 不会感知到有网络掉包的发生
+2) 使用该 bond 网卡作为 br 桥接网卡的虚拟机, 掉线的假设正好是active-slave状态(bond配置的mode 1)的网卡, 虚拟机会感知到掉包的发生, 掉包个数几个到十几个不等, 会自行恢复
 
 
 <h3 id="6">KVM虚拟机控制台连接的方式</h3>
