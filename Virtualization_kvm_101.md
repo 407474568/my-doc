@@ -598,7 +598,7 @@ https://lxblog.com/qianwen/share?shareId=7f94cbe1-b7d6-4cac-813b-e6e4d05247c3
 
 ![](images/D065CDBF1E466295E8E42AB7AF467A52.png)
 
-1) 宿主机, 与常规配置bond的物理机一样, 不会感知到有网络掉包的发生
+1) 宿主机, 与常规配置bond的物理机一样, 不会感知到有网络掉包的发生  
 2) 使用该 bond 网卡作为 br 桥接网卡的虚拟机, 掉线的假设正好是active-slave状态(bond配置的mode 1)的网卡, 虚拟机会感知到掉包的发生, 掉包个数几个到十几个不等, 会自行恢复
 
 
