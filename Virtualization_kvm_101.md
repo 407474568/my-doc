@@ -76,8 +76,28 @@ virsh autostart --disable 虚拟机名称
 
 # 查看已设置了开机自启动的虚拟机
 ll /etc/libvirt/qemu/autostart/
+```
+
+#### 临时性命令
+
+```
+暂时禁用虚拟机网卡, 等效于vmware平台上取消勾选网卡连接状态
+virsh domif-setlink <domain> vnet0 down
+其中<domain>替换为你的虚拟机名或ID，vnet0替换为实际的网络接口名。
 
 
+
+查看一个虚拟机有哪些实际的网络接口名
+virsh domiflist <domain>
+
+例如
+[root@CQ-KVM-03 ~]# virsh domiflist fortress-CQ-01 
+ Interface   Type     Source   Model    MAC
+-----------------------------------------------------------
+ vnet4       bridge   br0      virtio   52:54:00:8e:e3:7c
+```
+
+```
 # virt-install --os-variant 可选值
 osinfo-query os
 
