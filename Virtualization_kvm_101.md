@@ -78,7 +78,7 @@ virsh autostart --disable 虚拟机名称
 ll /etc/libvirt/qemu/autostart/
 ```
 
-#### 临时性命令
+##### 临时性命令
 
 ```
 暂时禁用虚拟机网卡, 等效于vmware平台上取消勾选网卡连接状态
@@ -97,8 +97,9 @@ virsh domiflist <domain>
  vnet4       bridge   br0      virtio   52:54:00:8e:e3:7c
 ```
 
+##### virt-install --os-variant 可选值
+
 ```
-# virt-install --os-variant 可选值
 osinfo-query os
 
 # machine 的可选type
