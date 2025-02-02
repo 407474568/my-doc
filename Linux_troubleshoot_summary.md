@@ -4,6 +4,7 @@
   * [系统内核文件丢失](#3)
   * [定位 iowait 的进程](#4)
   * [iotop 提示"CONFIG_TASK_DELAY_ACCT and ...](#5)
+  * [包含系统在内的磁盘数据迁移](#6)
 
 
 <h3 id="1">控制台上出现错误消息：NMI watchdog BUG soft lockup - CPU stuck for XXs</h3>
@@ -143,3 +144,55 @@ sysctl kernel.task_delayacct=0
 
 即: 只在使用```iotop```时才打开```delayacct```, 用完即关, 而不是作为默认打开的配置项.  
 因为该参数有拖慢系统性能的可能性, 道理也很显而易见, 因为额外监控了进程的 swapin 和 swapout
+
+
+<h3 id="6">包含系统在内的磁盘数据迁移</h3>
+
+包含系统在内的磁盘数据整体做迁移, 典型的场景是A磁盘完整复制到B磁盘, 包括系统在内, 希望不需要作额外配置工作  
+在一部分场景中, 可以选择```dd```命令, 因为足够简单  
+但```dd```命令也有处理不好或者效率不高的场景, 比如:
+- 大容量的磁盘向小容量的磁盘迁移
+- 源端磁盘上的实际数据远小于磁盘容量大小, 而```dd```命令无法区分, 是按磁盘容量进行拷贝而非实际数据量
+
+另一种做法就是:
+1) 恢复系统分区表
+2) 恢复boot分区等启动相关信息
+3) 恢复磁盘上的实际数据内容
+
+优势: 只拷贝实际数据内容, 在数据量上可节省  
+劣势: 操作繁琐一些, 并且文件级别拷贝, 受限于两端磁盘的IO性能及文件系统性能
+
+https://lxblog.com/qianwen/share?shareId=949f1ae5-ab6f-447d-93be-e82407f0b223
+
+- 备份阶段
+
+```bash
+# 创建挂载点
+sudo mkdir -p /mnt/source
+
+# 挂载第一个分区（XFS）
+sudo mount /dev/nvme0n1p1 /mnt/source
+
+# 使用 rsync 备份第一个分区的数据到 NFS 共享
+sudo rsync -av --progress /mnt/source/ /mnt/nfs_share/backup_partition1/
+
+# 卸载第一个分区
+sudo umount /mnt/source
+
+# 挂载第二个分区（LVM）
+# 首先激活 LVM 卷组
+sudo vgchange -ay
+
+# 查找逻辑卷名称
+sudo lvdisplay
+
+# 假设逻辑卷名为 /dev/mapper/vg_name-lv_root
+sudo mount /dev/mapper/vg_name-lv_root /mnt/source
+
+# 使用 rsync 备份第二个分区的数据到 NFS 共享
+sudo rsync -av --progress /mnt/source/ /mnt/nfs_share/backup_partition2/
+
+# 卸载第二个分区
+sudo umount /mnt/source
+```
+
