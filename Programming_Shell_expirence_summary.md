@@ -28,6 +28,9 @@ BasePath=$(cd `dirname ${BASH_SOURCE}` ; pwd)
 
 # 获取自身脚本名称
 BaseName=$(basename $BASH_SOURCE)
+# 更准确的说, 是
+script_name=$(basename "${BASH_SOURCE[0]}")
+
 ```
 
 <font color=red>sed 匹配行及其后连续N行的操作</font>
