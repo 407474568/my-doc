@@ -716,3 +716,65 @@ configure the client to trust this certificate.
 
 ##### 为每个节点签发证书的静默化/自动化
 
+如官方文档所说, 要先行创建一个yaml语法格式的文本文件
+
+```
+instances:
+  - name: "node1" 
+    ip: 
+      - "192.0.2.1"
+    dns: 
+      - "node1.mydomain.com"
+  - name: "node2"
+    ip:
+      - "192.0.2.2"
+      - "198.51.100.1"
+  - name: "node3"
+  - name: "node4"
+    dns:
+      - "node4.mydomain.com"
+      - "node4.internal"
+  - name: "CN=node5,OU=IT,DC=mydomain,DC=com"
+    filename: "node5" 
+```
+
+我的例子
+
+```
+[root@elk-exam ~]# cat auto_answer.yml
+instances:
+  - name: "elasticsearch1" 
+    ip: 
+      - "192.168.1.231"
+  - name: "elasticsearch2" 
+    ip: 
+      - "192.168.1.231"
+  - name: "elasticsearch3" 
+    ip: 
+      - "192.168.1.231"
+```
+
+接下来, 提交免交互的命令行
+
+```
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-certutil cert \
+> --silent \
+> --in /root/auto_answer.yml \
+> --out /root/elastic_node_certificates.zip \
+> --pass "" \
+> --ca /root/elastic-stack-ca.p12 \
+>  --ca-pass ""
+[root@elk-exam ~]# ll
+total 904M
+-rw-------. 1 root root 1.3K Feb  5 13:26 anaconda-ks.cfg
+-rw-r--r--. 1 root root  194 Feb  7 12:03 auto_answer.yml
+-rw-------. 1 root root 3.6K Feb  6 23:32 elastic-certificates.p12
+-rw-------. 1 root root  12K Feb  7 12:30 elastic_node_certificates.zip
+-rw-r--r--. 1 root root 582M Feb  4 23:12 elasticsearch-8.15.5-linux-x86_64.tar.gz
+-rw-------. 1 root root 2.7K Feb  6 23:05 elastic-stack-ca.p12
+-rw-r--r--. 1 root root 323M Feb  4 23:12 kibana-8.15.5-linux-x86_64.tar.gz
+```
+
+以上, 3组命令分别实现了创建CA, 创建```elastic```集群的私钥, 为节点签发证书一共3个部分的免交互操作  
+对于有自动化部署需求的场景, 可在此基础上进一步完善脚本与相应配置文件的编辑
+
