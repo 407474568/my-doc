@@ -608,7 +608,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-cert
 
 <h3 id="4">配置SSL通信加密--自动应答方式</h3>
 
-https://www.elastic.co/guide/en/elasticsearch/reference/8.15/certutil.html#certutil-silent
+https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html
 
 实际上官方文档还是给出了步骤, 只不过需要仔细一些
 
