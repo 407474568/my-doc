@@ -11,7 +11,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
   * [集群初始化](#1)
   * [cat API 的使用](#2)
   * [配置 elastic 和 kibana 的通信加密](#3)
-  * [配置SSL通信加密--自动应答方式](#4)
+  * [生成配置SSL通信加密所需的证书--自动应答方式](#4)
 
 
 
@@ -356,7 +356,7 @@ bin/elasticsearch-certutil cert --silent --in /tmp/instances.yml --out /tmp/elas
 
 有关 ```elasticsearch-certutil``` 的使用文档虽然介绍了它的参数用法, 但在其介绍中提到 ```http``` 模式有许多参数都不能使用.
 
-这带来的问题就是, 此时需要生成 ```http``` 模式的证书就不知道该如何实现免交互--根据文档内容,怀疑压根儿就没为 ```http``` 模式设计免交互模式
+这带来的问题就是, 此时需要生成 ```http``` 模式的证书就不知道该如何实现免交互--根据文档内容,~~怀疑压根儿就没为 ```http``` 模式设计免交互模式~~
 
 `通义` 得出的结论与我的观点相符
 
@@ -606,7 +606,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/update-node-cert
 
 待补充
 
-<h3 id="4">配置SSL通信加密--自动应答方式</h3>
+<h3 id="4">生成配置SSL通信加密所需的证书--自动应答方式</h3>
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html
 
@@ -778,3 +778,535 @@ total 904M
 以上, 3组命令分别实现了创建CA, 创建```elastic```集群的私钥, 为节点签发证书一共3个部分的免交互操作  
 对于有自动化部署需求的场景, 可在此基础上进一步完善脚本与相应配置文件的编辑
 
+<font color=red>重要补充</font>
+
+上述的自动化/免交互生成证书的操作中, 有一处细节需要注意
+
+在我前面的示例中, 
+CA, 即 ```elastic-stack-ca.p12```  
+以及, 包含elastic私钥的证书 ```elastic-certificates.p12```  
+使用了空密码, 即```""```  
+然而这用在 ```elastic``` 启动时却始终存在报错
+
+报错内容, 以及相关联的 elasticsearch.yml 的语句如下示例
+
+```
+[2025-02-10T23:38:50,646][ERROR][o.e.b.Elasticsearch      ] [elasticsearch1] fatal exception while booting Elasticsearchorg.elasticsearch.ElasticsearchSecurityException: failed to load SSL configuration [xpack.security.transport.ssl] - cannot read configured [PKCS12] keystore (as a truststore) [/elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12] - this is usually caused by an incorrect password; (a keystore password was provided)
+	at org.elasticsearch.xcore@8.15.5/org.elasticsearch.xpack.core.ssl.SSLService.lambda$loadSslConfigurations$11(SSLService.java:620)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at java.base/java.util.Collections$UnmodifiableMap.forEach(Collections.java:1708)
+	at org.elasticsearch.xcore@8.15.5/org.elasticsearch.xpack.core.ssl.SSLService.loadSslConfigurations(SSLService.java:616)
+	at org.elasticsearch.xcore@8.15.5/org.elasticsearch.xpack.core.ssl.SSLService.<init>(SSLService.java:160)
+
+See logs for more details.
+
+ERROR: Elasticsearch did not exit normally - check the logs at /elastic/elasticsearch-8.15.5/logs/cluster-exam.log
+
+ERROR: Elasticsearch died while starting up, with exit code 1
+[root@elk-exam ~]# tail -n 30 /elastic/elastics_exam_conf/elasticsearch1/elasticsearch.yml 
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: certs/http.p12
+
+# Enable encryption and mutual authentication between cluster nodes
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  client_authentication: required
+  keystore.path: /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12
+  keystore.password: ""
+  truststore.path: /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12
+  truststore.password: ""
+# Create a new cluster with the current node only
+# Additional nodes can still join the cluster later
+cluster.initial_master_nodes: ["elk-exam"]
+
+# Allow HTTP API connections from anywhere
+# Connections are encrypted and require user authentication
+http.host: 0.0.0.0
+
+# Allow other nodes to join the cluster from anywhere
+# Connections are encrypted and mutually authenticated
+#transport.host: 0.0.0.0
+
+#----------------------- END SECURITY AUTO CONFIGURATION -------------------------
+node.roles: [ master ]
+cluster.name: cluster-exam
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: /elastic/elastics_exam_conf/elasticsearch1/elasticsearch1.p12
+```
+
+通过与AI大模型的对话, 首先是它发现了一处问题: 证书长度为0
+
+```
+[root@elk-exam ~]# keytool -list -v -keystore /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12 -storetype PKCS12
+Enter keystore password:  
+
+*****************  WARNING WARNING WARNING  *****************
+* The integrity of the information stored in your keystore  *
+* has NOT been verified!  In order to verify its integrity, *
+* you must provide your keystore password.                  *
+*****************  WARNING WARNING WARNING  *****************
+
+Keystore type: PKCS12
+Keystore provider: SunJSSE
+
+Your keystore contains 1 entry
+
+Alias name: instance
+Creation date: Feb 10, 2025
+Entry type: PrivateKeyEntry
+Certificate chain length: 0
+
+
+*******************************************
+*******************************************
+
+```
+
+```
+根据您提供的信息，使用 keytool 命令验证密钥库文件 /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12 时，虽然没有报错，但显示了以下关键内容：
+
+证书链长度为 0 (Certificate chain length: 0)：
+这表明密钥库中没有有效的证书链。通常情况下，Elasticsearch 的 SSL/TLS 配置需要一个包含私钥和证书的完整链。
+密码验证：
+您成功输入了密码（无论是空字符串还是其他值），并且没有出现密码错误的提示，说明密码是正确的。
+文件权限：
+文件权限设置为 -rw-------，并且归 elastic 用户所有，这符合 Elasticsearch 的运行要求。
+```
+
+```keytool``` 并非是系统自带的命令, 需要yum安装, 且并不属于 ```elasticsearch``` 的范畴, 估计JAVA生态内的
+
+进而在它的提示下, 手动验证 ```/elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12``` 的有效性
+
+用到的是 ```openssl``` 命令
+
+```
+[root@elk-exam ~]# openssl pkcs12 -in /root/elastic-certificates.p12 -nodes -passin pass:""
+Bag Attributes
+    friendlyName: instance
+    localKeyID: 54 69 6D 65 20 31 37 33 39 32 35 35 31 33 33 32 34 32 
+Key Attributes: <No Attributes>
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQChZuF6jqZ5CfXN
+uJpttdpGWCJnm6YeKkYxsLfCGPIRnx0jfPx6HICe0hECVl+4ue3yTwwTbD+b5I/A
+9M98mmxjlxLKEZ0uXtann2He586jpg6E3lD7BG5jc989+zDrxDO6Bn57/NnKzemQ
+ldrEvJ5d+Q5snWvbo67g0iIwiPOu9y2qfMmkox29mhuABDDvInr8DMjz+0pNosWF
+vYeDNgwuK4lDr4uwo4lLny5jtUY0oj493G1oTV8swOCLc2de/USTjgFLR3ilLeA8
+Rk7XnomUTcsums+Q1MDEwlzKMsmjWLQKOH4OG07lC81cR3RXRK44BCNeYuMbFUEg
+U5XqJZNDAgMBAAECggEAKDNrWu7X+RLphe2CjWv7q4S9QQgsNpw58pt9EZvMA2aZ
+x+KUMkgSIzzYXrgrzGOHKFDXBalzKH2j7qArY/JEqAOTewArIcceeQ7CPlaHigxM
+1nxXOEaQxjWwt4vu0fKDHcULUQ+YIaLrF4ezv0fpvCdSF+yX1lOtNbMxL9yUsZHa
+xe86jiFWfgKfeO9+nQdNDqJ9WN0wdVYTybMzHnAu2t6CVsPOs/zLd2j5AzqHU0Xg
+P0HgWJIW55qi+tFIu7jac31e40LHFLKQuFXqB9UsdJgS8DnENfb4gi6QuiUgAPXR
+QTa3oSP1eLZEellzlAc1Jo/1sFFdPF+uooQ2dc0yOQKBgQDeHsKP22HqtVqVxsRW
+oQ0sUytHJ39gSYQfyybZzZCr1vOTWwmWMOuTzRtY7U49PXAWCFN0OZtOhU1+QOPu
+t//TrVEKcCS5CEfgO65pH+HqyHYtEEA7FyeEy4s36Hn9nkfQyqqGrhv9mEjZmSMS
+neQ0gPoXeSQBvZJnMreFYO41ywKBgQC6BTkRu/UOkGHAJj8FUqf49iBXRN2RCef5
+jLddVRzqK0z89DZOFEZmVFw6VPM/S1jmwSBv8y4P+Adj3jwDjkW6inrv7g/6gKq6
+TRmu8Pfnr6zflQn0g4nUnOWUJA4YDpqeloZKv2EhULe8ZlbvzcSbqAtuMxA7DVdk
+0BrIavwpaQKBgQCxLBH/U3toDt5Bh/mGLBJo37IuoHe+owVLouzLYGfcWamSSVR9
+Q2o1S65boXX97SqhuGRw2Z5i5HtqkHH/MS9TdfSlgcwY91z1pEU7Px4h+2IgEc1a
+FN8F0qGqp7nerckU5wNcSDa1cinxv2+1YtHre1GBNbSd2suTm2W9cxKvPwKBgGQM
+SxVuse6TWP+vklWajx0nw10sfL51RX7CYByimlqXz2B9OHfmD7cZyEDXT7zLGZWC
+aZ/Mewm7rL3Z2Q1Qh9A8isJgl9dzPF/W9+lPUQYbRi86SZBo7sibWh7DBZGKyT5i
+Vvf81pDEiQ2bPUbctNHDH+K1NBWOp2JhSwZgBB+BAoGAXPodNrZqYWCfp1xhMA+I
++VTYhlt3lLfjPYGcdnPd+MkSsRxCpKNHHmsmfC6VqftTcEmAQT9In4EK5Xqg0lRm
+tA55sNkZLMdp7lldEXrm4Tv7cZMHDK57tteTubVVhcbtchwI/DcfjwXgWucI4Svp
+zHB/2Al20MWdrfqRVqO8Fyk=
+-----END PRIVATE KEY-----
+Bag Attributes
+    friendlyName: instance
+    localKeyID: 54 69 6D 65 20 31 37 33 39 32 35 35 31 33 33 32 34 32 
+subject=CN = instance
+
+issuer=CN = Elastic Certificate Tool Autogenerated CA
+
+-----BEGIN CERTIFICATE-----
+MIIDIzCCAgugAwIBAgIVAKfpZG7uS63o6OCA5AlLK5zp96y0MA0GCSqGSIb3DQEB
+CwUAMDQxMjAwBgNVBAMTKUVsYXN0aWMgQ2VydGlmaWNhdGUgVG9vbCBBdXRvZ2Vu
+ZXJhdGVkIENBMB4XDTI1MDIxMTA2MjUzM1oXDTI4MDIxMTA2MjUzM1owEzERMA8G
+A1UEAxMIaW5zdGFuY2UwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCh
+ZuF6jqZ5CfXNuJpttdpGWCJnm6YeKkYxsLfCGPIRnx0jfPx6HICe0hECVl+4ue3y
+TwwTbD+b5I/A9M98mmxjlxLKEZ0uXtann2He586jpg6E3lD7BG5jc989+zDrxDO6
+Bn57/NnKzemQldrEvJ5d+Q5snWvbo67g0iIwiPOu9y2qfMmkox29mhuABDDvInr8
+DMjz+0pNosWFvYeDNgwuK4lDr4uwo4lLny5jtUY0oj493G1oTV8swOCLc2de/UST
+jgFLR3ilLeA8Rk7XnomUTcsums+Q1MDEwlzKMsmjWLQKOH4OG07lC81cR3RXRK44
+BCNeYuMbFUEgU5XqJZNDAgMBAAGjTTBLMB0GA1UdDgQWBBT998EHDasy+OaTgG5l
+x9i5Amf64TAfBgNVHSMEGDAWgBSaCsYuY8ZAQ/9H4GytrFHZqNpeDzAJBgNVHRME
+AjAAMA0GCSqGSIb3DQEBCwUAA4IBAQAjZJ034Qk2O51DiUWtJuiCTreupNd6UFYK
+GV3lxxfVbEKtGtcshO5bQe92xp5OrGv07cSUn50Ne/0eSapaz1Olu32nF18TsRZT
+gen+9krZ/VI/4C7evpsZgNC97v906bwXrGZDR/qMA7Ev1G3I/OCrKv+hempSUvhr
+wIyGExjeZVVjD36JIj/VMNjTOPe7jFoDF2e8QRenby3233jJ3UkLh1gkcl5Xedl+
+BDBLP8BAjlEuxxPZovAwE/jv60mN4a1pNkMaRdJG3gie22Z2ythp0zaqJvKUxIGw
+gHfg2b5y/Frng3pk4f+noKhwtQygO02yIIBT4D6WfdKGuy66ZmHD
+-----END CERTIFICATE-----
+Bag Attributes
+    friendlyName: ca
+    2.16.840.1.113894.746875.1.1: <Unsupported tag 6>
+subject=CN = Elastic Certificate Tool Autogenerated CA
+
+issuer=CN = Elastic Certificate Tool Autogenerated CA
+
+-----BEGIN CERTIFICATE-----
+MIIDSTCCAjGgAwIBAgIUQ1Vz56YMzNEZGV4qc/poSLZWMlYwDQYJKoZIhvcNAQEL
+BQAwNDEyMDAGA1UEAxMpRWxhc3RpYyBDZXJ0aWZpY2F0ZSBUb29sIEF1dG9nZW5l
+cmF0ZWQgQ0EwHhcNMjUwMjEwMTQyMDI1WhcNMjgwMjEwMTQyMDI1WjA0MTIwMAYD
+VQQDEylFbGFzdGljIENlcnRpZmljYXRlIFRvb2wgQXV0b2dlbmVyYXRlZCBDQTCC
+ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALdp4JYMLhs7LejddWNx/56G
+0I9vxDjEWnE1p/ZK9yU0gusCveb2n7mLJtWy4EKU15DhNaG4Tg1DFW7Hx8ejs4MG
+tpa4Gbc7YYZDukbJTl7pXc2XXZUAudz0nm2AJxSJP4l521rP8NZwoxwlFT3Q9U88
+IqVfBmO5IIhAurIyKE/WlNVHDjxGs1qqeYlF3z3OKw4W0toythzEtlHtxru20PWi
+YEp1bMtHFBArePmu8xfC4EvgKzmnIxBE5GitR+XG8iV5uEZ/TLOEP3dzIYxL83rN
+4msn70x3jm2rsHRAlA4qxfkrWwqSmBo7Lz8R7TgAdjvZC4uqzGMxGiQuzwU/bdsC
+AwEAAaNTMFEwHQYDVR0OBBYEFJoKxi5jxkBD/0fgbK2sUdmo2l4PMB8GA1UdIwQY
+MBaAFJoKxi5jxkBD/0fgbK2sUdmo2l4PMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZI
+hvcNAQELBQADggEBAHG2YoZFmZ2S2ysxgQmpatXp6YMoAwsh/CPb2u91YvFSThRU
+DMmSurOW0ZeSbInqSL4BpdAUruI7PSrmTermsLUYuP+V/qLx92vhlvlZ4N6k2aOc
+XxWhi9i9U7HkoHfrCFXdu4dCZCrznLVQ2JIMAbIthpl1ftetTnA3Je5lzCmK9ZoG
+1QMoY9/VJujRgdnHH9M6Lfa1z2H7xudkiGf+rNcdxDD3+EUpnnTtsUw4Houx/fUk
+EG8cIr7k9pRQjhqZcwW+z1p6T6TbpLTU1Ot0SXfx4IO/HCRkYhAEEc746eXspObE
+v0d9AH5ww0JDwBE+IMxECfGH2g4TiUFSk+K8RI8=
+-----END CERTIFICATE-----
+```
+
+如上所示, openssl 验证内容为有效
+
+```
+是的，根据您提供的 openssl 输出结果，生成的节点证书文件 /root/elastic-certificates.p12 中确实包含了完整的证书链。以下是具体内容的分析：
+
+证书内容分析
+- 节点私钥：
+输出中包含了一段以 -----BEGIN PRIVATE KEY----- 开头的内容，这是节点的私钥。
+- 节点证书：
+输出中包含了一段以 -----BEGIN CERTIFICATE----- 开头的内容，这是节点的证书。
+证书的主题（subject）为 CN = instance，表明这是为节点实例生成的证书。
+- CA 证书：
+输出中还包含了一段以 -----BEGIN CERTIFICATE----- 开头的内容，这是 CA 的自签名证书。
+证书的主题（subject）为 CN = Elastic Certificate Tool Autogenerated CA，表明这是用于签发节点证书的 CA 证书。
+```
+
+反复折腾几遍删除所有(CA,私钥,节点证书)重建以后, 突然意识到会不会是空密码的缘故
+
+于是进行尝试, 果然报错有了变化, 新的报错给与以下经验总结
+
+1) ```keystore.password``` 和 ```keystore.secure_password``` 是访问节点的 ```keystore``` 文件的两种方式. ```password``` 是明文存储,
+```keystore.secure_password``` 是存储在 ```keystore```
+2) 而这个 ```keystore``` 是指的 ```elasticsearch-certutil cert``` 模式下生成的, 为集群内所有节点共有使用的, 
+3) 使用 ```keystore.password``` 或 ```keystore.secure_password``` 是一个互斥的选项, 只能二选一, 否则 ```elasticsearch``` 启动时有明确的报错
+查看方式是```/elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore list```
+4) 使用 elastic 官方的软件包, 默认就是 ```keystore.secure_password``` 内置的 keystore 相关的几条语句需要移除
+5) 在我总结本文档这次的部署中, 为的是验证免交互模式的全流程, 并且选择了明文而不是```keystore```来存储密码.这更多的只适用于非正式环境
+6) 使用 keystore 存储密码, 而非明文的免交互方式, 待后续补充
+
+
+针对 ```3) 使用 keystore.password 或 keystore.secure_password 是一个互斥的选项``` 的补充:
+
+```
+[2025-02-11T17:43:52,455][ERROR][o.e.b.Elasticsearch      ] [elasticsearch1] fatal exception while booting Elasticsearchorg.elasticsearch.ElasticsearchSecurityException: failed to load SSL configuration [xpack.security.transport.ssl] - cannot specify both [keystore.secure_password] and [keystore.password]
+	at org.elasticsearch.xcore@8.15.5/org.elasticsearch.xpack.core.ssl.SSLService.lambda$getSSLConfigurations$4(SSLService.java:553)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at java.base/java.util.Collections$UnmodifiableMap.forEach(Collections.java:1708)
+	at org.elasticsearch.xcore@8.15.5/org.elasticsearch.xpack.core.ssl.SSLService.getSSLConfigurations(SSLService.java:545)
+	at org.elasticsearch.xcore@8.15.5/org.elasticsearch.xpack.core.ssl.SSLService.getSSLConfigurations(SSLService.java:539)
+
+See logs for more details.
+
+ERROR: Elasticsearch did not exit normally - check the logs at /elastic/elasticsearch-8.15.5/logs/cluster-exam.log
+
+ERROR: Elasticsearch died while starting up, with exit code 1
+```
+
+
+针对 ```4) 使用 elastic 官方的软件包, 内置的 keystore 相关的几条语句需要移除``` 的补充:
+
+```
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore list
+keystore.seed
+xpack.security.http.ssl.keystore.secure_password
+xpack.security.transport.ssl.keystore.secure_password
+xpack.security.transport.ssl.truststore.secure_password
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore remove xpack.security.transport.ssl.keystore.secure_password
+
+ERROR: will not overwrite keystore at [/elastic/elasticsearch-8.15.5/config/elasticsearch.keystore], because this incurs changing the file owner, with exit code 78
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore remove xpack.security.transport.ssl.truststore.secure_password^C
+[root@elk-exam ~]# su - elastic 
+[elastic@elk-exam ~]$ /elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore remove xpack.security.transport.ssl.keystore.secure_password
+[elastic@elk-exam ~]$ /elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore remove xpack.security.transport.ssl.truststore.secure_password
+
+
+
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore list
+keystore.seed
+xpack.security.http.ssl.keystore.secure_password
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore remove xpack.security.http.ssl.keystore.secure_password
+
+ERROR: will not overwrite keystore at [/elastic/elasticsearch-8.15.5/config/elasticsearch.keystore], because this incurs changing the file owner, with exit code 78
+[root@elk-exam ~]# su - elastic -c "/elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore remove xpack.security.http.ssl.keystore.secure_password"
+```
+
+如上所示, elastic 还额外做了个限制, 防止 keystore 文件的属主属性发生变化
+
+
+
+最终的运行成功的配置文件的关联性语句如下:
+
+```
+[root@elk-exam ~]# tail -n 30 /elastic/elastics_exam_conf/elasticsearch1/elasticsearch.yml 
+# Enable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: /elastic/elastics_exam_conf/elasticsearch1/elasticsearch1.p12
+  keystore.password: "63834516"
+
+# Enable encryption and mutual authentication between cluster nodes
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  client_authentication: required
+  keystore.path: /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12
+  keystore.password: "63834516"
+  truststore.path: /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12
+  truststore.password: "63834516"
+# Create a new cluster with the current node only
+# Additional nodes can still join the cluster later
+cluster.initial_master_nodes: ["elk-exam"]
+
+# Allow HTTP API connections from anywhere
+# Connections are encrypted and require user authentication
+http.host: 0.0.0.0
+
+# Allow other nodes to join the cluster from anywhere
+# Connections are encrypted and mutually authenticated
+#transport.host: 0.0.0.0
+
+#----------------------- END SECURITY AUTO CONFIGURATION -------------------------
+node.roles: [ master ]
+cluster.name: cluster-exam
+```
+
+生成CA与集群keystore, 即```elastic-certificates.p12``` 的过程  
+这部分文字并不重要, 作个参考, 主要是表示都用到了口令"63834516"而非空密码  
+如下:
+
+```
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-certutil ca \
+> --out /root/elastic-stack-ca.p12 \
+> --pass "63834516"
+This tool assists you in the generation of X.509 certificates and certificate
+signing requests for use with SSL/TLS in the Elastic stack.
+
+The 'ca' mode generates a new 'certificate authority'
+This will create a new X.509 certificate and private key that can be used
+to sign certificate when running in 'cert' mode.
+
+Use the 'ca-dn' option if you wish to configure the 'distinguished name'
+of the certificate authority
+
+By default the 'ca' mode produces a single PKCS#12 output file which holds:
+    * The CA certificate
+    * The CA's private key
+
+If you elect to generate PEM format certificates (the -pem option), then the output will
+be a zip file containing individual files for the CA certificate and private key
+
+[root@elk-exam ~]# 
+[root@elk-exam ~]# rm -f /root/elastic-certificates.p12
+[root@elk-exam ~]# /elastic/elasticsearch-8.15.5/bin/elasticsearch-certutil cert \
+> --ca /root/elastic-stack-ca.p12 \
+> --ca-pass "63834516" \
+> --out /root/elastic-certificates.p12 \
+> --pass "63834516"
+This tool assists you in the generation of X.509 certificates and certificate
+signing requests for use with SSL/TLS in the Elastic stack.
+
+The 'cert' mode generates X.509 certificate and private keys.
+    * By default, this generates a single certificate and key for use
+       on a single instance.
+    * The '-multiple' option will prompt you to enter details for multiple
+       instances and will generate a certificate and key for each one
+    * The '-in' option allows for the certificate generation to be automated by describing
+       the details of each instance in a YAML file
+
+    * An instance is any piece of the Elastic Stack that requires an SSL certificate.
+      Depending on your configuration, Elasticsearch, Logstash, Kibana, and Beats
+      may all require a certificate and private key.
+    * The minimum required value for each instance is a name. This can simply be the
+      hostname, which will be used as the Common Name of the certificate. A full
+      distinguished name may also be used.
+    * A filename value may be required for each instance. This is necessary when the
+      name would result in an invalid file or directory name. The name provided here
+      is used as the directory name (within the zip) and the prefix for the key and
+      certificate files. The filename is required if you are prompted and the name
+      is not displayed in the prompt.
+    * IP addresses and DNS names are optional. Multiple values can be specified as a
+      comma separated string. If no IP addresses or DNS names are provided, you may
+      disable hostname verification in your SSL configuration.
+
+
+    * All certificates generated by this tool will be signed by a certificate authority (CA)
+      unless the --self-signed command line option is specified.
+      The tool can automatically generate a new CA for you, or you can provide your own with
+      the --ca or --ca-cert command line options.
+
+
+By default the 'cert' mode produces a single PKCS#12 output file which holds:
+    * The instance certificate
+    * The private key for the instance certificate
+    * The CA certificate
+
+If you specify any of the following options:
+    * -pem (PEM formatted output)
+    * -multiple (generate multiple certificates)
+    * -in (generate certificates from an input file)
+then the output will be be a zip file containing individual certificate/key files
+
+
+Certificates written to /root/elastic-certificates.p12
+
+This file should be properly secured as it contains the private key for 
+your instance.
+This file is a self contained file and can be copied and used 'as is'
+For each Elastic product that you wish to configure, you should copy
+this '.p12' file to the relevant configuration directory
+and then follow the SSL configuration instructions in the product guide.
+
+For client applications, you may only need to copy the CA certificate and
+configure the client to trust this certificate.
+[root@elk-exam ~]# 
+[root@elk-exam ~]#  keytool -list -v -keystore /root/elastic-certificates.p12 -storetype PKCS12
+Enter keystore password:  
+Keystore type: PKCS12
+Keystore provider: SunJSSE
+
+Your keystore contains 2 entries
+
+Alias name: ca
+Creation date: Feb 11, 2025
+Entry type: trustedCertEntry
+
+Owner: CN=Elastic Certificate Tool Autogenerated CA
+Issuer: CN=Elastic Certificate Tool Autogenerated CA
+Serial number: 34554ad835512cfdd75fe90fe22f9c148b7e8640
+Valid from: Tue Feb 11 15:59:00 CST 2025 until: Fri Feb 11 15:59:00 CST 2028
+Certificate fingerprints:
+	 SHA1: D0:78:4C:31:91:B2:E6:FA:26:01:02:87:8E:78:71:28:FF:65:68:6D
+	 SHA256: 8D:FB:EA:A2:BB:6C:8B:34:F3:66:29:F4:D4:53:DA:79:90:AA:E8:06:8D:15:F3:51:13:65:96:18:22:20:F5:16
+Signature algorithm name: SHA256withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 92 3C 28 BB 3E DB 15 7D   30 CF 83 52 CA 7D 17 2F  .<(.>...0..R.../
+0010: 13 90 E2 B9                                        ....
+]
+]
+
+#2: ObjectId: 2.5.29.19 Criticality=true
+BasicConstraints:[
+  CA:true
+  PathLen:2147483647
+]
+
+#3: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 92 3C 28 BB 3E DB 15 7D   30 CF 83 52 CA 7D 17 2F  .<(.>...0..R.../
+0010: 13 90 E2 B9                                        ....
+]
+]
+
+
+
+*******************************************
+*******************************************
+
+
+Alias name: instance
+Creation date: Feb 11, 2025
+Entry type: PrivateKeyEntry
+Certificate chain length: 2
+Certificate[1]:
+Owner: CN=instance
+Issuer: CN=Elastic Certificate Tool Autogenerated CA
+Serial number: 308e3cf7624ee3c2c11316308d2a5009c4746f29
+Valid from: Tue Feb 11 16:05:26 CST 2025 until: Fri Feb 11 16:05:26 CST 2028
+Certificate fingerprints:
+	 SHA1: A2:F8:CE:20:A2:CB:AD:7A:5F:66:95:2D:60:3C:22:FE:90:A2:D5:3B
+	 SHA256: F1:D3:50:C3:66:31:61:FC:DD:16:34:D5:07:D2:43:81:6D:8A:7A:9E:67:23:A9:B9:6C:C9:37:A7:70:39:DE:FE
+Signature algorithm name: SHA256withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 92 3C 28 BB 3E DB 15 7D   30 CF 83 52 CA 7D 17 2F  .<(.>...0..R.../
+0010: 13 90 E2 B9                                        ....
+]
+]
+
+#2: ObjectId: 2.5.29.19 Criticality=false
+BasicConstraints:[
+  CA:false
+  PathLen: undefined
+]
+
+#3: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 33 38 58 61 D9 B7 2C 01   4D F4 30 6A 27 02 1F A8  38Xa..,.M.0j'...
+0010: F3 E6 14 C9                                        ....
+]
+]
+
+Certificate[2]:
+Owner: CN=Elastic Certificate Tool Autogenerated CA
+Issuer: CN=Elastic Certificate Tool Autogenerated CA
+Serial number: 34554ad835512cfdd75fe90fe22f9c148b7e8640
+Valid from: Tue Feb 11 15:59:00 CST 2025 until: Fri Feb 11 15:59:00 CST 2028
+Certificate fingerprints:
+	 SHA1: D0:78:4C:31:91:B2:E6:FA:26:01:02:87:8E:78:71:28:FF:65:68:6D
+	 SHA256: 8D:FB:EA:A2:BB:6C:8B:34:F3:66:29:F4:D4:53:DA:79:90:AA:E8:06:8D:15:F3:51:13:65:96:18:22:20:F5:16
+Signature algorithm name: SHA256withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 92 3C 28 BB 3E DB 15 7D   30 CF 83 52 CA 7D 17 2F  .<(.>...0..R.../
+0010: 13 90 E2 B9                                        ....
+]
+]
+
+#2: ObjectId: 2.5.29.19 Criticality=true
+BasicConstraints:[
+  CA:true
+  PathLen:2147483647
+]
+
+#3: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 92 3C 28 BB 3E DB 15 7D   30 CF 83 52 CA 7D 17 2F  .<(.>...0..R.../
+0010: 13 90 E2 B9                                        ....
+]
+]
+
+
+
+*******************************************
+*******************************************
+
+
+
+```
