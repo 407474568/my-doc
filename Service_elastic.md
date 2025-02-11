@@ -991,12 +991,12 @@ v0d9AH5ww0JDwBE+IMxECfGH2g4TiUFSk+K8RI8=
 于是进行尝试, 果然报错有了变化, 新的报错给与以下经验总结
 
 1) ```keystore.password``` 和 ```keystore.secure_password``` 是访问节点的 ```keystore``` 文件的两种方式. ```password``` 是明文存储,
-```keystore.secure_password``` 是存储在 ```keystore```
-2) 而这个 ```keystore``` 是指的 ```elasticsearch-certutil cert``` 模式下生成的, 为集群内所有节点共有使用的, 
+```keystore.secure_password``` 是存储在 ```keystore```  
+2) 而这个 ```keystore``` 是指的 ```elasticsearch-certutil cert``` 模式下生成的, 为集群内所有节点共有使用的,   
 3) 使用 ```keystore.password``` 或 ```keystore.secure_password``` 是一个互斥的选项, 只能二选一, 否则 ```elasticsearch``` 启动时有明确的报错
-查看方式是```/elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore list```
-4) 使用 elastic 官方的软件包, 默认就是 ```keystore.secure_password``` 内置的 keystore 相关的几条语句需要移除
-5) 在我总结本文档这次的部署中, 为的是验证免交互模式的全流程, 并且选择了明文而不是```keystore```来存储密码.这更多的只适用于非正式环境
+查看方式是```/elastic/elasticsearch-8.15.5/bin/elasticsearch-keystore list```  
+4) 使用 elastic 官方的软件包, 默认就是 ```keystore.secure_password``` 内置的 keystore 相关的几条语句需要移除  
+5) 在我总结本文档这次的部署中, 为的是验证免交互模式的全流程, 并且选择了明文而不是```keystore```来存储密码.这更多的只适用于非正式环境  
 6) 使用 keystore 存储密码, 而非明文的免交互方式, 待后续补充
 
 
