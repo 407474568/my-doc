@@ -12,7 +12,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
   * [cat API 的使用](#2)
   * [配置 elastic 和 kibana 的通信加密](#3)
   * [生成配置SSL通信加密所需的证书--自动应答方式](#4)
-
+  * [集群构建中容易出错的点](#5)
 
 
 <h3 id="1">集群初始化</h3>
@@ -1309,4 +1309,55 @@ KeyIdentifier [
 
 
 
+```
+
+
+<h3 id="5">集群构建中容易出错的点</h3>
+
+只配置了 ```discovery.seed_hosts```, 没有申明 ```network.publish_host```
+
+```
+[2025-02-12T11:51:17,212][WARN ][o.e.c.c.ClusterFormationFailureHelper] [elasticsearch3] master 
+not discovered yet, this node has not previously joined a bootstrapped cluster, and this node 
+must discover master-eligible nodes [elasticsearch1] to bootstrap a cluster: have discovered 
+[{elasticsearch3}{k2WB06JTSYCvPws5b0kt9Q}{cz8Xr6QWQJ-qCIEg18k8YQ}{elasticsearch3}{127.0.0.1}
+{127.0.0.1:9303}{dm}{8.15.5}{7000099-8512000}]; discovery will continue using 
+[192.168.1.231:9301, 192.168.1.231:9302, 192.168.1.231:9303] from hosts providers and 
+[{elasticsearch3}{k2WB06JTSYCvPws5b0kt9Q}{cz8Xr6QWQJ-qCIEg18k8YQ}{elasticsearch3}{127.0.0.1}
+{127.0.0.1:9303}{dm}{8.15.5}{7000099-8512000}] from last-known cluster state; node term 0, 
+last-accepted version 0 in term 0; for troubleshooting guidance, see 
+https://www.elastic.co/guide/en/elasticsearch/reference/8.15/discovery-troubleshooting.html
+```
+
+配置文件如下:
+
+```
+[root@elk-exam ~]# grep -v -E -e "^$" -e "^#" /elastic/elastics_exam_conf/elasticsearch1/elasticsearch.yml 
+node.name: elasticsearch1
+path.data: /elastic/elastics_exam_data/elasticsearch1
+path.logs: /elastic/elastics_exam_logs/elasticsearch1
+http.port: 9201
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: true
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: /elastic/elastics_exam_conf/elasticsearch1/elasticsearch1.p12
+  keystore.password: "63834516"
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  client_authentication: required
+  keystore.path: /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12
+  keystore.password: "63834516"
+  truststore.path: /elastic/elastics_exam_conf/elasticsearch1/elastic-certificates.p12
+  truststore.password: "63834516"
+cluster.initial_master_nodes: ["elasticsearch1"]
+http.host: 0.0.0.0
+node.roles: [ master,data ]
+cluster.name: cluster-exam
+transport.port: 9301
+discovery.seed_hosts:
+    - 192.168.1.231:9301
+    - 192.168.1.231:9302
+    - 192.168.1.231:9303
 ```
