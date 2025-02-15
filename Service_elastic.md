@@ -1443,6 +1443,6 @@ https://lxblog.com/qianwen/share?shareId=b6ea9863-672c-40e6-aaab-ac6951826370
 
 https://lxblog.com/qianwen/share?shareId=6ee1710b-f6e8-49f6-88b4-d18187d9dcb8
 
-这暴露出的问题是:
-1) ```elasticsearch-reset-password``` 成功执行后, 究竟修改的记录是位于何处, 并不清楚, 即以```elastic```的术语称之为```keystore```是文件形式还是其他
+这暴露出的问题是:  
+1) ```elasticsearch-reset-password``` 成功执行后, 究竟修改的记录是位于何处, 并不清楚, 即以```elastic```的术语称之为```keystore```是文件形式还是其他  
 2) 上述我所使用的另一种配置模式下, 要想实现的真正的解决办法, 有待更新
