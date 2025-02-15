@@ -13,6 +13,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
   * [配置 elastic 和 kibana 的通信加密](#3)
   * [生成配置SSL通信加密所需的证书--自动应答方式](#4)
   * [集群构建中容易出错的点](#5)
+  * [elasticsearch-reset-password等相关工具的一个补充](#6)
 
 
 <h3 id="1">集群初始化</h3>
@@ -1314,7 +1315,7 @@ KeyIdentifier [
 
 <h3 id="5">集群构建中容易出错的点</h3>
 
-只配置了 ```discovery.seed_hosts```, 没有申明 ```network.publish_host```
+只配置了 ```discovery.seed_hosts```, 没有声明 ```network.publish_host```
 
 ```
 [2025-02-12T11:51:17,212][WARN ][o.e.c.c.ClusterFormationFailureHelper] [elasticsearch3] master 
@@ -1361,3 +1362,87 @@ discovery.seed_hosts:
     - 192.168.1.231:9302
     - 192.168.1.231:9303
 ```
+
+不单是 ```network.publish_host```  
+如上示例中, 还有以下参数也没有声明  
+
+```
+network.host: 0.0.0.0
+network.publish_host: 0.0.0.0
+```
+
+以上两个参数在没有声明的情况下去启动 elasticsearch  
+得到的结果会发现 ```transport.port``` 监听的地址 ```127.0.0.1```  
+由于是集群间节点之间通信所用的端口, 那么必然也会构建不成功  
+日志中也会有明确的 ```connection refused``` 的记录  
+没有保留到相关文字记录, 完整能运行的正确的配置如下
+
+```
+[root@elk-exam ~]# grep -v -E -e "^$" -e "^#" /elastic/elasticsearch1/config/elasticsearch.yml 
+node.name: elasticsearch1
+path.data: /elastic/elasticsearch1/data
+http.port: 9201
+network.host: 0.0.0.0
+network.publish_host: 0.0.0.0
+node.roles: [ master,data ]
+cluster.name: cluster-exam
+transport.port: 9301
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: true
+xpack.security.http.ssl:
+  enabled: true
+  keystore.path: /elastic/elasticsearch1/config/certs/elasticsearch1.p12
+  keystore.password: "63834516"
+xpack.security.transport.ssl:
+  enabled: true
+  verification_mode: certificate
+  client_authentication: required
+  keystore.path: /elastic/elasticsearch1/config/certs/elastic-certificates.p12
+  keystore.password: "63834516"
+  truststore.path: /elastic/elasticsearch1/config/certs/elastic-certificates.p12
+  truststore.password: "63834516"
+cluster.initial_master_nodes: ["elasticsearch1"]
+discovery.seed_hosts:
+    - 192.168.1.231:9301
+    - 192.168.1.231:9302
+    - 192.168.1.231:9303
+bootstrap.memory_lock: true
+```
+
+内存不足的相关报错  
+其实就是 ```jvm.options``` 未设置
+
+https://lxblog.com/qianwen/share?shareId=dfa9df5f-1ea1-4c9b-98ff-f67d1d2399b8
+
+<h3 id="6">elasticsearch-reset-password等相关工具的一个补充</h3>
+
+```elasticsearch-reset-password``` 以及其他管理 ```elastic```内置用户相关的工具   
+如还有 ```elasticsearch-setup-passwords``` (一个已淘汰的工具, 使用会有警告提示)  
+通过查看```elasticsearch-reset-password```该命令的帮助  
+有参数选项 ```--url``` 作为指定你 elastic 节点的URL位置  
+这个参数的应用场景是, 如果你的 elastic 软件环境运行在并非是同一个根目录下  
+举例来说, 从官网下载```elasticsearch-8.15.5-linux-x86_64.tar.gz```  
+那么解压将得到```elasticsearch-8.15.5```目录  
+其中包括```bin```和```config```的子目录  
+如果 ```elastic``` 就在此环境下启动, 配置文件也是修改的```config```子目录下的对应文件  
+则 ```elasticsearch-reset-password``` 无需给额外参数已经可以修改到 ```elastic``` 的用户密码  
+
+
+但我尝试了另一种配置方式, ```elastic``` 软件可执行程序是同一份  
+不同的是```config```通过不同的位置以作区分和运行  
+然而就遇到的问题是, 虽然日志已显示 ```elastic```集群已启动且构建成功  
+并且```http.port```定义的端口也可以登录状态  
+但由于你并不知晓内置用户```elastic```的密码, 需要重置一次  
+而在这种配置方式下, ```elasticsearch-reset-password```则是需要通过 ```--URL``` 指定你的节点运行的所谓```endpoint```  
+然而加上 ```--URL``` 也遇到了问题, 并未能成功重置到密码  
+由于官网文档未找到这部分问题的对应解决办法, 即便是在与AI大模型的多轮对话也未能找到答案
+
+https://lxblog.com/qianwen/share?shareId=92cdb579-8d69-4a52-a8d3-437c40653c1f
+
+https://lxblog.com/qianwen/share?shareId=b6ea9863-672c-40e6-aaab-ac6951826370
+
+https://lxblog.com/qianwen/share?shareId=6ee1710b-f6e8-49f6-88b4-d18187d9dcb8
+
+这暴露出的问题是:
+1) ```elasticsearch-reset-password``` 成功执行后, 究竟修改的记录是位于何处, 并不清楚, 即以```elastic```的术语称之为```keystore```是文件形式还是其他
+2) 上述我所使用的另一种配置模式下, 要想实现的真正的解决办法, 有待更新
