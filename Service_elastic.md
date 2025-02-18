@@ -473,6 +473,13 @@ Q:
 A:  
 当你使用 `elasticsearch-certutil` 创建了一个 CA，并且为 Kibana 生成了 CSR（Certificate Signing Request），即 `kibana-server.csr` 文件后，下一步是让内部 CA 或受信任的外部 CA 对该 CSR 进行签名，从而获得一个有效的证书。既然你已经使用 `elasticsearch-certutil` 创建了自己的 CA，那么你可以直接使用这个 CA 来签署 CSR。以下是大致步骤：
 
+补充:  
+隐含一个前置步骤, 在回答中没有体现
+
+> ./bin/elasticsearch-certutil csr -name kibana-server -dns example.com,www.example.com
+
+其中, ```--dns``` 参数非必须
+
 1. **准备CA密钥对**：
    如果你还没有 CA 的私钥和证书（假设你已经通过 `elasticsearch-certutil ca` 命令创建了），确保你有这些文件，通常是一个 `.p12` 文件（如 `elastic-stack-ca.p12`）和相应的密码。
 
