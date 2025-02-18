@@ -480,6 +480,11 @@ A:
 
 其中, ```--dns``` 参数非必须
 
+另外, kibana的配置文件里还应启用, 才是启用```https```而拒绝响应```http```  
+```
+server.ssl.enabled: true
+```
+
 1. **准备CA密钥对**：
    如果你还没有 CA 的私钥和证书（假设你已经通过 `elasticsearch-certutil ca` 命令创建了），确保你有这些文件，通常是一个 `.p12` 文件（如 `elastic-stack-ca.p12`）和相应的密码。
 
