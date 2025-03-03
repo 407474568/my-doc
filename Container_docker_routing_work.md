@@ -182,6 +182,24 @@ $ sudo systemctl show --property=Environment docker
  HTTPS Proxy: http://192.168.1.40:9998
 ```
 
+补充, 我自己也犯的一个错误:
+
+如果代理的服务链接并非```https```, 如上述中的 ```http://192.168.1.40:9998```  
+假设你画蛇添足填成了 ```Environment="HTTPS_PROXY=https://192.168.1.40:9998"```  
+那么你将得到的结果就是  
+```
+[root@docker-node1 ~]# docker pull nextcloud:31.0
+Error response from daemon: Get "https://registry-1.docker.io/v2/": proxyconnect tcp: net/http: TLS handshake timeout
+```
+实际上你需要做的仅仅就是, ```https_proxy``` 也照实填写即可
+```
+[root@docker-node1 ~]# cat  /etc/systemd/system/docker.service.d/http-proxy.conf
+[Service]
+Environment="HTTP_PROXY=http://192.168.1.50:10000"
+Environment="HTTPS_PROXY=http://192.168.1.50:10000"
+Environment="NO_PROXY=localhost,127.0.0.1,.example.com"
+```
+
 <h3 id="3">docker ps 命令</h3>
 
 ##### --format 用法
