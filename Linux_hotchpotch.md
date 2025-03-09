@@ -16,9 +16,8 @@
   * [xfsdump 与 xfsrestore](#16)
   * [SuSE 杂录](#17)
   * [grub2-mkconfig 的生成失败](#18)
-  * [OOM 合集](#19)
-  * [查看ssl证书信息](#20)
-  * [关于nc与nmap的比较说明, 及nmap常用选项](#21)
+  * [查看ssl证书信息](#19)
+  * [关于nc与nmap的比较说明, 及nmap常用选项](#20)
 
 
 <h3 id="1">ASCII对照表</h3>  
@@ -76,7 +75,7 @@
 | LF 换行 | NAK 否定 | DEL 删除 |
 
 
-<h3 id="21">关于nc与nmap的比较说明, 及nmap常用选项</h3>  
+<h3 id="20">关于nc与nmap的比较说明, 及nmap常用选项</h3>  
 
 > Q: 我以前有一个经验积累, nc命令在测试端口连通性上, 准确性上并不如nmap高, 比如防火墙filter了的状态, nc似乎分辨不了, 而nmap能给出更准确的判断, 这一点是否正确
 
@@ -134,7 +133,7 @@ nmap -sS -sU -Pn -p 1-65535 -v target_ip
 
 这个命令会对目标IP的所有端口（从1到65535）进行TCP SYN扫描和UDP扫描，并提供详细的输出。请注意，UDP扫描通常比TCP扫描慢得多，因为Nmap必须等待超时以确定端口是否开放，特别是在遇到过滤端口时。此外，UDP扫描也可能产生较多的误报（即显示为open|filtered状态），因为缺乏响应并不一定意味着端口是开放的，也可能是被过滤了。
 
-<h3 id="20">查看ssl证书信息</h3>  
+<h3 id="19">查看ssl证书信息</h3>  
 
 在Linux操作系统上查看SSL证书的信息，通常最直接的方式是使用openssl命令行工具。如果您有一个PEM格式的证书文件（比如名为cert.pem），您可以使用以下命令来查看该证书的详细信息：
 
@@ -147,27 +146,6 @@ openssl x509 -in <证书文件路径> -noout -text
 - -noout: 表示不输出默认的证书摘要，只输出文本信息。
 - -text: 将证书的详细信息以文本形式打印出来。
 
-<h3 id="19">OOM 合集</h3>  
-
-#### OOM 的计算公式
-
-https://serverfault.com/questions/571319/how-is-kernel-oom-score-calculated  
-https://www.baeldung.com/linux/memory-overcommitment-oom-killer  
-https://lwn.net/Articles/317814/  
-https://blog.csdn.net/u010278923/article/details/105688107  
-https://medium.com/@adilrk/linux-oom-out-of-memory-killer-74fbae6dc1b0
-
-```
-进程的内存使用量 = RSS + swap-size
-系统的可用内存 = RAM + SWAP-total
-oom_score = 进程的内存使用量 / 系统的可用内存
-```
-
-这是以上各种文档, 大致一致的结论, 但与我实际验证的不符  
-至少在 4.18.x 和 6.1.x 两个内核版本上是如此  
-内核源码关于这一部分的代码也有, 不难找到, 也可以看出因子并不仅限于上述几个  
-不过, 调整 ```oom_score_adj``` 的确是有效手段  
-当 ```oom_score_adj``` 为 ```-1000``` 时,则将免疫 OOM KILL--永远不会选中
 
 #### 在 systemctl服务项调整 oom_score_adj
 

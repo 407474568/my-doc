@@ -5,6 +5,7 @@
   * [定位 iowait 的进程](#4)
   * [iotop 提示"CONFIG_TASK_DELAY_ACCT and ...](#5)
   * [包含系统在内的磁盘数据迁移](#6)
+  * [OOM 合集](#7)
 
 
 <h3 id="1">控制台上出现错误消息：NMI watchdog BUG soft lockup - CPU stuck for XXs</h3>
@@ -155,8 +156,8 @@ sysctl kernel.task_delayacct=0
 - 源端磁盘上的实际数据远小于磁盘容量大小, 而```dd```命令无法区分, 是按磁盘容量进行拷贝而非实际数据量
 
 另一种做法就是:
-1) 恢复系统分区表
-2) 恢复boot分区等启动相关信息
+1) 恢复系统分区表  
+2) 恢复boot分区等启动相关信息  
 3) 恢复磁盘上的实际数据内容
 
 优势: 只拷贝实际数据内容, 在数据量上可节省  
@@ -342,3 +343,49 @@ sudo umount /mnt/target/sys
 sudo umount /mnt/target/root
 sudo umount /mnt/target
 ```
+
+<h3 id="7">OOM 合集</h3>  
+
+#### OOM 的计算公式
+
+https://serverfault.com/questions/571319/how-is-kernel-oom-score-calculated  
+https://www.baeldung.com/linux/memory-overcommitment-oom-killer  
+https://lwn.net/Articles/317814/  
+https://blog.csdn.net/u010278923/article/details/105688107  
+https://medium.com/@adilrk/linux-oom-out-of-memory-killer-74fbae6dc1b0
+
+```
+进程的内存使用量 = RSS + swap-size
+系统的可用内存 = RAM + SWAP-total
+oom_score = 进程的内存使用量 / 系统的可用内存
+```
+
+这是以上各种文档, 大致一致的结论, 但与我实际验证的不符  
+至少在 4.18.x 和 6.1.x 两个内核版本上是如此  
+内核源码关于这一部分的代码也有, 不难找到, 也可以看出因子并不仅限于上述几个  
+不过, 调整 ```oom_score_adj``` 的确是有效手段  
+当 ```oom_score_adj``` 为 ```-1000``` 时,则将免疫 OOM KILL--永远不会选中
+
+有关内核源码关于 oom killer 的补充
+
+
+> 在 Linux 内核中，OOM Killer 相关的逻辑主要位于 `mm/oom_kill.c` 文件中。你可以访问 Linux 内核的在线浏览工具来查看该文件的具体实现。例如，Elixir Cross Referencer 
+> 是一个常用的工具，它允许用户浏览不同版本的 Linux 内核源代码。
+> 
+> 以下是一些可以帮助你找到相关代码和讨论的资源：
+> 
+> 1. **Linux 内核源代码仓库**:
+>    - 你可以直接访问 [kernel.org](https://www.kernel.org/) 来获取最新的内核源代码。
+>    - 使用 Elixir Cross Referencer 浏览特定版本的内核代码：[Elixir Cross Referencer](https://elixir.bootlin.
+      > com/linux/latest/source/mm/oom_kill.c)
+> 
+> 2. **具体代码行**:
+>    - 在 `mm/oom_kill.c` 文件中，函数 `oom_badness` 负责计算每个进程的 `oom_score`。这个分数是基于多个因素计算出来的，包括但不限于进程的 RSS（Resident Set 
+      > Size）、交换空间使用量、进程的优先级等 。
+> 
+> 3. **讨论与分析**:
+>    - 对于更深入的理解，可以参考一些技术博客或论坛上的讨论。例如，在 [知乎专栏](https://zhuanlan.zhihu.com/p/40956878) 上有关于 OOM Killer 的详细分析文章 。
+>    - 另外，[阿里云开发者社区](https://developer.aliyun.com/article/701513) 提供了关于 OOM Killer 的详细解析，其中包含了如何通过调整 `oom_score_adj` 
+      > 来控制进程被选中的概率 。
+> 
+> 通过引用这些资源，你的论点将更加有据可依，同时也提供了读者进一步探索的路径。
