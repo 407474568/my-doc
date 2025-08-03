@@ -15,8 +15,7 @@ https://openzfs.org/wiki/Main_Page
   * [池特性升级](#3)
   * [如果开机没有自动导入池](#4)
   * [限制ARC对内存的消耗大小](#5)
-  * [从池中移除cache或log设备](#8)
-
+  * [参数调优/修改](#6)
 
 <h3 id="7">dataset数据集的recordsize大小</h3>
 
@@ -542,85 +541,6 @@ options zfs zfs_arc_max=274877906944
 分别对应上限和下限
 
 
-<h3 id="8">从池中移除cache或log设备</h3>
-
-本来只是件小事, 但没想到被AI大模型带着兜圈子了
-
-```
-[root@X9DR3-F ~]# zpool status
-  pool: SATA-16T
- state: ONLINE
-config:
-
-	NAME            STATE     READ WRITE CKSUM
-	SATA-16T        ONLINE       0     0     0
-	  raidz3-0      ONLINE       0     0     0
-	    bcache0     ONLINE       0     0     0
-	    bcache1     ONLINE       0     0     0
-	    bcache2     ONLINE       0     0     0
-	    bcache3     ONLINE       0     0     0
-	    bcache4     ONLINE       0     0     0
-	    bcache5     ONLINE       0     0     0
-	    bcache6     ONLINE       0     0     0
-	    bcache7     ONLINE       0     0     0
-	    bcache8     ONLINE       0     0     0
-	    bcache9     ONLINE       0     0     0
-	    bcache10    ONLINE       0     0     0
-	cache
-	  SATA-SSD-1T1  ONLINE       0     0     0
-
-errors: No known data errors
-[root@X9DR3-F ~]# zpool remove SATA-16T SATA-SSD-1T1
-cannot remove SATA-SSD-1T1: no such device in pool
-[root@X9DR3-F ~]# zpool remove SATA-16T "SATA-SSD-1T1"
-cannot remove SATA-SSD-1T1: no such device in pool
-[root@X9DR3-F ~]# zpool status -v
-  pool: SATA-16T
- state: ONLINE
-config:
-
-	NAME            STATE     READ WRITE CKSUM
-	SATA-16T        ONLINE       0     0     0
-	  raidz3-0      ONLINE       0     0     0
-	    bcache0     ONLINE       0     0     0
-	    bcache1     ONLINE       0     0     0
-	    bcache2     ONLINE       0     0     0
-	    bcache3     ONLINE       0     0     0
-	    bcache4     ONLINE       0     0     0
-	    bcache5     ONLINE       0     0     0
-	    bcache6     ONLINE       0     0     0
-	    bcache7     ONLINE       0     0     0
-	    bcache8     ONLINE       0     0     0
-	    bcache9     ONLINE       0     0     0
-	    bcache10    ONLINE       0     0     0
-	cache
-	  SATA-SSD-1T1  ONLINE       0     0     0
-
-errors: No known data errors
-```
-
-想移除 ```cache``` 报了错
-
-AI大模型给的思路全不是关键的正确方向, 如下
-
-```
-[root@X9DR3-F ~]# ll /dev/md/SATA-SSD-1T
-lrwxrwxrwx 1 root root 8 Jul 17 14:33 /dev/md/SATA-SSD-1T -> ../md125
-[root@X9DR3-F ~]# zpool remove SATA-16T /dev/md125
-cannot remove /dev/md125: no such device in pool
-[root@X9DR3-F ~]# ll /dev/md/SATA-SSD-1T*
-lrwxrwxrwx 1 root root  8 Jul 17 14:33 /dev/md/SATA-SSD-1T -> ../md125
-lrwxrwxrwx 1 root root 10 Jul 17 14:33 /dev/md/SATA-SSD-1T1 -> ../md125p1
-lrwxrwxrwx 1 root root 10 Jul 17 14:33 /dev/md/SATA-SSD-1T9 -> ../md125p9
-[root@X9DR3-F ~]# zpool remove SATA-16T /dev/md125p1 
-cannot remove /dev/md125p1: no such device in pool
-[root@X9DR3-F ~]# zpool remove SATA-16T /dev/md125p9
-cannot remove /dev/md125p9: no such device in pool
-```
-
-突然想到, 正确答案异常的简单
-
-```
-[root@X9DR3-F ~]# zpool remove SATA-16T /dev/md/SATA-SSD-1T1
-[root@X9DR3-F ~]# 
-```
+<h3 id="6">参数调优/修改</h3>
+# 增加L2ARC写入带宽（默认8MB，提升到128MB）
+echo $((128*1024*1024)) > /sys/module/zfs/parameters/l2arc_write_max
