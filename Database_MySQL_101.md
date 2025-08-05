@@ -50,7 +50,7 @@ mysqld 初始化始终提示
 [ERROR] [MY-013236] [Server] The designated data directory /var/lib/mysql/ is unusable. You can remove all files that the server added to it.
 ```
 
-排除了以下:
+排除了以下:  
 1) SeLinux  
 2) docker镜像里的用户mysql, uid 和 gid 均为999, 在docker宿主机上保持了一致  
 3) 容器内的 /var/lib/mysql, 外部挂载进去的目录权限改为 700  
