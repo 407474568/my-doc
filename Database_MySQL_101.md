@@ -40,7 +40,7 @@ Query OK, 0 rows affected (0.00 sec)
 ```
 
 
-#### 在 docker 镜像 MySQL 8.0.42 上发现的新问题
+#### 初始化, 在 docker 镜像 MySQL 8.0.42 上发现的新问题
 
 准确的说, 在 ```8.0.2x``` 时都没有遇到过
 
@@ -55,7 +55,6 @@ mysqld 初始化始终提示
 2) docker镜像里的用户mysql, uid 和 gid 均为999, 在docker宿主机上保持了一致  
 3) 容器内的 /var/lib/mysql, 外部挂载进去的目录权限改为 700  
 
-反复拷问大模型, 也问不出个正确答案, 最后还是搜google  
 https://blog.csdn.net/jiguang127/article/details/126864288  
 这才是正解  
 原来在 ```my.cnf``` 中加入  
