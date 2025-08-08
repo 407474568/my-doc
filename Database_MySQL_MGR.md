@@ -139,8 +139,8 @@ fa3fc2ee-7365-11f0-8650-02420a0a000b:1-4 |
 ```
 
 在上面的示例中:  
-1) 第一条 ```SELECT @@GLOBAL.GTID_EXECUTED;``` 是在没有作 ```SET GLOBAL GTID_PURGED``` 修改前的值
-2) 第二条 ```SET GLOBAL GTID_PURGED``` 是修改为跟主节点相同的GTID
+1) 第一条 ```SELECT @@GLOBAL.GTID_EXECUTED;``` 是在没有作 ```SET GLOBAL GTID_PURGED``` 修改前的值  
+2) 第二条 ```SET GLOBAL GTID_PURGED``` 是修改为跟主节点相同的GTID  
 3) 第三条 ```SELECT @@GLOBAL.GTID_EXECUTED;``` 是在发起加入节点的操作```START GROUP_REPLICATION
   USER='repl_user', PASSWORD='*qJz0s_!bWgP?FX=';``` 之后, 发现有报错, 日志中也明确记录是GTID不一致的缘故, 再次通过SQL语句确认的
 
