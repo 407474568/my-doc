@@ -35,27 +35,28 @@ MGR, MySQL group replication, 组复制, 后续都简称 ```MGR```
 
 Primary 节点:
 
-1) 清空数据目录(默认位置 /var/lib/mysql), 清空binlog(默认位置与datadir相同)
-2) 初始化, 如: ```mysqld --initialize-insecure```, ```--initialize-insecure```是允许mysql root用户密码为空
-3) 创建复制通道的用户名和密码
-4) 主节点先设置自己为引导节点
-5) 启动通道
-6) 主节点关闭自己为引导节点
-7) 主节点查询自己的 ```GTID_EXECUTED```, 用于从节点设置为跟自己一致
+1) 清空数据目录(默认位置 /var/lib/mysql), 清空binlog(默认位置与datadir相同)  
+2) 初始化, 如: ```mysqld --initialize-insecure```, ```--initialize-insecure```是允许mysql root用户密码为空  
+3) 创建复制通道的用户名和密码  
+4) 主节点先设置自己为引导节点  
+5) 启动通道  
+6) 主节点关闭自己为引导节点  
+7) 主节点查询自己的 ```GTID_EXECUTED```, 用于从节点设置为跟自己一致  
 
 SECONDARY 节点:
-1) 同主节点1
-2) 同主节点2
-3) 使用主节点创建的复制通道的用户名和密码进行复制通道的启动
+1) 同主节点1  
+2) 同主节点2  
+3) 使用主节点创建的复制通道的用户名和密码进行复制通道的启动  
 4) 验证结果
 
 **更详细一点的参考步骤**
 
 Primary 节点:
 
-1) 略, 但需要注意, 初始化时, 不应有"基本配置" 以外的配置项存在于 ```my.cnf```, 需要注释
-2) 略
-3) 创建复制通道的用户名和密码
+1) 略, 但需要注意, 初始化时, 不应有"基本配置" 以外的配置项存在于 ```my.cnf```, 需要注释  
+2) 略  
+3) 创建复制通道的用户名和密码  
+
 ```commandline
 -- 创建用于组复制恢复的用户
 CREATE USER 'repl_user'@'%' IDENTIFIED BY '*qJz0s_!bWgP?FX=';
@@ -66,13 +67,16 @@ GRANT SELECT ON performance_schema.* TO 'repl_user'@'%';
 -- 刷新权限
 FLUSH PRIVILEGES;
 ```
-4) 主节点先设置自己为引导节点
-```SET GLOBAL group_replication_bootstrap_group=ON;```
+
+4) 主节点先设置自己为引导节点  
+```SET GLOBAL group_replication_bootstrap_group=ON;```  
 5) 启动通道
+
 ```commandline
 START GROUP_REPLICATION
   USER='repl_user', PASSWORD='*qJz0s_!bWgP?FX=';
 ```
+
 <font color=red>非常重要的说明</font>  
 复制通道的账号密码有且仅在此处进行配置, 在除此以外的地方配置, 应该都是  
 MySQL >= 8.0.4x  
@@ -80,7 +84,7 @@ MySQL >= 8.4.x
 语法所不允许的
 
 6) 主节点关闭自己为引导节点, SQL交互从阻塞状态中脱离, 可输入状态就应执行  
-```SET GLOBAL group_replication_bootstrap_group=OFF;```
+```SET GLOBAL group_replication_bootstrap_group=OFF;```  
 7) 主节点查询自己的 ```GTID_EXECUTED```, 用于从节点设置为跟自己一致  
 ```SELECT * FROM performance_schema.replication_group_members;```
 
