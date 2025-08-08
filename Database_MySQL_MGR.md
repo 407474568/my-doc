@@ -73,6 +73,12 @@ FLUSH PRIVILEGES;
 START GROUP_REPLICATION
   USER='repl_user', PASSWORD='*qJz0s_!bWgP?FX=';
 ```
+<font color=red>非常重要的说明</font>  
+复制通道的账号密码有且仅在此处进行配置, 在除此以外的地方配置, 应该都是  
+MySQL >= 8.0.4x  
+MySQL >= 8.4.x  
+语法所不允许的
+
 6) 主节点关闭自己为引导节点, SQL交互从阻塞状态中脱离, 可输入状态就应执行  
 ```SET GLOBAL group_replication_bootstrap_group=OFF;```
 7) 主节点查询自己的 ```GTID_EXECUTED```, 用于从节点设置为跟自己一致  
