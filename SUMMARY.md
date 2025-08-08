@@ -51,6 +51,7 @@
 * [数据库](category_4_Database.md)
     * [MySQL常规事务](Database_MySQL_101.md)
     * [MySQL高可用--主主 / 主从](Database_MySQL_HA.md)
+    * [MySQL MGR](Database_MySQL_MGR.md)
 * [虚拟化](category_5_Virtualization.md)
     * [KVM虚拟化入门](Virtualization_kvm_101.md)
     * [KVM进阶技巧](Virtualization_kvm_advance.md)
