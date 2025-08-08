@@ -1,5 +1,6 @@
 * [目录](#0)
   * [MGR集群 一主多从](#1)
+  * [SSL通信问题](#2)
 
 <h3 id="1">MGR集群 一主多从</h3>
 
@@ -191,4 +192,253 @@ ERROR 3092 (HY000): The server is not configured properly to be an active member
 2025-08-07T15:06:40.207924Z 0 [System] [MY-011504] [Repl] Plugin group_replication reported: 'Group membership changed: This member has left the group.'
 2025-08-07T15:06:40.209427Z 0 [System] [MY-014082] [Repl] Plugin group_replication reported: 'The Group Replication certifier broadcast thread (THD_certifier_broadcast) stopped.'
 2025-08-07T15:06:40.209532Z 11 [System] [MY-011566] [Repl] Plugin group_replication reported: 'Setting super_read_only=OFF.'
+```
+
+<h3 id="2">SSL通信问题</h3>
+
+证书, 要用同一个CA来生成  
+以下示例, 由 Primary 节点在 初始化过程中产生的CA来为3个节点各自生成的证书
+
+```commandline
+# 节点1
+openssl genrsa 2048 > /docker/mysql-mgr1/data/mysql-mgr1-key.pem
+openssl req -new -key /docker/mysql-mgr1/data/mysql-mgr1-key.pem \
+  -out /docker/mysql-mgr1/data/mysql-mgr1-req.pem \
+  -subj "/C=CN/ST=ChengDu/L=LongQuanYi/O=Heyday/OU=IT/CN=mysql-mgr1.heyday.net.cn"
+
+# 节点2
+openssl genrsa 2048 > /docker/mysql-mgr1/data/mysql-mgr2-key.pem
+openssl req -new -key /docker/mysql-mgr1/data/mysql-mgr2-key.pem \
+  -out /docker/mysql-mgr1/data/mysql-mgr2-req.pem \
+  -subj "/C=CN/ST=ChengDu/L=LongQuanYi/O=Heyday/OU=IT/CN=mysql-mgr2.heyday.net.cn"
+
+# 节点3
+openssl genrsa 2048 > /docker/mysql-mgr1/data/mysql-mgr3-key.pem
+openssl req -new -key /docker/mysql-mgr1/data/mysql-mgr3-key.pem \
+  -out /docker/mysql-mgr1/data/mysql-mgr3-req.pem \
+  -subj "/C=CN/ST=ChengDu/L=LongQuanYi/O=Heyday/OU=IT/CN=mysql-mgr3.heyday.net.cn"
+
+
+# 节点1
+openssl x509 -req -in /docker/mysql-mgr1/data/mysql-mgr1-req.pem \
+  -CA /docker/mysql-mgr1/data/ca.pem \
+  -CAkey /docker/mysql-mgr1/data/ca-key.pem \
+  -CAcreateserial -out /docker/mysql-mgr1/data/mysql-mgr1-cert.pem
+
+# 节点2
+openssl x509 -req -in /docker/mysql-mgr1/data/mysql-mgr2-req.pem \
+  -CA /docker/mysql-mgr1/data/ca.pem \
+  -CAkey /docker/mysql-mgr1/data/ca-key.pem \
+  -CAcreateserial -out /docker/mysql-mgr1/data/mysql-mgr2-cert.pem
+
+# 节点3
+openssl x509 -req -in /docker/mysql-mgr1/data/mysql-mgr3-req.pem \
+  -CA /docker/mysql-mgr1/data/ca.pem \
+  -CAkey /docker/mysql-mgr1/data/ca-key.pem \
+  -CAcreateserial -out /docker/mysql-mgr1/data/mysql-mgr3-cert.pem
+```
+
+在```my.cnf```中的配置项
+
+```commandline
+# -----------------------------------------------------------------------------
+# SSL 安全配置
+# -----------------------------------------------------------------------------
+
+# CA证书路径
+ssl_ca=/var/lib/mysql/ca.pem
+
+# 服务器证书路径
+ssl_cert=/var/lib/mysql/mysql-mgr1-cert.pem
+
+# 服务器私钥路径
+ssl_key=/var/lib/mysql/mysql-mgr1-key.pem
+
+# -----------------------------------------------------------------------------
+# 组复制 SSL 配置
+# -----------------------------------------------------------------------------
+
+# 在恢复通道启用SSL加密
+group_replication_recovery_use_ssl=ON
+
+# 恢复通道CA证书
+group_replication_recovery_ssl_ca='/var/lib/mysql/ca.pem'
+
+# 恢复通道证书
+group_replication_recovery_ssl_cert='/var/lib/mysql/mysql-mgr1-cert.pem'
+
+# 恢复通道私钥
+group_replication_recovery_ssl_key='/var/lib/mysql/mysql-mgr1-key.pem'
+```
+
+完整的```my.cnf```
+
+```commandline
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/8.0/en/server-configuration-defaults.html
+
+[mysqld]
+#
+# Remove leading # and set to the amount of RAM for the most important data
+# cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.
+# innodb_buffer_pool_size = 128M
+#
+# Remove leading # to turn on a very important data integrity option: logging
+# changes to the binary log between backups.
+# log_bin
+#
+# Remove leading # to set options mainly useful for reporting servers.
+# The server defaults are faster for transactions and fast SELECTs.
+# Adjust sizes as needed, experiment to find the optimal values.
+# join_buffer_size = 128M
+# sort_buffer_size = 2M
+# read_rnd_buffer_size = 2M
+
+# Remove leading # to revert to previous value for default_authentication_plugin,
+# this will increase compatibility with older clients. For background, see:
+# https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_default_authentication_plugin
+# default-authentication-plugin=mysql_native_password
+
+# -----------------------------------------------------------------------------
+# 基础配置
+# -----------------------------------------------------------------------------
+
+# 禁用主机名缓存，配合skip-name-resolve提高性能
+host_cache_size=0
+
+# 禁止DNS反向解析，加快连接速度
+skip-name-resolve
+
+# 数据库文件存储路径
+datadir=/var/lib/mysql
+
+# MySQL套接字文件位置
+socket=/var/run/mysqld/mysqld.sock
+
+# 限制文件导入/导出操作的安全目录
+secure-file-priv=/var/lib/mysql-files
+
+# 运行mysqld进程的系统用户
+user=mysql
+
+# -----------------------------------------------------------------------------
+# 复制与日志配置
+# -----------------------------------------------------------------------------
+
+# 服务器唯一标识符（集群中每个节点必须不同）
+server-id=1
+
+# 启用二进制日志（记录所有数据更改）
+log_bin=mysql-bin
+
+# 启用全局事务标识符
+gtid_mode=ON
+
+# 强制GTID一致性，确保事务安全
+enforce_gtid_consistency=ON
+
+# 固定中继日志文件名（确保重启后一致）
+relay-log=mysql-relay-bin
+
+# 固定中继日志索引文件名
+relay-log-index=mysql-relay-bin.index
+
+# 错误日志文件路径
+log_error=/var/log/mysql/error.log
+
+# 启用通用查询日志
+general_log=1
+
+# 通用日志文件路径
+general_log_file=/var/log/mysql/general.log
+
+# 启用慢查询日志
+slow_query_log=1
+
+# 慢查询日志路径
+slow_query_log_file=/var/log/mysql/slow.log
+
+# 慢查询阈值（单位：秒）
+long_query_time=2
+
+# 二进制日志存储路径
+log_bin=/var/lib/mysql/mysql_bin
+
+# -----------------------------------------------------------------------------
+# SSL 安全配置
+# -----------------------------------------------------------------------------
+
+# CA证书路径
+ssl_ca=/var/lib/mysql/ca.pem
+
+# 服务器证书路径
+ssl_cert=/var/lib/mysql/mysql-mgr1-cert.pem
+
+# 服务器私钥路径
+ssl_key=/var/lib/mysql/mysql-mgr1-key.pem
+
+# -----------------------------------------------------------------------------
+# 组复制 SSL 配置
+# -----------------------------------------------------------------------------
+
+# 在恢复通道启用SSL加密
+group_replication_recovery_use_ssl=ON
+
+# 恢复通道CA证书
+group_replication_recovery_ssl_ca='/var/lib/mysql/ca.pem'
+
+# 恢复通道证书
+group_replication_recovery_ssl_cert='/var/lib/mysql/mysql-mgr1-cert.pem'
+
+# 恢复通道私钥
+group_replication_recovery_ssl_key='/var/lib/mysql/mysql-mgr1-key.pem'
+
+# -----------------------------------------------------------------------------
+# 组复制核心配置
+# -----------------------------------------------------------------------------
+
+# 向其他成员报告的IP地址（集群各节点不同）
+report_host=10.10.0.11
+
+# 加载组复制插件
+plugin_load_add='group_replication.so'
+
+# 集群UUID（所有节点相同）
+group_replication_group_name="b3133c6d-5f2f-11f0-ab61-0242ac120002"
+
+# 禁止服务启动时自动开启组复制（需手动启动）
+group_replication_start_on_boot=OFF
+
+# 当前节点组复制通信地址（各节点不同）
+group_replication_local_address="10.10.0.11:33061"
+
+# 集群成员地址列表
+group_replication_group_seeds="10.10.0.11:33061,10.10.0.12:33061,10.10.0.13:33061"
+
+# 启用单主模式（一个可写节点）
+group_replication_single_primary_mode=ON
+
+# 选主权重值（越高越优先成为主节点）
+loose-group_replication_member_weight=50
+
+# 进程ID文件位置
+pid-file=/var/run/mysqld/mysqld.pid
+
+[client]
+# 客户端连接使用的套接字文件
+socket=/var/run/mysqld/mysqld.sock
+
+# 包含其他配置文件目录
+!includedir /etc/mysql/conf.d/
+
+# -----------------------------------------------------------------------------
+# 注意事项
+# -----------------------------------------------------------------------------
+
+# 1. lower_case_table_names 配置（初始化时需设置）:
+#    - 仅在MySQL初始化时需要
+#    - MySQL 8.0.4x+ 版本需要显式配置
+#    - 拼写修正为 lower_case_table_names（原文件有拼写错误）
+#    - 取消注释后仅在初始化时使用，后续需注释
+# lower_case_table_names  = 1
 ```
