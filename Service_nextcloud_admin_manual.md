@@ -27,7 +27,23 @@ http://www.garfielder.com/post/990cc2cb.html
   * [无法删除/移动文件或文件夹的情况的处理](#11)
   * [误报存储满的问题](#12)
   * [nextcloud 版本号](#13)
+  * [nextcloud 默认打开"应用"而不是"仪表盘"](#14)
 
+
+<h3 id="14">nextcloud 默认打开"应用"而不是"仪表盘"</h3>
+
+验证版本 31.0.7
+
+在 ```config/config.php``` 中添加
+```commandline
+'defaultapp' => 'files',
+```
+
+而并不是
+
+```commandline
+'default_apps' => ['files'],
+```
 
 <h3 id="13">nextcloud 版本号</h3>
 
