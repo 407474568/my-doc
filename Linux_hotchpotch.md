@@ -76,7 +76,7 @@
 | LF 换行 | NAK 否定 | DEL 删除 |
 
 
-<h3 id="20">关于nc与nmap的比较说明, 及nmap常用选项</h3>  
+<h3 id="21">关于nc与nmap的比较说明, 及nmap常用选项</h3>  
 
 以下是 Rocky Linux 8、9.6 和 10.0 版本中，常用基础软件（如 GCC、OpenSSH 等）版本的对比表格：
 
