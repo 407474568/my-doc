@@ -69,7 +69,11 @@ FLUSH PRIVILEGES;
 ```
 
 4) 主节点先设置自己为引导节点  
-```SET GLOBAL group_replication_bootstrap_group=ON;```  
+
+```commandline
+SET GLOBAL group_replication_bootstrap_group=ON;
+```  
+
 5) 启动通道
 
 ```commandline
