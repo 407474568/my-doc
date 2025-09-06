@@ -16,4 +16,3 @@ else
     /cygdrive/D/Code/my-doc/_book/ root@code.heyday.net.cn:/docker/my-doc-book --debug=ALL
 fi
 
-sleep 6000
