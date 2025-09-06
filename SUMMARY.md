@@ -69,3 +69,4 @@
     * [菜鸟101-Linux](Others_rookie_trainning_Linux.md)
     * [菜鸟101-硬件](Others_rookie_trainning_hardware.md)
     * [Python面试题](Others_python_interview_questions.md)
+    * [个人-5950X宕机和掉电的变更备忘录](Others_5950x_crash_and_powerdown.md)
