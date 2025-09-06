@@ -45,6 +45,12 @@ idle=nomwait processor.max_cstate=1
 > ✅ 意义：进一步限制 CPU 进入深度 C-state，以避免 ACPI/电源管理导致的系统重启。
 > 目前你已写好计划，但尚未 `grubby --update-kernel` 应用。
 
+grubby 实际已更改生效
+```
+[root@5950x-node1 ~]# cat /proc/cmdline 
+BOOT_IMAGE=(hd0,gpt2)/vmlinuz-6.1.148 root=UUID=70028d44-394f-4156-a4b6-2fcb28dd89aa ro crashkernel=0M-2G:0M,2G-8G:256M,8G-:512M rd.md.uuid=ae22fa72:d9f8ae2a:809c4919:2fb859c5 rhgb quiet amd_iommu=on iommu=pt idle=nomwait processor.max_cstate=1
+```
+
 ---
 
 ### 3. 尚未改动，但提到过的选项
