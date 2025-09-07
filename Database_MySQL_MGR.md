@@ -91,9 +91,19 @@ MySQL >= 8.4.x
 语法所不允许的
 
 6) 主节点关闭自己为引导节点, SQL交互从阻塞状态中脱离, 可输入状态就应执行  
-```SET GLOBAL group_replication_bootstrap_group=OFF;```  
+```commandline
+SET GLOBAL group_replication_bootstrap_group=OFF;
+```  
+
 7) 主节点查询自己的 ```GTID_EXECUTED```, 用于从节点设置为跟自己一致  
-```SELECT * FROM performance_schema.replication_group_members;```
+```commandline
+SHOW GLOBAL VARIABLES LIKE 'gtid_executed';
+```
+
+8) 最后,确认集群status  
+```commandline
+SELECT * FROM performance_schema.replication_group_members order by  MEMBER_HOST;
+```
 
 
 
