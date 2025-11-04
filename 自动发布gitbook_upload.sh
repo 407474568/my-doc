@@ -4,7 +4,7 @@ if [ -f /home/administrator/.bashrc ];then
 elif [ -f /home/tanhuang/.bashrc ];then
     . /home/tanhuang/.bashrc
 fi
-if [ "$(hostname)" == "tanhuang-PC" ];then
+if [ "$(hostname)" == "tanhuang-PC" ] || [ "$(hostname)" == "tanhuang-PC-CQ" ];then
 #   rsync -aP --delete -e 'ssh -i /cygdrive/c/Users/Administrator/.ssh/id_ed25519 -p 22' \
 #    rsync -aP --delete -e 'ssh -i ~/.ssh/id_ed25519 -p 6000' \
 #    /cygdrive/D/Code/my-doc/_book/ root@code.heyday.net.cn:/docker/my-doc-book --debug=ALL
@@ -15,4 +15,3 @@ elif [ "$(hostname)" == "tanhuang-note" ];then
     rsync -aP --delete -e 'ssh -i /cygdrive/c/Users/Administrator/.ssh/id_ed25519 -p 6000' \
     /cygdrive/D/Code/my-doc/_book/ root@code.heyday.net.cn:/docker/my-doc-book --debug=ALL
 fi
-
