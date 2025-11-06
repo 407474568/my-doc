@@ -742,6 +742,174 @@ mdadm -D -s
 mdadm <虚拟磁盘组路径> --re-add <成员设备路径>
 ```
 
+异常 faulty, 但磁盘实际并无损坏的处理案例一则
+
+```commandline
+[root@X9DR3-F-node1 ~]# mdadm -D /dev/md/400G-group 
+/dev/md/400G-group:
+           Version : 1.2
+     Creation Time : Mon Nov  3 21:49:46 2025
+        Raid Level : raid10
+        Array Size : 1171697664 (1117.42 GiB 1199.82 GB)
+     Used Dev Size : 390565888 (372.47 GiB 399.94 GB)
+      Raid Devices : 6
+     Total Devices : 5
+       Persistence : Superblock is persistent
+
+     Intent Bitmap : Internal
+
+       Update Time : Wed Nov  5 22:55:54 2025
+             State : clean, degraded 
+    Active Devices : 4
+   Working Devices : 4
+    Failed Devices : 1
+     Spare Devices : 0
+
+            Layout : near=2
+        Chunk Size : 512K
+
+Consistency Policy : bitmap
+
+              Name : X9DR3-F-node1:400G-group  (local to host X9DR3-F-node1)
+              UUID : 1f54a4c9:f1408099:4196ce40:493b49af
+            Events : 1369
+
+    Number   Major   Minor   RaidDevice State
+       0       8      112        0      active sync set-A   /dev/sdh
+       -       0        0        1      removed
+       2       8      144        2      active sync set-A   /dev/sdj
+       3       8       80        3      active sync set-B   /dev/sdf
+       4       8       16        4      active sync set-A   /dev/sdb
+       -       0        0        5      removed
+
+       1      65       32        -      faulty   /dev/sds
+```
+
+此时, 发现 ```/dev/sds``` 处于 ```faulty```  
+但如果直接添加, 它说```Device or resource busy```
+
+```commandline
+[root@X9DR3-F-node1 ~]# mdadm -D /dev/md/400G-group ^C
+[root@X9DR3-F-node1 ~]# lsblk | grep -E "^sd.*(372|953)
+> ^C
+[root@X9DR3-F-node1 ~]# lsblk | grep -E "^sd.*(372|953)"
+sdb                   8:16   0 372.6G  0 disk   
+sdc                   8:32   0 953.9G  0 disk   
+sdf                   8:80   0 372.6G  0 disk   
+sdh                   8:112  0 372.6G  0 disk   
+sdj                   8:144  0 372.6G  0 disk   
+sdm                   8:192  0 953.9G  0 disk   
+sds                  65:32   0 372.6G  0 disk   
+[root@X9DR3-F-node1 ~]# mdadm --add /dev/md/400G-group /dev/sdc1 /dev/sds
+mdadm: re-added /dev/sdc1
+mdadm: Cannot open /dev/sds: Device or resource busy
+```
+
+但查看该盘, 并未发现任何异常
+
+```commandline
+[root@X9DR3-F-node1 ~]# parted /dev/sds
+GNU Parted 3.2
+Using /dev/sds
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) print                                                            
+Error: /dev/sds: unrecognised disk label
+Model: ATA INTEL SSDSC2BA40 (scsi)                                        
+Disk /dev/sds: 400GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: unknown
+Disk Flags: 
+(parted) quit                                                             
+[root@X9DR3-F-node1 ~]# wipefs /dev/sds
+DEVICE OFFSET TYPE              UUID                                 LABEL
+sds    0x1000 linux_raid_member 1f54a4c9-f140-8099-4196-ce40493b49af X9DR3-F-node1:400G-group
+```
+
+正确的处理方式: 把它先移出raid, 但不是清除raid信息, 随后添加回来即可
+
+```commandline
+[root@X9DR3-F-node1 ~]# mdadm /dev/md/400G-group --remove /dev/sds
+mdadm: hot removed /dev/sds from /dev/md/400G-group
+[root@X9DR3-F-node1 ~]# mdadm -D /dev/md/400G-group
+/dev/md/400G-group:
+           Version : 1.2
+     Creation Time : Mon Nov  3 21:49:46 2025
+        Raid Level : raid10
+        Array Size : 1171697664 (1117.42 GiB 1199.82 GB)
+     Used Dev Size : 390565888 (372.47 GiB 399.94 GB)
+      Raid Devices : 6
+     Total Devices : 5
+       Persistence : Superblock is persistent
+
+     Intent Bitmap : Internal
+
+       Update Time : Thu Nov  6 19:45:26 2025
+             State : clean, degraded 
+    Active Devices : 5
+   Working Devices : 5
+    Failed Devices : 0
+     Spare Devices : 0
+
+            Layout : near=2
+        Chunk Size : 512K
+
+Consistency Policy : bitmap
+
+              Name : X9DR3-F-node1:400G-group  (local to host X9DR3-F-node1)
+              UUID : 1f54a4c9:f1408099:4196ce40:493b49af
+            Events : 1374
+
+    Number   Major   Minor   RaidDevice State
+       0       8      112        0      active sync set-A   /dev/sdh
+       -       0        0        1      removed
+       2       8      144        2      active sync set-A   /dev/sdj
+       3       8       80        3      active sync set-B   /dev/sdf
+       4       8       16        4      active sync set-A   /dev/sdb
+       5       8       33        5      active sync set-B   /dev/sdc1
+[root@X9DR3-F-node1 ~]# fuser -v /dev/sds
+[root@X9DR3-F-node1 ~]# mdadm /dev/md/400G-group --add /dev/sds
+mdadm: re-added /dev/sds
+[root@X9DR3-F-node1 ~]# watch mdadm -D /dev/md/400G-group
+[root@X9DR3-F-node1 ~]# mdadm -D /dev/md/400G-group
+/dev/md/400G-group:
+           Version : 1.2
+     Creation Time : Mon Nov  3 21:49:46 2025
+        Raid Level : raid10
+        Array Size : 1171697664 (1117.42 GiB 1199.82 GB)
+     Used Dev Size : 390565888 (372.47 GiB 399.94 GB)
+      Raid Devices : 6
+     Total Devices : 6
+       Persistence : Superblock is persistent
+
+     Intent Bitmap : Internal
+
+       Update Time : Thu Nov  6 19:45:54 2025
+             State : clean 
+    Active Devices : 6
+   Working Devices : 6
+    Failed Devices : 0
+     Spare Devices : 0
+
+            Layout : near=2
+        Chunk Size : 512K
+
+Consistency Policy : bitmap
+
+              Name : X9DR3-F-node1:400G-group  (local to host X9DR3-F-node1)
+              UUID : 1f54a4c9:f1408099:4196ce40:493b49af
+            Events : 1378
+
+    Number   Major   Minor   RaidDevice State
+       0       8      112        0      active sync set-A   /dev/sdh
+       1      65       32        1      active sync set-B   /dev/sds
+       2       8      144        2      active sync set-A   /dev/sdj
+       3       8       80        3      active sync set-B   /dev/sdf
+       4       8       16        4      active sync set-A   /dev/sdb
+       5       8       33        5      active sync set-B   /dev/sdc1
+[root@X9DR3-F-node1 ~]# 
+```
+
+而以上过程, 也不会引起```resync```, 因为数据本身无损坏
 
 <h3 id="5">有关存储性能问题的测试结论</h3>
 
