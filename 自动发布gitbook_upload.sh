@@ -1,4 +1,4 @@
-. /etc/profile
+# . /etc/profile
 if [ -f /home/administrator/.bashrc ];then
     . /home/administrator/.bashrc
 elif [ -f /home/tanhuang/.bashrc ];then
