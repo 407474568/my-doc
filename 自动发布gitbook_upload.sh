@@ -8,7 +8,7 @@ if [ "$(hostname)" == "tanhuang-PC" ] || [ "$(hostname)" == "tanhuang-PC-CQ" ];t
 #   rsync -aP --delete -e 'ssh -i /cygdrive/c/Users/Administrator/.ssh/id_ed25519 -p 22' \
 #    rsync -aP --delete -e 'ssh -i ~/.ssh/id_ed25519 -p 6000' \
 #    /cygdrive/D/Code/my-doc/_book/ root@code.heyday.net.cn:/docker/my-doc-book --debug=ALL
-# ÔÙ´ÎĞŞ¸Ä, ×¢ÒâÒª°Ñ ÃÜÔ¿ÎÄ¼ş·Åµ½ mintty µÄ¼ÒÄ¿Â¼ÏÂ, ·ñÔòÈ¨ÏŞÓ³Éä×ª»»ÎÊÌâÄÑµÃÕÛÌÚ
+# å†æ¬¡ä¿®æ”¹, æ³¨æ„è¦æŠŠ å¯†é’¥æ–‡ä»¶æ”¾åˆ° mintty çš„å®¶ç›®å½•ä¸‹, å¦åˆ™æƒé™æ˜ å°„è½¬æ¢é—®é¢˜éš¾å¾—æŠ˜è…¾
     rsync -aP --delete -e 'ssh -p 6000' /cygdrive/D/Code/my-doc/_book/ root@code.heyday.net.cn:/docker/my-doc-book --debug=ALL
 elif [ "$(hostname)" == "tanhuang-note" ];then
 #    rsync -aP --delete -e 'ssh -i /cygdrive/c/Users/Administrator/.ssh/id_ed25519 -p 6000'
