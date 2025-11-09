@@ -799,6 +799,48 @@ qemu-img convert -c -O <格式> <源文件> <输出文件>
 qemu-img convert -c -O qcow2 /vm/games_pt_03.qcow2 vm/games_pt_03_new.qcow2
 ```
 
+##### 更进阶一层
+
+一种典型案例:  
+guestOS 是 Windows,   
+使用了 ```qemu-img convert -c -O <格式> <源文件> <输出文件>```的方式,  
+但发现效果不佳  
+于是使用 ```sdelete``` 命令对每个分区都执行一遍,  
+试图来以此增加对空间幅度  
+结果发现:  
+KVM虚拟机的磁盘文件反而是满填充状态  
+即原本的分配方式是 ```preallocation=metadata```  
+在此情景下 ```sdelete``` 得到了反效果, 因为它会去挨个写0  
+这对于KVM磁盘文件来说反而是使用状态  
+
+正解:  
+用 ```virt-sparsify``` 强制重新稀疏化  
+
+```commandline
+[root@5600 ~]# virt-sparsify --tmp /vm --compress /vm/downloader.qcow2 /vm/downloader_recover.qcow2
+[   0.0] Create overlay file in /vm to protect source disk
+[   0.1] Examine source disk
+[   3.3] Fill free space in /dev/sda1 with zero
+◓  0% ⟦════════════════════════════════════════════════════════════════════════════════════════════════════════════════◑  0% ⟦═══════════════════════════════════════════════════════════════════════════════════════════════════════════════◒  0% ⟦▒═══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+◐  0% ⟦▒═══════
+
+中间略
+
+ 100% ⟦▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒⟧ 00:00
+[1092.4] Copy to destination and make sparse
+[2464.6] Sparsify operation completed with no errors.
+virt-sparsify: Before deleting the old disk, carefully check that the 
+target disk boots and works correctly.
+[root@5600 ~]# 
+
+
+[root@5600 ~]# ls -lh /vm/downloader*
+-rw-r--r-- 1 qemu qemu 192G Nov  9 15:27 /vm/downloader.qcow2
+-rw-r--r-- 1 root root  32G Nov  9 16:53 /vm/downloader_recover.qcow2
+-rw-r--r-- 1 root root 5.6K Sep  2 12:16 /vm/downloader.xml
+[root@5600 ~]# 
+```
+
 #### 创建磁盘
 
 https://www.cnblogs.com/weihua2020/p/13718916.html
