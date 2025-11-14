@@ -39,4 +39,3 @@ REM "D:\Program Files\cygwin64\bin\mintty.exe" bash D:\Code\my-doc\自动发布gitbo
 "D:\Program Files\cygwin64\bin\bash.exe" -lc "/cygdrive/d/Code/my-doc/自动发布gitbook_upload.sh" ^
     > D:\TEMP\自动发布gitbook_upload.log 2>&1
 type D:\TEMP\自动发布gitbook_upload.log
-pause
