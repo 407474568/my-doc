@@ -547,7 +547,7 @@ Message: SSL connection error: error:1416F086:SSL routines:tls_process_server_ce
 
 ---
 
-### 解决方案
+##### 解决方案
 
 **选项 1：更新 MySQL 集群的 SSL 证书**（推荐，生产环境安全）
 
@@ -601,7 +601,7 @@ Message: SSL connection error: error:1416F086:SSL routines:tls_process_server_ce
 
 ---
 
-### 修改版脚本 `gen_mysql_certs.sh`
+##### 修改版脚本 `gen_mysql_certs.sh`
 
 ```bash
 #!/bin/bash
@@ -653,7 +653,7 @@ ls -l $BASE_DIR/*pem
 
 ---
 
-### 下一步操作
+##### 下一步操作
 
 1. 在 node1 执行脚本，生成：
 
@@ -710,7 +710,7 @@ ls -l $BASE_DIR/*pem
 
 ---
 
-### 1. 检查 MySQL 是否加载了证书
+##### 1. 检查 MySQL 是否加载了证书
 
 在 mysql 里执行：
 
@@ -733,7 +733,7 @@ SHOW VARIABLES LIKE 'ssl_%';
 
 ---
 
-### 2. 确认配置文件里不要带引号
+##### 2. 确认配置文件里不要带引号
 
 你现在 `/etc/my.cnf` 里是这样的：
 
@@ -756,7 +756,7 @@ group_replication_recovery_ssl_key = /var/lib/mysql/mysql-mgr2-key.pem
 
 ---
 
-### 3. 重启并验证
+##### 3. 重启并验证
 
 修改完成后：
 
@@ -795,14 +795,14 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 为什么 `Ssl_cipher` 为空？
+##### 为什么 `Ssl_cipher` 为空？
 
 `Ssl_cipher` 来自 `SHOW STATUS LIKE 'Ssl_cipher';`，它表示 **当前客户端连接使用的加密算法**。
 现在是空，说明你连上 MySQL 时用的还是明文连接。
 
 ---
 
-### 验证 SSL 是否可用
+##### 验证 SSL 是否可用
 
 在客户端执行：
 
@@ -828,7 +828,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 小结
+##### 小结
 
 * 证书已经被 MySQL 加载成功 ✅
 * `Ssl_cipher` 为空只是因为你默认用明文连接 MySQL
@@ -844,7 +844,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 你真正要验证的有两种情况：
+##### 你真正要验证的有两种情况：
 
 1. **客户端远程连接是否走 SSL**
    从另一台机器连：
@@ -888,7 +888,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 总结
+##### 总结
 
 * 你本地用 socket 连接 → 明文（`Ssl_cipher` 空）
 * 你用 TCP + `--ssl-mode=REQUIRED` → 成功启用 TLS
@@ -913,7 +913,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 1. MGR 容错的关键机制
+##### 1. MGR 容错的关键机制
 
 在 MySQL 8.4 的 Group Replication (MGR) 里：
 
@@ -930,7 +930,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 2. 什么时候会“被拒绝”
+##### 2. 什么时候会“被拒绝”
 
 你担心的情况确实可能发生，但触发条件比较苛刻：
 
@@ -941,7 +941,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 3. 你的恢复过程能成功的原因
+##### 3. 你的恢复过程能成功的原因
 
 * node2 作为唯一幸存节点，保存了连续的 GTID。
 * node1、node3 还原后虽然“回到两天前”，但 **MGR 会识别它们缺少的事务**，然后通过 group\_replication\_recovery 机制补齐。
@@ -964,7 +964,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 1️⃣ GPID 的本质
+##### 1️⃣ GPID 的本质
 
 * GPID（Group Replication ID）是 MGR 用来标识 **当前组的“世代”** 的唯一 ID。
 * 每次集群初始化或者出现 **全量恢复/强制重建** 时，都会生成新的 GPID。
@@ -972,7 +972,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 2️⃣ 正常掉线 + 恢复节点的场景
+##### 2️⃣ 正常掉线 + 恢复节点的场景
 
 * 如果 node1/node3 只是 **掉线或快照回滚**，但 node2 继续作为在线节点保持 GTID 连续：
 
@@ -984,14 +984,14 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 3️⃣ GPID 高于 master 的情况
+##### 3️⃣ GPID 高于 master 的情况
 
 * 只有在掉线节点被误操作（比如 `RESET MASTER`、初始化新集群）或者导入了和 master 不连续的 GTID 时，GPID 才会高于 master。
 * 这种情况下，节点会被拒绝加入，因为 MGR 无法保证 GTID 的一致性。
 
 ---
 
-### 4️⃣ 总结
+##### 4️⃣ 总结
 
 * **掉线 + 恢复节点，不做破坏性操作** → GPID 不会高于 master → 自动可加入
 * **破坏性操作 / 重新初始化集群** → GPID 高于 master → 被拒绝，需要手动干预
@@ -1007,7 +1007,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 1️⃣ 触发“被拒绝”的前提
+##### 1️⃣ 触发“被拒绝”的前提
 
 * 掉线节点被误操作，或者 GPID 高于存活 master
 * MGR 会拒绝节点加入，因为它认为节点属于“不同世代”
@@ -1016,7 +1016,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 2️⃣ 让被拒绝节点重新加入的思路
+##### 2️⃣ 让被拒绝节点重新加入的思路
 
 你描述的做法本质上是 **把节点当作新节点加入集群**：
 
@@ -1045,7 +1045,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 3️⃣ 注意事项
+##### 3️⃣ 注意事项
 
 * **备份原有配置**，不要误删 SSL 证书或用户配置
 * 确保网络畅通，复制账号权限正确
@@ -1054,7 +1054,7 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
-### 4️⃣ 原理
+##### 4️⃣ 原理
 
 * 这种方法实际上相当于 **rejoin from scratch**
 * 数据不会丢失，因为 master 保留了完整 GTID
