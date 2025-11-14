@@ -3,9 +3,11 @@
   * [SSL通信问题](#2)
   * [自带的SSL证书问题](#3)
   * [集群中节点离开集群的情形](#4)
+  * [集群中节点离开集群的情形2——事实上的脑裂](#5)
 
 
 <h3 id="1">MGR集群 一主多从</h3>
+
 
 MGR, MySQL group replication, 组复制, 后续都简称 ```MGR```
 
@@ -1066,3 +1068,139 @@ SHOW STATUS LIKE 'Ssl_cipher';
 
 ---
 
+
+<h3 id="5">集群中节点离开集群的情形2——事实上的脑裂</h3>
+
+基本信息不变, 情况如下:  
+集群的VIP持有者为node1, 近期也一直是它在对外服务  
+然而某些前期操作上的失误, 遗留的后遗症  
+等到发现问题时的状态是,  
+node1 单独为一个集群  
+node2 和 node3 构建成了一个集群  
+
+修复目标是, 重新以 node1 为基准  
+让 node2 和 node3 加入进来
+
+> 明白了，你现在的情况是 **node1、node2、node3 的 Group Replication 状态已经混乱**，主要是因为在 node1 上误操作了 clone/用户/GTID 等相关操作。我们需要一步步 **把集群恢复成 node1 为主的干净状态**，然后再让 node2 和 node3 重新加入。
+
+> 我帮你整理一个 **恢复顺序和操作清单**，你按这个执行就能把集群回到可控状态：
+
+---
+
+##### 1️⃣ 在 node1（基准节点/Primary）上确认状态
+
+1. 确认 node1 是唯一的 primary：
+
+```sql
+SHOW GLOBAL VARIABLES LIKE 'gtid_mode';
+SHOW GLOBAL VARIABLES LIKE 'group_replication_bootstrap_group';
+SELECT * FROM performance_schema.replication_group_members;
+```
+
+* `gtid_mode` 必须是 **ON**。
+* `group_replication_bootstrap_group` 必须是 **OFF**。
+* 如果 node1 显示 ONLINE，其他节点显示 OFFLINE 或不在列表，说明 node1 是唯一 active 节点。
+
+2. 确认 `repl_user` 和 `clone_user` 权限：
+
+```sql
+SELECT User, Host FROM mysql.user WHERE User='repl_user';
+SELECT User, Host FROM mysql.user WHERE User='clone_user';
+SHOW GRANTS FOR 'repl_user'@'10.10.0.%';
+SHOW GRANTS FOR 'clone_user'@'10.10.0.%';
+```
+
+* `repl_user` 必须有：`REPLICATION SLAVE`, `REPLICATION_APPLIER`, `BACKUP_ADMIN`。
+* `clone_user` 必须有：`BACKUP_ADMIN`, `CLONE_ADMIN`。
+
+3. 设置 node1 为启动引导节点：
+
+```sql
+SET GLOBAL group_replication_bootstrap_group=ON;
+```
+
+---
+
+##### 2️⃣ 在 node2 和 node3 上清理旧数据
+
+在 node2/node3 上执行（每个节点单独操作）：
+
+```bash
+systemctl stop mysqld
+cd /var/lib/mysql
+
+# 清理 relay 和 group replication 文件
+rm -f mysql-relay-bin-group_replication_*
+rm -f gr*.dat  # 如果存在
+rm -f auto.cnf  # 可选，如果需要完全重新克隆
+```
+
+* 启动 MySQL：
+
+```bash
+systemctl start mysqld
+```
+
+* 确保 GTID 执行状态清空：
+
+```sql
+RESET REPLICA ALL;
+```
+
+---
+
+##### 3️⃣ 在 node1 上准备 clone
+
+1. 设置有效 donor：
+
+```sql
+SET GLOBAL clone_valid_donor_list = '10.10.0.11:3306';
+```
+
+2. 确保 clone_user 正确：
+
+```sql
+DROP USER IF EXISTS 'clone_user'@'10.10.0.%';
+CREATE USER 'clone_user'@'10.10.0.%' IDENTIFIED BY 'ClonePass123!';
+GRANT BACKUP_ADMIN, CLONE_ADMIN ON *.* TO 'clone_user'@'10.10.0.%';
+FLUSH PRIVILEGES;
+```
+
+---
+
+##### 4️⃣ 在 node2/node3 执行 clone
+
+在每个节点单独操作（不要同时操作两个节点）：
+
+```sql
+CLONE INSTANCE FROM 'clone_user'@'10.10.0.11':3306 IDENTIFIED BY 'ClonePass123!';
+```
+
+* 等待 clone 完成再操作下一个节点。
+* 完成后节点的数据就和 node1 一致。
+
+---
+
+##### 5️⃣ 启动 Group Replication
+
+在 node1 上：
+
+```sql
+SET GLOBAL group_replication_bootstrap_group=ON;
+START GROUP_REPLICATION USER='repl_user', PASSWORD='*qJz0s_!bWgP?FX=';
+SET GLOBAL group_replication_bootstrap_group=OFF;
+```
+
+在 node2/node3 上：
+
+```sql
+START GROUP_REPLICATION USER='repl_user', PASSWORD='*qJz0s_!bWgP?FX=';
+```
+
+* 检查成员状态：
+
+```sql
+SELECT * FROM performance_schema.replication_group_members ORDER BY MEMBER_HOST;
+```
+
+---
