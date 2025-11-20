@@ -1151,7 +1151,7 @@ RESET REPLICA ALL;
 
 ##### 3️⃣ 在 node1 上准备 clone
 
-1. 设置有效 donor：
+1. ~~设置有效 donor~~~ 这里不对, 不是在donor的源端执行,  而是接收clone的目标端：
 
 ```sql
 SET GLOBAL clone_valid_donor_list = '10.10.0.11:3306';
@@ -1236,6 +1236,12 @@ mysql>
 ---
 
 ##### 4️⃣ 在 node2/node3 执行 clone
+
+设置有效 donor
+
+```sql
+SET GLOBAL clone_valid_donor_list = '10.10.0.11:3306';
+```
 
 在每个节点单独操作（不要同时操作两个节点）：
 
