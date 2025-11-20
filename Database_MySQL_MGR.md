@@ -1157,6 +1157,12 @@ RESET REPLICA ALL;
 SET GLOBAL clone_valid_donor_list = '10.10.0.11:3306';
 ```
 
+与之相对应的查询语句
+
+```sql
+SHOW GLOBAL VARIABLES LIKE 'clone_valid_donor_list';
+```
+
 2. 确保 clone_user 正确：
 
 ```sql
