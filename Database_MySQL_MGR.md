@@ -1172,6 +1172,67 @@ GRANT BACKUP_ADMIN, CLONE_ADMIN ON *.* TO 'clone_user'@'10.10.0.%';
 FLUSH PRIVILEGES;
 ```
 
+与之相对应的查询语句
+
+```sql
+# 查询用户是否存在
+SELECT user, host 
+FROM mysql.user 
+WHERE user = 'clone_user' AND host LIKE '10.10.0.%';
+
+# 查询用户拥有的权限
+SHOW GRANTS FOR 'clone_user'@'10.10.0.%';
+
+# 查询用户密码——不可逆hash, 只能查出密文, 不能反推出明文
+SELECT user, host, plugin, authentication_string
+FROM mysql.user
+WHERE user = 'clone_user' AND host LIKE '10.10.0.%';
+```
+
+示例如下
+
+```sql
+mysql> SHOW GLOBAL VARIABLES LIKE 'clone_valid_donor_list';
++------------------------+-------+
+| Variable_name          | Value |
++------------------------+-------+
+| clone_valid_donor_list |       |
++------------------------+-------+
+1 row in set (0.01 sec)
+
+mysql> 
+mysql> SELECT user, host 
+    -> FROM mysql.user 
+    -> WHERE user = 'clone_user' AND host LIKE '10.10.0.%';
++------------+-----------+
+| user       | host      |
++------------+-----------+
+| clone_user | 10.10.0.% |
++------------+-----------+
+1 row in set (0.00 sec)
+
+mysql> SHOW GRANTS FOR 'clone_user'@'10.10.0.%';
++-------------------------------------------------------------------+
+| Grants for clone_user@10.10.0.%                                   |
++-------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `clone_user`@`10.10.0.%`                    |
+| GRANT BACKUP_ADMIN,CLONE_ADMIN ON *.* TO `clone_user`@`10.10.0.%` |
++-------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT user, host, plugin, authentication_string
+    -> FROM mysql.user
+    -> WHERE user = 'clone_user' AND host LIKE '10.10.0.%';
++------------+-----------+-----------------------+------------------------------------------------------------------------+
+| user       | host      | plugin                | authentication_string                                                  |
++------------+-----------+-----------------------+------------------------------------------------------------------------+
+| clone_user | 10.10.0.% | caching_sha2_password | $A$005$Qr5Vwic|2QD7x[{NruQ/Aa6jSQDho2F72TYBBX3cooEK3boZTApPKZBtLq6 |
++------------+-----------+-----------------------+------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> 
+```
+
 ---
 
 ##### 4️⃣ 在 node2/node3 执行 clone
