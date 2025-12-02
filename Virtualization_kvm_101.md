@@ -11,6 +11,7 @@
   * [光驱相关](#9)
   * [virtio 模式下安装Windows操作系统](#10)
   * [磁盘的热添加/删除](#11)
+  * [有关qcow2文件大小/压缩问题的进一步展开](#12)
 
 
 
@@ -972,3 +973,108 @@ done
 
 移除则是:  
 ```virsh detach-disk```
+
+<h3 id="12">有关qcow2文件大小/压缩问题的进一步展开</h3>
+
+完整的话题讨论比较长  
+https://chatgpt.com/share/692ef0a4-0048-800c-9f70-f0ae0d6822c2
+
+#### 📌 **最终推荐的正确工作流（最佳实践）**
+
+下面这个流程既有性能，又能保证迁移时按实际大小拷贝，不会出现 rsync 复制 300GB 的悲剧：
+
+---
+
+##### **🟦（1）创建 qcow2 模板磁盘时 — 使用 preallocation=falloc（推荐）**
+
+```bash
+qemu-img create -f qcow2 -o lazy_refcounts=on,preallocation=falloc \
+  /vm/disk.qcow2 300G
+```
+
+或：
+
+```bash
+qemu-img convert -O qcow2 \
+  -o lazy_refcounts=on,preallocation=falloc \
+  source.qcow2 dest.qcow2
+```
+
+✔ 性能好
+✔ 避免 metadata 带来的 rsync 膨胀
+✔ 不会占满磁盘空间
+
+---
+
+##### **🟦（2）虚拟机正常运行使用 qcow2（falloc）无问题**
+
+你的使用场景属于：
+
+* 单节点 KVM
+* 偶尔迁移宿主机
+* 需要较高性能
+* 不追求极致压缩
+
+→ **falloc 是最适合的中间点**
+（云厂商普遍使用类似策略）
+
+---
+
+##### **🟦（3）迁移/拷贝磁盘时 — 必须用 `dd conv=sparse`（关键）**
+
+这是你测试成功的命令：
+
+```bash
+dd if=/vm/disk.qcow2 of=/backup/disk.qcow2 bs=1M conv=sparse status=progress
+```
+
+它是 **唯一** 能保持 falloc 预分配稀疏性的方法：
+
+✔ 按实际数据大小迁移
+✔ 不会把磁盘中 zero-block 写满
+✔ 比 rsync 更安全、更可控
+✔ 有进度条、速度统计
+
+---
+
+##### ❌ **为什么不能用 rsync？**
+
+因为 rsync 无法理解 falloc 的"空洞"来源，它会：
+
+* 发现磁盘分配区块是“有效块”
+* 从底层读出来（即使里面是 0）
+* 导致复制整个 300GB
+
+→ 实测就是你遇到的问题。
+
+---
+
+### 📚 **最终总结 — 最佳实践流程如下**
+
+#### **创建阶段：**
+
+✔ 使用 falloc：
+
+```bash
+qemu-img create -f qcow2 -o lazy_refcounts=on,preallocation=falloc disk.qcow2 300G
+```
+
+#### **运行阶段：**
+
+➡️ 正常使用
+
+#### **迁移阶段：**
+
+✔ 使用 dd sparse 模式迁移：
+
+```bash
+dd if=/vm/disk.qcow2 of=/backup/disk.qcow2 bs=1M conv=sparse status=progress
+```
+
+### **重点：**
+
+* **不要用 metadata**（会导致迁移膨胀）
+* **不要用 compression**（和 preallocation 互斥）
+* **不要用 rsync**（无法保持 sparse）
+* **不要用 qemu-img convert -c**（CPU 重、意义不大）
+
