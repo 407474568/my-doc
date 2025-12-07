@@ -15,7 +15,7 @@ https://openzfs.org/wiki/Main_Page
   * [池特性升级](#3)
   * [如果开机没有自动导入池](#4)
   * [限制ARC对内存的消耗大小](#5)
-  * [参数调优/修改](#6)
+  * [参数调优/修改](#8)
 
 <h3 id="7">dataset数据集的recordsize大小</h3>
 
