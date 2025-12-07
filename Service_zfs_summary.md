@@ -543,6 +543,6 @@ options zfs zfs_arc_max=274877906944
 
 <h3 id="8">参数调优/修改</h3>
 #### 增加L2ARC写入带宽（默认8MB，提升到128MB）
-```
+```shell
 echo $((128*1024*1024)) > /sys/module/zfs/parameters/l2arc_write_max
 ```
