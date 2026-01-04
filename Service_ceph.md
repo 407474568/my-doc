@@ -75,11 +75,11 @@ ms_bind_msgr1 = true
 
 ---
 
-#### 1. 创建 Monitor 密钥环的步骤
+##### 1. 创建 Monitor 密钥环的步骤
 
 通常我们在 **Node1** 上生成，然后分发到其他节点。
 
-##### 第一步：生成临时密钥环并生成密钥
+###### 第一步：生成临时密钥环并生成密钥
 
 ```bash
 # 1. 创建一个临时的密钥环文件，并为 mon. 生成随机密钥
@@ -91,7 +91,7 @@ ceph-authtool --create-keyring /etc/ceph/ceph.mon.keyring --gen-key -n mon. --ca
 * **`--gen-key -n mon.`**: 生成名为 `mon.` 的实体密钥。
 * **`--cap mon 'allow *'`**: 赋予该密钥管理 Monitor 的所有权限。
 
-##### 第二步：导入管理员（Admin）密钥（可选但推荐）
+###### 第二步：导入管理员（Admin）密钥（可选但推荐）
 
 为了方便后续操作，通常会将 `client.admin` 的密钥也放进去，这样 MON 在初始化时就知道了管理员是谁。
 
@@ -104,7 +104,7 @@ ceph-authtool /etc/ceph/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.
 
 ```
 
-##### 第三步：设置权限（极其重要）
+###### 第三步：设置权限（极其重要）
 
 Ceph 守护进程以 `ceph` 用户运行，如果不修改权限，`mkfs` 或服务启动时会因为读不到密钥而 **Core Dump**。
 
@@ -116,7 +116,7 @@ chmod 600 /etc/ceph/ceph.mon.keyring
 
 ---
 
-#### 2. 文档补充：这些命令究竟在做什么？
+##### 2. 文档补充：这些命令究竟在做什么？
 
 | 命令/动作 | 文档描述（作用） |
 | --- | --- |
@@ -127,7 +127,7 @@ chmod 600 /etc/ceph/ceph.mon.keyring
 
 ---
 
-#### 3. Keyring 的内容格式预览
+##### 3. Keyring 的内容格式预览
 
 虽然它是二进制或特定格式，但你可以用 `cat` 查看其文本表现形式，大概长这样：
 
@@ -146,7 +146,7 @@ chmod 600 /etc/ceph/ceph.mon.keyring
 
 ---
 
-#### 4. 手动部署 vs Cephadm
+##### 4. 手动部署 vs Cephadm
 
 * **手动部署**：你必须先有这个文件，才能执行 `ceph-mon --mkfs`。它是先于数据库存在的。
 * **Cephadm**：当你执行 `bootstrap` 时，`cephadm` 会在容器内自动跑完上述所有 `ceph-authtool` 命令，并将结果提取到宿主机的 `/etc/ceph` 目录下。
