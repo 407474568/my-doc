@@ -1,5 +1,7 @@
 * [目录](#0)
   * [初始化一个3节点的ceph mon/mgr集群](#1)
+  * [使用cephadm(容器方式)部署reef(v18)环境](#2)
+
 
 
 <h3 id="1">初始化一个3节点的 ceph mon/mgr 集群</h3>
@@ -240,3 +242,107 @@ systemctl start ceph-mon@mon1.service
 # 4. 查看最新状态
 systemctl status ceph-mon@mon1.service
 ```
+
+<h3 id="2">使用cephadm(容器方式)部署环境</h3>
+
+行文时的```reef```版本为v18.2.7
+
+```shell
+# 在所有节点执行
+ansible ceph -m shell -a 'dnf install -y rocky-release-storage-reef'
+ansible ceph -m shell -a 'dnf makecache'
+ansible ceph -m shell -a 'dnf install -y cephadm ceph-common podman lvm2'
+```
+
+其中第一步的 ```ceph``` 的软件仓库, 可以用阿里的
+
+```shell
+[root@ceph-mon-mgr-node1 ~]# cat /Code/private/dev/linux_common_lib/ceph/ceph-reef-aliyun.repo
+# 写入 /etc/yum.repos.d/ceph.repo
+[ceph]
+name=Ceph packages for x86_64
+baseurl=https://mirrors.aliyun.com/ceph/rpm-reef/el9/x86_64/
+enabled=1
+gpgcheck=1
+type=rpm-md
+gpgkey=https://mirrors.aliyun.com/ceph/keys/release.asc
+
+[ceph-noarch]
+name=Ceph noarch packages
+baseurl=https://mirrors.aliyun.com/ceph/rpm-reef/el9/noarch/
+enabled=1
+gpgcheck=1
+type=rpm-md
+gpgkey=https://mirrors.aliyun.com/ceph/keys/release.asc
+```
+
+被安装的软件列表
+
+```shell
+ceph-mon-mgr-node3 | CHANGED | rc=0 >>
+Last metadata expiration check: 0:00:21 ago on Mon 05 Jan 2026 03:11:58 PM CST.
+Package podman-6:5.6.0-9.el9_7.x86_64 is already installed.
+Package lvm2-9:2.03.32-2.el9_7.1.x86_64 is already installed.
+Dependencies resolved.
+================================================================================
+ Package                  Arch      Version                Repository      Size
+================================================================================
+Installing:
+ ceph-common              x86_64    2:18.2.7-0.el9         ceph            18 M
+ cephadm                  noarch    2:18.2.7-0.el9         ceph-noarch    226 k
+Installing dependencies:
+ boost-program-options    x86_64    1.75.0-13.el9_7        appstream      104 k
+ daxctl-libs              x86_64    78-2.el9               baseos          41 k
+ gperftools-libs          x86_64    2.9.1-3.el9            epel           308 k
+ libarrow                 x86_64    9.0.0-14.el9           epel           4.4 M
+ libarrow-doc             noarch    9.0.0-14.el9           epel            25 k
+ libcephfs2               x86_64    2:18.2.7-0.el9         ceph           710 k
+ liboath                  x86_64    2.6.12-1.el9           epel            49 k
+ libpmem                  x86_64    1.12.1-1.el9           appstream      111 k
+ libpmemobj               x86_64    1.12.1-1.el9           appstream      159 k
+ librabbitmq              x86_64    0.11.0-7.el9           appstream       44 k
+ librados2                x86_64    2:18.2.7-0.el9         ceph           3.3 M
+ libradosstriper1         x86_64    2:18.2.7-0.el9         ceph           475 k
+ librbd1                  x86_64    2:18.2.7-0.el9         ceph           3.0 M
+ librdkafka               x86_64    1.6.1-102.el9          appstream      662 k
+ librdmacm                x86_64    57.0-2.el9             baseos          70 k
+ librgw2                  x86_64    2:18.2.7-0.el9         ceph           4.5 M
+ libunwind                x86_64    1.6.2-1.el9            epel            67 k
+ lttng-ust                x86_64    2.12.0-6.el9           appstream      282 k
+ ndctl-libs               x86_64    78-2.el9               baseos          89 k
+ parquet-libs             x86_64    9.0.0-14.el9           epel           838 k
+ python3-ceph-argparse    x86_64    2:18.2.7-0.el9         ceph            45 k
+ python3-ceph-common      x86_64    2:18.2.7-0.el9         ceph           130 k
+ python3-cephfs           x86_64    2:18.2.7-0.el9         ceph           162 k
+ python3-prettytable      noarch    0.7.2-27.el9.0.1       appstream       41 k
+ python3-rados            x86_64    2:18.2.7-0.el9         ceph           322 k
+ python3-rbd              x86_64    2:18.2.7-0.el9         ceph           302 k
+ python3-rgw              x86_64    2:18.2.7-0.el9         ceph           100 k
+ re2                      x86_64    1:20211101-20.el9      epel           191 k
+ thrift                   x86_64    0.15.0-4.el9           epel           1.6 M
+
+Transaction Summary
+================================================================================
+Install  31 Packages
+
+Total download size: 41 M
+Installed size: 151 M
+```
+
+为 ```podman``` 配置代理--在RHEL家族发行版, ```podman```会替代```docker```作为默认runtime
+
+```shell
+[root@ceph-mon-mgr-node1 ~]# cat /Code/private/dev/linux_common_lib/ceph/podman_config_image_pull_use_proxy.sh 
+# 创建 Podman 服务配置目录
+proxy_ip_port="192.168.100.40:8000"
+mkdir -p /etc/systemd/system/podman.service.d/
+cat <<EOF > /etc/systemd/system/podman.service.d/http-proxy.conf
+[Service]
+Environment="HTTP_PROXY=http://$proxy_ip_port"
+Environment="HTTPS_PROXY=http://$proxy_ip_port"
+EOF
+systemctl daemon-reload
+systemctl restart podman
+[root@ceph-mon-mgr-node1 ~]# 
+```
+
