@@ -346,3 +346,163 @@ systemctl restart podman
 [root@ceph-mon-mgr-node1 ~]# 
 ```
 
+提前 pull 好 ceph 的 image
+
+```shell
+# 1. 核心镜像 (这是重头戏)
+podman pull quay.io/ceph/ceph:v18.2.7
+
+# 2. 辅助组件 (Cephadm 会自动调用这些)
+podman pull quay.io/ceph/ceph-grafana:9.4.7
+podman pull quay.io/prometheus/prometheus:v2.43.0
+podman pull quay.io/prometheus/node-exporter:v1.5.0
+podman pull quay.io/prometheus/alertmanager:v0.25.0
+```
+
+执行结果
+
+```shell
+[root@docker-node1 ~]# ansible ceph -m shell -a 'podman image ls '
+ceph-mon-mgr-node3 | CHANGED | rc=0 >>
+REPOSITORY                        TAG         IMAGE ID      CREATED       SIZE
+quay.io/ceph/ceph                 v18.2.7     0f5473a1e726  8 months ago  1.27 GB
+quay.io/ceph/ceph-grafana         9.4.7       954c08fa6188  2 years ago   647 MB
+quay.io/prometheus/prometheus     v2.43.0     a07b618ecd1d  2 years ago   235 MB
+quay.io/prometheus/node-exporter  v1.5.0      0da6a335fe13  3 years ago   23.9 MB
+ceph-mon-mgr-node2 | CHANGED | rc=0 >>
+REPOSITORY                        TAG         IMAGE ID      CREATED       SIZE
+quay.io/ceph/ceph                 v18.2.7     0f5473a1e726  8 months ago  1.27 GB
+quay.io/ceph/ceph-grafana         9.4.7       954c08fa6188  2 years ago   647 MB
+quay.io/prometheus/prometheus     v2.43.0     a07b618ecd1d  2 years ago   235 MB
+quay.io/prometheus/node-exporter  v1.5.0      0da6a335fe13  3 years ago   23.9 MB
+ceph-mon-mgr-node1 | CHANGED | rc=0 >>
+REPOSITORY                        TAG         IMAGE ID      CREATED       SIZE
+quay.io/ceph/ceph                 v18.2.7     0f5473a1e726  8 months ago  1.27 GB
+quay.io/ceph/ceph-grafana         9.4.7       954c08fa6188  2 years ago   647 MB
+quay.io/prometheus/prometheus     v2.43.0     a07b618ecd1d  2 years ago   235 MB
+quay.io/prometheus/node-exporter  v1.5.0      0da6a335fe13  3 years ago   23.9 MB
+[root@docker-node1 ~]# ansible ceph -m shell -a 'cephadm version;ceph --version'
+ceph-mon-mgr-node1 | CHANGED | rc=0 >>
+cephadm version 18.2.7 (6b0e988052ec84cf2d4a54ff9bbbc5e720b621ad) reef (stable)
+ceph version 18.2.7 (6b0e988052ec84cf2d4a54ff9bbbc5e720b621ad) reef (stable)
+ceph-mon-mgr-node3 | CHANGED | rc=0 >>
+cephadm version 18.2.7 (6b0e988052ec84cf2d4a54ff9bbbc5e720b621ad) reef (stable)
+ceph version 18.2.7 (6b0e988052ec84cf2d4a54ff9bbbc5e720b621ad) reef (stable)
+ceph-mon-mgr-node2 | CHANGED | rc=0 >>
+cephadm version 18.2.7 (6b0e988052ec84cf2d4a54ff9bbbc5e720b621ad) reef (stable)
+ceph version 18.2.7 (6b0e988052ec84cf2d4a54ff9bbbc5e720b621ad) reef (stable)
+[root@docker-node1 ~]# 
+```
+
+cephadm bootstrap 的执行记录
+
+```shell
+[root@ceph-mon-mgr-node1 ~]# cephadm bootstrap --mon-ip 192.168.100.131 \
+    --initial-dashboard-user admin \
+    --initial-dashboard-password admin \
+    --skip-pull
+Verifying podman|docker is present...
+Verifying lvm2 is present...
+Verifying time synchronization is in place...
+Unit chronyd.service is enabled and running
+Repeating the final host check...
+podman (/usr/bin/podman) version 5.6.0 is present
+systemctl is present
+lvcreate is present
+Unit chronyd.service is enabled and running
+Host looks OK
+Cluster fsid: eb07238a-ea0f-11f0-97ea-52540083ebf9
+Verifying IP 192.168.100.131 port 3300 ...
+Verifying IP 192.168.100.131 port 6789 ...
+Mon IP `192.168.100.131` is in CIDR network `192.168.96.0/19`
+Mon IP `192.168.100.131` is in CIDR network `192.168.96.0/19`
+Internal network (--cluster-network) has not been provided, OSD replication will default to the public_network
+Ceph version: ceph version 18.2.7 (6b0e988052ec84cf2d4a54ff9bbbc5e720b621ad) reef (stable)
+Extracting ceph user uid/gid from container image...
+Creating initial keys...
+Creating initial monmap...
+Creating mon...
+Waiting for mon to start...
+Waiting for mon...
+mon is available
+Assimilating anything we can from ceph.conf...
+Generating new minimal ceph.conf...
+Restarting the monitor...
+Setting public_network to 192.168.96.0/19 in global config section
+Wrote config to /etc/ceph/ceph.conf
+Wrote keyring to /etc/ceph/ceph.client.admin.keyring
+Creating mgr...
+Verifying port 0.0.0.0:9283 ...
+Verifying port 0.0.0.0:8765 ...
+Verifying port 0.0.0.0:8443 ...
+Waiting for mgr to start...
+Waiting for mgr...
+mgr not available, waiting (1/15)...
+mgr not available, waiting (2/15)...
+mgr not available, waiting (3/15)...
+mgr not available, waiting (4/15)...
+mgr not available, waiting (5/15)...
+mgr not available, waiting (6/15)...
+mgr is available
+Enabling cephadm module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 5...
+mgr epoch 5 is available
+Setting orchestrator backend to cephadm...
+Generating ssh key...
+Wrote public SSH key to /etc/ceph/ceph.pub
+Adding key to root@localhost authorized_keys...
+Adding host ceph-mon-mgr-node1...
+Deploying mon service with default placement...
+Deploying mgr service with default placement...
+Deploying crash service with default placement...
+Deploying ceph-exporter service with default placement...
+Deploying prometheus service with default placement...
+Deploying grafana service with default placement...
+Deploying node-exporter service with default placement...
+Deploying alertmanager service with default placement...
+Enabling the dashboard module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 9...
+mgr epoch 9 is available
+Generating a dashboard self-signed certificate...
+Creating initial admin user...
+Fetching dashboard port number...
+Ceph Dashboard is now available at:
+
+	     URL: https://ceph-mon-mgr-node1:8443/
+	    User: admin
+	Password: admin
+
+Enabling client.admin keyring and conf on hosts with "admin" label
+Saving cluster configuration to /var/lib/ceph/eb07238a-ea0f-11f0-97ea-52540083ebf9/config directory
+Enabling autotune for osd_memory_target
+You can access the Ceph CLI as following in case of multi-cluster or non-default config:
+
+	sudo /usr/sbin/cephadm shell --fsid eb07238a-ea0f-11f0-97ea-52540083ebf9 -c /etc/ceph/ceph.conf -k /etc/ceph/ceph.client.admin.keyring
+
+Or, if you are only running a single cluster on this host:
+
+	sudo /usr/sbin/cephadm shell 
+
+Please consider enabling telemetry to help improve Ceph:
+
+	ceph telemetry on
+
+For more information see:
+
+	https://docs.ceph.com/en/latest/mgr/telemetry/
+
+Bootstrap complete.
+[root@ceph-mon-mgr-node1 ~]# podman ps
+CONTAINER ID  IMAGE                                                                                      COMMAND               CREATED         STATUS         PORTS       NAMES
+66123e661b59  quay.io/ceph/ceph:v18                                                                      -n mon.ceph-mon-m...  4 minutes ago   Up 4 minutes               ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-mon-ceph-mon-mgr-node1
+6e21f52dcad1  quay.io/ceph/ceph:v18                                                                      -n mgr.ceph-mon-m...  4 minutes ago   Up 4 minutes               ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-mgr-ceph-mon-mgr-node1-bbbyzc
+4c4ac4edeeb0  quay.io/ceph/ceph@sha256:1b9158ce28975f95def6a0ad459fa19f1336506074267a4b47c1bd914a00fec0  -n client.ceph-ex...  3 minutes ago   Up 3 minutes               ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-ceph-exporter-ceph-mon-mgr-node1
+c705c52f9621  quay.io/ceph/ceph@sha256:1b9158ce28975f95def6a0ad459fa19f1336506074267a4b47c1bd914a00fec0  -n client.crash.c...  3 minutes ago   Up 3 minutes               ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-crash-ceph-mon-mgr-node1
+e869a071243a  quay.io/prometheus/node-exporter:v1.5.0                                                    --no-collector.ti...  3 minutes ago   Up 3 minutes   9100/tcp    ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-node-exporter-ceph-mon-mgr-node1
+09461489a7ba  quay.io/prometheus/prometheus:v2.43.0                                                      --config.file=/et...  51 seconds ago  Up 51 seconds  9090/tcp    ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-prometheus-ceph-mon-mgr-node1
+d951443c6cd2  quay.io/prometheus/alertmanager:v0.25.0                                                    --cluster.listen-...  30 seconds ago  Up 31 seconds  9093/tcp    ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-alertmanager-ceph-mon-mgr-node1
+a12469b3ff09  quay.io/ceph/ceph-grafana:9.4.7                                                            /bin/bash             28 seconds ago  Up 29 seconds  3000/tcp    ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-grafana-ceph-mon-mgr-node1
+[root@ceph-mon-mgr-node1 ~]# 
+```
