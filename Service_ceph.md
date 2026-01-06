@@ -506,3 +506,85 @@ d951443c6cd2  quay.io/prometheus/alertmanager:v0.25.0                 
 a12469b3ff09  quay.io/ceph/ceph-grafana:9.4.7                                                            /bin/bash             28 seconds ago  Up 29 seconds  3000/tcp    ceph-eb07238a-ea0f-11f0-97ea-52540083ebf9-grafana-ceph-mon-mgr-node1
 [root@ceph-mon-mgr-node1 ~]# 
 ```
+
+此时的 Web UI 可用  
+继续添加另两个计划中的 mon/mgr 节点  
+
+让第一个节点, 也就是我这里的node1, 免密登录另外两个节点--实际上原本我也有此配置, 实际上是多添加了一个密钥
+
+```shell
+ssh-copy-id -f -i /etc/ceph/ceph.pub root@192.168.100.132
+ssh-copy-id -f -i /etc/ceph/ceph.pub root@192.168.100.133
+```
+
+让 node1 在 ceph 集群里添加这两个主机
+
+```shell
+ceph orch host add ceph-mon-mgr-node2 192.168.100.132
+ceph orch host add ceph-mon-mgr-node3 192.168.100.133
+
+# 让 MON 跑在这三个指定的节点上
+ceph orch apply mon --placement="3 ceph-mon-mgr-node1 ceph-mon-mgr-node2 ceph-mon-mgr-node3"
+
+# 在 131, 132, 133 上各跑一个 MGR，共 3 个，系统会自动选一个 Active
+ceph orch apply mgr --placement="3 ceph-mon-mgr-node1 ceph-mon-mgr-node2 ceph-mon-mgr-node3"
+```
+
+如何验证部署结果？
+
+```shell
+[ceph: root@ceph-mon-mgr-node1 /]# ceph mgr stat
+# 你会看到类似：{ "active_name": "ceph-mon-mgr-node1...", "standbys": ["node2...", "node3..."] }
+
+[ceph: root@ceph-mon-mgr-node1 /]# ceph orch ps --daemon_type mgr
+# 你会看到三个节点上各有一个 mgr 守护进程正在运行 (running)
+```
+
+实际如下
+
+```shell
+ceph orch apply mon --placement="3 ceph-mon-mgr-node1 ceph-mon-mgr-node2 ceph-mon-mgr-node3"
+Scheduled mon update...
+[ceph: root@ceph-mon-mgr-node1 /]# # 在 131, 132, 133 上各跑一个 MGR，共 3 个，系统会自动选一个 Active
+ceph orch apply mgr --placement="3 ceph-mon-mgr-node1 ceph-mon-mgr-node2 ceph-mon-mgr-node3"
+Scheduled mgr update...
+[ceph: root@ceph-mon-mgr-node1 /]# ceph mgr stat
+{
+    "epoch": 18,
+    "available": true,
+    "active_name": "ceph-mon-mgr-node1.bbbyzc",
+    "num_standby": 1
+}
+[ceph: root@ceph-mon-mgr-node1 /]# ceph mgr stat
+{
+    "epoch": 19,
+    "available": true,
+    "active_name": "ceph-mon-mgr-node1.bbbyzc",
+    "num_standby": 2
+}
+[ceph: root@ceph-mon-mgr-node1 /]# ceph orch ps --daemon_type mgr
+NAME                           HOST                PORTS             STATUS         REFRESHED  AGE  MEM USE  MEM LIM  VERSION  IMAGE ID      CONTAINER ID  
+mgr.ceph-mon-mgr-node1.bbbyzc  ceph-mon-mgr-node1  *:9283,8765,8443  running (4h)     33s ago   4h     567M        -  18.2.7   0f5473a1e726  6e21f52dcad1  
+mgr.ceph-mon-mgr-node2.zerdtl  ceph-mon-mgr-node2  *:8443,9283,8765  running (3m)    111s ago   3m     494M        -  18.2.7   0f5473a1e726  a9e82c0a24d2  
+mgr.ceph-mon-mgr-node3.ivvyde  ceph-mon-mgr-node3  *:8443,9283,8765  running (37s)    36s ago  37s    40.9M        -  18.2.7   0f5473a1e726  77dd96fb90ad  
+[ceph: root@ceph-mon-mgr-node1 /]# ceph orch ps --daemon_type mgr
+NAME                           HOST                PORTS             STATUS         REFRESHED  AGE  MEM USE  MEM LIM  VERSION  IMAGE ID      CONTAINER ID  
+mgr.ceph-mon-mgr-node1.bbbyzc  ceph-mon-mgr-node1  *:9283,8765,8443  running (4h)     11s ago   4h     572M        -  18.2.7   0f5473a1e726  6e21f52dcad1  
+mgr.ceph-mon-mgr-node2.zerdtl  ceph-mon-mgr-node2  *:8443,9283,8765  running (23m)    73s ago  23m     501M        -  18.2.7   0f5473a1e726  a9e82c0a24d2  
+mgr.ceph-mon-mgr-node3.ivvyde  ceph-mon-mgr-node3  *:8443,9283,8765  running (20m)    11s ago  20m     502M        -  18.2.7   0f5473a1e726  77dd96fb90ad  
+[ceph: root@ceph-mon-mgr-node1 /]# 
+```
+
+
+### 在集群构建后的网络调整修改
+
+```shell
+# 进入 cephadm shell
+cephadm shell
+
+# 设置公共网段（通常是你 bootstrap 所在的网段）
+ceph config set global public_network 192.168.96.0/19
+
+# 设置集群网段（假设你为 OSD 准备的内网是 10.10.10.0/24）
+ceph config set global cluster_network 10.10.10.0/24
+```
