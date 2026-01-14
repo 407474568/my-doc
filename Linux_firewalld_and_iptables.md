@@ -54,9 +54,9 @@ COMMIT
 ```
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 700:800 -j ACCEPT
 ```
-一、 700:800  表示700到800之间的所有端口
-二、 :800   表示800及以下所有端口
-三、 700:   表示700以及以上所有端口
+一、 700:800  表示700到800之间的所有端口  
+二、 :800   表示800及以下所有端口  
+三、 700:   表示700以及以上所有端口  
 
 多地址多端口的写法
 ![](images/HJd9Qgp1307vaCYNWQAi5qSZmVhJLXRg.png)
