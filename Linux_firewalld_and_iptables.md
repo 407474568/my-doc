@@ -54,9 +54,9 @@ COMMIT
 ```
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 700:800 -j ACCEPT
 ```
-一、 700:800  表示700到800之间的所有端口  
-二、 :800   表示800及以下所有端口  
-三、 700:   表示700以及以上所有端口  
+- ```700:800```  表示700到800之间的所有端口  
+- ```:800```   表示800及以下所有端口  
+- ```700:```   表示700以及以上所有端口  
 
 多地址多端口的写法
 ![](images/HJd9Qgp1307vaCYNWQAi5qSZmVhJLXRg.png)
@@ -68,10 +68,10 @@ COMMIT
 -A INPUT -p tcp -m multiport --dports 22,1000,6000,7000,9527,10001,10002,20023,20024,20025 -j DROP
 ```
 
-iptables的保存    
-RHEL / CentOS
-使用service iptables save即可
-SuSE 11
+##### iptables 的保存    
+- RHEL / CentOS  
+使用service iptables save即可  
+- SuSE 11  
 只有iptables-save将输出重定向到文件, iptables-restore 文件名 命令进行恢复
 
 
