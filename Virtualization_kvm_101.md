@@ -806,8 +806,9 @@ qemu-img convert -c -O qcow2 /vm/games_pt_03.qcow2 vm/games_pt_03_new.qcow2
 guestOS 是 Windows,   
 使用了 ```qemu-img convert -c -O <格式> <源文件> <输出文件>```的方式,  
 但发现效果不佳  
-于是使用 ```sdelete``` 命令对每个分区都执行一遍,  
-试图来以此增加对空间幅度  
+于是使用 ```sdelete``` 命令对每个分区都执行一遍  
+```sdelete``` 的作用在此不展开  
+试图来以此增加对空间回收的幅度  
 结果发现:  
 KVM虚拟机的磁盘文件反而是满填充状态  
 即原本的分配方式是 ```preallocation=metadata```  
