@@ -3,10 +3,10 @@
 
 [iptables 部分](#firewalld部分)
 
-#### firewalld部分
+#### firewalld 部分
 
 
-#### iptables部分
+#### iptables 部分
 1) Linux操作系统中永久性生效，重启后不会复原  
 开启： chkconfig iptables on  
 关闭： chkconfig iptables off  
@@ -20,7 +20,8 @@ http://www.vpser.net/security/linux-iptables.html
 http://www.lampbo.org/linux-xuexi/linux-advance/iptables-options.html  
 http://blog.51yip.com/linux/1404.html  
 
--A 参数默认是添加到INPUT方向的规则链尾部，默认的配置文件通常最后一条是拒绝所有请求，因此，添加在其后的规则实际上无法起作用。使用-I 参数插入规则链顶部。
+```-A``` 参数默认是添加到INPUT方向的规则链尾部，默认的配置文件通常最后一条是拒绝所有请求，因此，添加在其后的规则实际上无法起作用。  
+使用```-I``` 参数插入规则链顶部。
 
 最简单的开放端口示例  
 iptables -I INPUT -p tcp --dport 22 -j ACCEPT
