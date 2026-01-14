@@ -75,6 +75,6 @@ COMMIT
 只有iptables-save将输出重定向到文件, iptables-restore 文件名 命令进行恢复
 
 
-SuSE上配置iptables
-按其官方的配置方式,配置文件：/etc/sysconfig/SuSEfirewall2
-可填写23:65535形式,冒号为连续端口号
+SuSE上配置iptables  
+按其官方的配置方式,配置文件：/etc/sysconfig/SuSEfirewall2  
+可填写```23:65535```形式,冒号为连续端口号
