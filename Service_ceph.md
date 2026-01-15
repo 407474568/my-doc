@@ -1,10 +1,67 @@
 * [目录](#0)
-  * [初始化一个3节点的ceph mon/mgr集群](#1)
-  * [使用cephadm(容器方式)部署reef(v18)环境](#2)
+  * [Ceph 常用命令](#1)
+  * [初始化一个3节点的ceph mon/mgr集群](#2)
+  * [使用cephadm(容器方式)部署reef(v18)环境](#3)
 
 
+<h3 id="1">Ceph 常用命令</h3>
 
-<h3 id="1">初始化一个3节点的 ceph mon/mgr 集群</h3>
+查看节点 host  
+```ceph orch host ls```
+
+```shell
+[ceph: root@ceph-mon-mgr-node1 /]# ceph orch host ls
+HOST                ADDR             LABELS  STATUS   
+X9DR3-F-node1       192.168.100.101  osd     Offline  
+X9DR3-F-node2       192.168.100.102  osd              
+ceph-mon-mgr-node1  192.168.100.131  _admin           
+ceph-mon-mgr-node2  192.168.100.132  _admin           
+ceph-mon-mgr-node3  192.168.100.133  _admin           
+5 hosts in cluster
+[ceph: root@ceph-mon-mgr-node1 /]# 
+```
+
+查看一个节点上的磁盘设备  
+
+```ceph orch device ls <节点名称>```  
+```ceph orch device ls X9DR3-F-node2```
+
+```shell
+[ceph: root@ceph-mon-mgr-node1 /]# ceph orch device ls X9DR3-F-node2
+HOST           PATH        TYPE  DEVICE ID                                     SIZE  AVAILABLE  REFRESHED  REJECT REASONS    
+X9DR3-F-node2  /dev/md123  hdd                                                7451G  Yes        8m ago                       
+X9DR3-F-node2  /dev/md124  ssd                                                 372G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/md125  ssd                                                 372G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdc    hdd   HGST_HUS724040ALS640_PCGJNWSX                3726G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sdd    hdd   ATA_WDC_WD40EZAZ-19SF3B0_WD-WX42DA1PHC31     3726G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sde    hdd   HGST_HUS724040ALS640_PCGM7WKX                3726G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sdf    hdd   ATA_ST4000DM004-2CV104_ZFN0238P              3726G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sdg    ssd   ATA_INTEL_SSDSC2BA400G4_BTHC67210561400HGN    372G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sdh    ssd   ATA_INTEL_SSDSC2BA400G4R_BTHV711409JM400NGN   372G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sdi    ssd   ATA_INTEL_SSDSC2BA400G4_BTHC67210551400HGN    372G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sdj    ssd   ATA_INTEL_SSDSC2BA400G4R_BTHV713001RZ400NGN   372G  No         8m ago     Has a FileSystem  
+X9DR3-F-node2  /dev/sdk    ssd   ATA_SSD_1TB_AA210512000000000098              953G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdl    hdd   SEAGATE_ST6000NM0034_Z4D35JLZ                5589G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdm    hdd   SEAGATE_ST6000NM0034_Z4D35PW60000R607QZJD    5589G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdn    hdd   SEAGATE_ST6000NM0034_S4D0J045                5589G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdo    hdd   HGST_HUS726060ALS640_1EGX44GC                5589G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdp    hdd   HGST_H7240AS60SUN4.0T_001416EH2TBX_PBJH2TBX  3726G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdq    hdd   HGST_H7240AS60SUN4.0T_001403E9M1LX_PBH9M1LX  3726G  Yes        8m ago                       
+X9DR3-F-node2  /dev/sdr    ssd   ATA_INTEL_SSDSC2BA400G4R_BTHV713001QS400NGN   372G  Yes        8m ago        
+```
+
+添加 label 标签  
+```ceph orch host label add <节点名称> <标签>```  
+```ceph orch host label add X9DR3-F-node1 osd```
+
+添加一个节点 host  
+```ceph orch host add <节点名称> <IP地址>```
+```shell
+[root@ceph-mon-mgr-node1 ~]# ceph orch host add X9DR3-F-node2 192.168.100.102
+Added host 'X9DR3-F-node2' with addr '192.168.100.102'
+```
+
+<h3 id="2">初始化一个3节点的 ceph mon/mgr 集群</h3>
 
 - 入坑的一个小结, 内容可能遗漏
 - 记录时使用的仍是传统部署方式, 但官方从v15版本开始早已主推cephadm, 也就是容器化方式
@@ -243,7 +300,7 @@ systemctl start ceph-mon@mon1.service
 systemctl status ceph-mon@mon1.service
 ```
 
-<h3 id="2">使用cephadm(容器方式)部署环境</h3>
+<h3 id="3">使用cephadm(容器方式)部署环境</h3>
 
 行文时的```reef```版本为v18.2.7
 
