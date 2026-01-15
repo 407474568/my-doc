@@ -50,6 +50,19 @@ X9DR3-F-node2  /dev/sdq    hdd   HGST_H7240AS60SUN4.0T_001403E9M1LX_PBH9M1LX  37
 X9DR3-F-node2  /dev/sdr    ssd   ATA_INTEL_SSDSC2BA400G4R_BTHV713001QS400NGN   372G  Yes        8m ago        
 ```
 
+查看节点健康状态详情
+
+```ceph health detail```
+
+```shell
+[ceph: root@ceph-mon-mgr-node1 /]# ceph health detail 
+HEALTH_WARN 1 hosts fail cephadm check; OSD count 0 < osd_pool_default_size 3
+[WRN] CEPHADM_HOST_CHECK_FAILED: 1 hosts fail cephadm check
+    host X9DR3-F-node1 (192.168.100.101) failed check: Can't communicate with remote host `192.168.100.101`, possibly because the host is not reachable or python3 is not installed on the host. [Errno 113] Connect call failed ('192.168.100.101', 22)
+[WRN] TOO_FEW_OSDS: OSD count 0 < osd_pool_default_size 3
+[ceph: root@ceph-mon-mgr-node1 /]# 
+```
+
 添加 label 标签  
 ```ceph orch host label add <节点名称> <标签>```  
 ```ceph orch host label add X9DR3-F-node1 osd```
