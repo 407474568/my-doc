@@ -64,7 +64,7 @@ tcpdump: listening on any, link-type LINUX_SLL (Linux cooked v1), capture size 2
 第三种是协议的关键字，主要包括fddi，ip，arp，rarp，tcp，udp等类型。Fddi指明是在FDDI (分布式光纤数据接口网络)上的特定的网络协议，实际上它是”ether”的别名，fddi和ether 具有类似的源地址和目的地址，所以可以将fddi协议包当作ether的包进行处理和分析。 其他的几个关键字就是指明了监听的包的协议内容。如果没有指定任何协议，则tcpdump 将会 监听所有协议的信息包。  
 除了这三种类型的关键字之外，其他重要的关键字如下：gateway， broadcast，less， greater， 还有三种逻辑运算，取非运算是 ‘not ‘ ‘! ‘， 与运算是’and’，’&&’;或运算是’or’ ，’&#124;&#124;’； 这些关键字可以组合起来构成强大的组合条件来满足人们的需要。
 
-1) “与” 条件（AND）
+- “与” 条件（AND）
 
 ```shell
 # 抓取来自 192.168.1.100 且目标端口为 22 的 TCP 包
@@ -74,7 +74,7 @@ tcpdump -i eth0 host 192.168.1.100 and port 22
 tcpdump -i eth0 host 192.168.1.100 && port 22
 ```
 
-2) “或” 条件（OR）
+- “或” 条件（OR）
 
 ```shell
 # 抓取端口为 80 或 443 的流量
@@ -84,7 +84,7 @@ tcpdump -i eth0 port 80 or port 443
 tcpdump -i eth0 'port 80 || port 443'
 ```
 
-3) “非” 条件（NOT）
+- “非” 条件（NOT）
 
 ```shell
 # 抓取不是来自 10.0.0.1 的所有包（推荐用 not）
