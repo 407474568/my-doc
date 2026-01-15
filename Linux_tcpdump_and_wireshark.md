@@ -4,23 +4,29 @@ http://www.ha97.com/4550.html
 
 https://blog.51cto.com/victor1980/701764
 
-示例  
+长参数示例  
+
 ```
 tcpdump -i any src host 192.168.10.2 and dst host 192.168.10.3 and dst port 22  -e -v -tttt -n -nn -c 10 -S
 ```
 
-选用的参数含义介绍:
--c     在收到指定的数量的分组后，tcpdump就会停止。  
--e     在输出行打印出数据链路层的头部信息。  
--i      指定监听的网络接口。  
--n     不把网络地址转换成名字。  
--nn   不进行端口名称的转换。  
--v     输出一个稍微详细的信息，例如在ip包中可以包括ttl和服务类型的信息  
--tttt   在每一行中输出由date处理的默认格式的时间戳。  
--S     输出tcp窗口序号的绝对值而不是相对值 (man手册: Print absolute, rather than relative, TCP sequence numbers.)  
+选用的参数含义介绍:  
+
+| 参数                               | 说明                                 |  
+|----------------------------------|------------------------------------|   
+| -c                               | 在收到指定的数量的分组后，tcpdump就会停止。          |  
+| -e                               | 在输出行打印出数据链路层的头部信息。                 |
+| -i                               | 指定监听的网络接口。                         |
+| -n                               | 不把网络地址转换成名字。                       |
+| -nn                              | 不进行端口名称的转换。                        |  
+| -v                               | 输出一个稍微详细的信息，例如在ip包中可以包括ttl和服务类型的信息 |  
+| -tttt |   在每一行中输出由date处理的默认格式的时间戳。         |
+|-S  |   输出tcp窗口序号的绝对值而不是相对值 (man手册: Print absolute, rather than relative, TCP sequence numbers.)|  
 
 其中:  
 tcpdump中的 源 / 目标 地址, 源 / 目标 端口, 协议 使用与 / 或 / 非 关键词连接, 关于tcpdump的表达式介绍如下
+
+
 
 ##### 排除特定地址
 
