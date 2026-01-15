@@ -55,7 +55,7 @@ tcpdump: listening on any, link-type LINUX_SLL (Linux cooked v1), capture size 2
 由于 ```!``` 在shell里是内置变量, 另有含义  
 所以在 shell 环境下执行还需要加上转义符, 即 ```\!```
 
-#### tcpdump的表达式介绍  
+#### tcpdump 的表达式介绍  
 
 表达式是一个正则表达式，tcpdump利用它作为过滤报文的条件，如果一个报文满足表 达式的条件，则这个报文将会被捕获。如果没有给出任何条件，则网络上所有的信息包 将会被截获。  
 在表达式中一般如下几种类型的关键字：  
@@ -75,6 +75,7 @@ tcpdump -i eth0 host 192.168.1.100 && port 22
 ```
 
 2. “或” 条件（OR）
+
 ```shell
 # 抓取端口为 80 或 443 的流量
 tcpdump -i eth0 port 80 or port 443
@@ -84,6 +85,7 @@ tcpdump -i eth0 'port 80 || port 443'
 ```
 
 3. “非” 条件（NOT）
+
 ```shell
 # 抓取不是来自 10.0.0.1 的所有包（推荐用 not）
 tcpdump -i eth0 not host 10.0.0.1
