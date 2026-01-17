@@ -63,6 +63,12 @@ HEALTH_WARN 1 hosts fail cephadm check; OSD count 0 < osd_pool_default_size 3
 [ceph: root@ceph-mon-mgr-node1 /]# 
 ```
 
+ceph 集群整体日志  
+```ceph -w```
+
+查看实时后台  
+```ceph log last cephadm```
+
 添加 label 标签  
 ```ceph orch host label add <节点名称> <标签>```  
 ```ceph orch host label add X9DR3-F-node1 osd```
@@ -72,6 +78,16 @@ HEALTH_WARN 1 hosts fail cephadm check; OSD count 0 < osd_pool_default_size 3
 ```shell
 [root@ceph-mon-mgr-node1 ~]# ceph orch host add X9DR3-F-node2 192.168.100.102
 Added host 'X9DR3-F-node2' with addr '192.168.100.102'
+```
+
+删除某个 OSD, <font color=red>慎重</font>
+
+```shell
+# 1. 移除这个手动创建的空壳 OSD,  0是它的ID
+ceph osd purge 0 --yes-i-really-mean-it
+
+# 2. 删除之前的服务定义，确保重头开始
+ceph orch rm osd.custom_node1_osds
 ```
 
 <h3 id="2">初始化一个3节点的 ceph mon/mgr 集群</h3>
