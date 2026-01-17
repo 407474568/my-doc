@@ -69,6 +69,9 @@ ceph 集群整体日志
 查看实时后台  
 ```ceph log last cephadm```
 
+查看 OSD 列表  
+```ceph osd tree```
+
 添加 label 标签  
 ```ceph orch host label add <节点名称> <标签>```  
 ```ceph orch host label add X9DR3-F-node1 osd```
