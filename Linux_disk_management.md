@@ -181,8 +181,53 @@ VG中去除PV unknown device：
 vgreduce VolGroup00  /dev/xvdb1
 ```
 
-#### parted命令
+#### parted 命令
+
+```shell
+# 1. 创建 GPT 分区表
+parted -s /dev/sdc mklabel gpt
+
+# 2. 创建第一个分区 (300G)
+parted -s /dev/sdc mkpart primary xfs 0% 300GB
+
+# 3. 创建第二个分区 (128G)
+parted -s /dev/sdc mkpart primary xfs 300GB 428GB
+
+# 4. 创建第三个分区 (剩余全部空间)
+parted -s /dev/sdc mkpart primary xfs 428GB 100%
+
+# 5. 格式化第一个分区为 xfs (假设为 /dev/sdc1)
+mkfs.xfs -f /dev/sdc1
+```
+
+对齐 GiB 的情形
+
+```shell
+# 卸载并清除（请确保数据已备份或为空盘）
+umount /var/crash_disk
+wipefs -a /dev/sdc
+
+# 重新分区
+parted -s /dev/sdc mklabel gpt
+
+# 1. 第一个分区 300GiB (约 322GB)
+parted -s /dev/sdc mkpart primary xfs 1MiB 300GiB
+
+# 2. 第二个分区 128GiB (约 137GB)
+parted -s /dev/sdc mkpart primary xfs 300GiB 428GiB
+
+# 3. 第三个分区 剩余全部
+parted -s /dev/sdc mkpart primary xfs 428GiB 100%
+
+# 格式化
+mkfs.xfs -f /dev/sdc1
+mkfs.xfs -f /dev/sdc2
+mkfs.xfs -f /dev/sdc3
+```
+
+
 http://www.cnblogs.com/zhangpengme/archive/2011/12/29/2305963.html   
+
 执行parted进入parted的交互环境，不同的是help打在前面（如help mkpart），获取帮助；  
 与fdisk相同的是，同样应当跟设备文件名，如不加，将会自动寻找首个磁盘设备；  
 
