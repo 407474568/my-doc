@@ -2,6 +2,7 @@
   * [Ceph 常用命令](#1)
   * [初始化一个3节点的ceph mon/mgr集群](#2)
   * [使用cephadm(容器方式)部署reef(v18)环境](#3)
+  * [yaml方式创建OSD](#4)
 
 
 <h3 id="1">Ceph 常用命令</h3>
@@ -676,4 +677,306 @@ ceph config set global public_network 192.168.96.0/19
 
 # 设置集群网段（假设你为 OSD 准备的内网是 10.10.10.0/24）
 ceph config set global cluster_network 10.10.10.0/24
+```
+
+<h3 id="4">yaml方式创建OSD</h3>
+
+流程简要概述: 
+1) 先建好LV(不应有任何文件系统) 
+2) yaml 文件编辑 
+3) apply 应用 yaml
+
+补充说明: 为什么先建好LV?  
+适用于的场景:  
+HDD是OSD, SSD用作WAL/DB   
+同时, SSD又是划分成了X份, 而非全部空间用所做一个WAL/DB  
+故此, 一个块设备划分成多个LV, 是首选方式
+
+同时, ceph 也并不接受分区  
+
+```shell
+/usr/bin/podman: stderr ceph-volume lvm batch: error: /dev/sdo3 is a partition, please pass LVs or raw block devices
+```
+
+
+yaml 文件案例, OSD + db 一同创建
+
+```shell
+[ceph: root@ceph-mon-mgr-node1 /]# cat osd_spec.yaml 
+service_type: osd
+service_id: node1_14t_osd
+placement:
+  hosts:
+    - X9DR3-F-node1
+spec:
+  data_devices:
+    paths:
+      - /dev/sdp
+  db_devices:
+    paths:
+      - /dev/vg_osd_db_14t/lv_db_14t
+---
+service_type: osd
+service_id: node1_hdd_cluster
+placement:
+  hosts:
+    - X9DR3-F-node1
+spec:
+  data_devices:
+    paths:
+      - /dev/sde
+      - /dev/sdf
+      - /dev/sdg
+      - /dev/sdm
+      - /dev/sdq
+  db_devices:
+    paths:
+      - /dev/vg_osd_db_4t/lv_db_hdd_1
+      - /dev/vg_osd_db_4t/lv_db_hdd_2
+      - /dev/vg_osd_db_4t/lv_db_hdd_3
+      - /dev/vg_osd_db_4t/lv_db_hdd_4
+      - /dev/vg_osd_db_4t/lv_db_hdd_5
+```
+
+应用 yaml 文件
+
+```shell
+ceph orch apply osd -i osd_spec.yaml
+```
+
+核对 OSD 与 db 设备的对应关系, 注意:  
+```ceph-volume lvm list``` 是在OSD的物理机上执行的
+
+```shell
+[root@X9DR3-F-node1 ~]# ceph-volume lvm list
+
+
+====== osd.0 =======
+
+  [block]       /dev/ceph-52cc5018-4941-4e99-8d37-5ab14c12a4e4/osd-block-8ebee487-4f0e-48bb-99ca-bee74d125854
+
+      block device              /dev/ceph-52cc5018-4941-4e99-8d37-5ab14c12a4e4/osd-block-8ebee487-4f0e-48bb-99ca-bee74d125854
+      block uuid                lYTDVt-bcV9-7Epb-gir5-TH0L-1QLd-07TCwm
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_14t/lv_db_14t
+      db uuid                   gmt4vE-YHoj-GQBc-svK2-togs-LB2i-c2j9lv
+      encrypted                 0
+      osd fsid                  8ebee487-4f0e-48bb-99ca-bee74d125854
+      osd id                    0
+      osdspec affinity          node1_14t_osd
+      type                      block
+      vdo                       0
+      devices                   /dev/sdp
+
+  [db]          /dev/vg_osd_db_14t/lv_db_14t
+
+      block device              /dev/ceph-52cc5018-4941-4e99-8d37-5ab14c12a4e4/osd-block-8ebee487-4f0e-48bb-99ca-bee74d125854
+      block uuid                lYTDVt-bcV9-7Epb-gir5-TH0L-1QLd-07TCwm
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_14t/lv_db_14t
+      db uuid                   gmt4vE-YHoj-GQBc-svK2-togs-LB2i-c2j9lv
+      encrypted                 0
+      osd fsid                  8ebee487-4f0e-48bb-99ca-bee74d125854
+      osd id                    0
+      osdspec affinity          node1_14t_osd
+      type                      db
+      vdo                       0
+      devices                   /dev/md125
+
+====== osd.1 =======
+
+  [block]       /dev/ceph-86a420d7-3a0c-469d-a96b-bb249d86c0b1/osd-block-3a5587b6-b0d6-4311-992c-7dde0daee0dd
+
+      block device              /dev/ceph-86a420d7-3a0c-469d-a96b-bb249d86c0b1/osd-block-3a5587b6-b0d6-4311-992c-7dde0daee0dd
+      block uuid                q0vSTs-G3a1-6hS2-tPIo-36sB-u29j-87UlrK
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_5
+      db uuid                   FezrvC-OZet-MC1a-yl0a-zTeG-F91v-vE9Vy7
+      encrypted                 0
+      osd fsid                  3a5587b6-b0d6-4311-992c-7dde0daee0dd
+      osd id                    1
+      osdspec affinity          node1_hdd_cluster
+      type                      block
+      vdo                       0
+      devices                   /dev/sde
+
+  [db]          /dev/vg_osd_db_4t/lv_db_hdd_5
+
+      block device              /dev/ceph-86a420d7-3a0c-469d-a96b-bb249d86c0b1/osd-block-3a5587b6-b0d6-4311-992c-7dde0daee0dd
+      block uuid                q0vSTs-G3a1-6hS2-tPIo-36sB-u29j-87UlrK
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_5
+      db uuid                   FezrvC-OZet-MC1a-yl0a-zTeG-F91v-vE9Vy7
+      encrypted                 0
+      osd fsid                  3a5587b6-b0d6-4311-992c-7dde0daee0dd
+      osd id                    1
+      osdspec affinity          node1_hdd_cluster
+      type                      db
+      vdo                       0
+      devices                   /dev/md124
+
+====== osd.2 =======
+
+  [block]       /dev/ceph-3654bcea-eba9-479d-b935-18fba19950d8/osd-block-ad5f7f5a-b3c2-4076-8082-91d8612803fa
+
+      block device              /dev/ceph-3654bcea-eba9-479d-b935-18fba19950d8/osd-block-ad5f7f5a-b3c2-4076-8082-91d8612803fa
+      block uuid                0APteH-ICZq-IADp-QWB5-6cfe-hzak-3KdlEB
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_4
+      db uuid                   oIJBMP-Rf81-Kktf-0kRD-udHf-ATP1-RdSQ3Z
+      encrypted                 0
+      osd fsid                  ad5f7f5a-b3c2-4076-8082-91d8612803fa
+      osd id                    2
+      osdspec affinity          node1_hdd_cluster
+      type                      block
+      vdo                       0
+      devices                   /dev/sdf
+
+  [db]          /dev/vg_osd_db_4t/lv_db_hdd_4
+
+      block device              /dev/ceph-3654bcea-eba9-479d-b935-18fba19950d8/osd-block-ad5f7f5a-b3c2-4076-8082-91d8612803fa
+      block uuid                0APteH-ICZq-IADp-QWB5-6cfe-hzak-3KdlEB
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_4
+      db uuid                   oIJBMP-Rf81-Kktf-0kRD-udHf-ATP1-RdSQ3Z
+      encrypted                 0
+      osd fsid                  ad5f7f5a-b3c2-4076-8082-91d8612803fa
+      osd id                    2
+      osdspec affinity          node1_hdd_cluster
+      type                      db
+      vdo                       0
+      devices                   /dev/md124
+
+====== osd.3 =======
+
+  [block]       /dev/ceph-7a827d24-6777-497c-8b79-0461d765aed9/osd-block-d347816f-4739-447b-a397-514becac6a15
+
+      block device              /dev/ceph-7a827d24-6777-497c-8b79-0461d765aed9/osd-block-d347816f-4739-447b-a397-514becac6a15
+      block uuid                l0qZ06-X2tV-Cfgs-1HtX-120P-Wg7E-qrNYG2
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_3
+      db uuid                   jvzYbm-HloO-gPp9-Cr38-wjJr-79sP-fkD0ZY
+      encrypted                 0
+      osd fsid                  d347816f-4739-447b-a397-514becac6a15
+      osd id                    3
+      osdspec affinity          node1_hdd_cluster
+      type                      block
+      vdo                       0
+      devices                   /dev/sdg
+
+  [db]          /dev/vg_osd_db_4t/lv_db_hdd_3
+
+      block device              /dev/ceph-7a827d24-6777-497c-8b79-0461d765aed9/osd-block-d347816f-4739-447b-a397-514becac6a15
+      block uuid                l0qZ06-X2tV-Cfgs-1HtX-120P-Wg7E-qrNYG2
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_3
+      db uuid                   jvzYbm-HloO-gPp9-Cr38-wjJr-79sP-fkD0ZY
+      encrypted                 0
+      osd fsid                  d347816f-4739-447b-a397-514becac6a15
+      osd id                    3
+      osdspec affinity          node1_hdd_cluster
+      type                      db
+      vdo                       0
+      devices                   /dev/md124
+
+====== osd.4 =======
+
+  [block]       /dev/ceph-d6e58dc4-7fb8-47ac-977f-8aa5de7fec77/osd-block-bb402e14-92a9-4e5e-aa9b-e90b0c6474af
+
+      block device              /dev/ceph-d6e58dc4-7fb8-47ac-977f-8aa5de7fec77/osd-block-bb402e14-92a9-4e5e-aa9b-e90b0c6474af
+      block uuid                8JNcI4-ss33-Vf4U-1WRN-cH25-1uhr-g0n6Fl
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_2
+      db uuid                   WbKOhZ-n9d1-1WmK-akrK-eZOZ-I3Q9-nASH6i
+      encrypted                 0
+      osd fsid                  bb402e14-92a9-4e5e-aa9b-e90b0c6474af
+      osd id                    4
+      osdspec affinity          node1_hdd_cluster
+      type                      block
+      vdo                       0
+      devices                   /dev/sdm
+
+  [db]          /dev/vg_osd_db_4t/lv_db_hdd_2
+
+      block device              /dev/ceph-d6e58dc4-7fb8-47ac-977f-8aa5de7fec77/osd-block-bb402e14-92a9-4e5e-aa9b-e90b0c6474af
+      block uuid                8JNcI4-ss33-Vf4U-1WRN-cH25-1uhr-g0n6Fl
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_2
+      db uuid                   WbKOhZ-n9d1-1WmK-akrK-eZOZ-I3Q9-nASH6i
+      encrypted                 0
+      osd fsid                  bb402e14-92a9-4e5e-aa9b-e90b0c6474af
+      osd id                    4
+      osdspec affinity          node1_hdd_cluster
+      type                      db
+      vdo                       0
+      devices                   /dev/md124
+
+====== osd.5 =======
+
+  [block]       /dev/ceph-901d9bc7-417d-4b7c-a40b-1f5c2dc9ae50/osd-block-608bf527-d06d-46d9-9dfe-361eaab17b3e
+
+      block device              /dev/ceph-901d9bc7-417d-4b7c-a40b-1f5c2dc9ae50/osd-block-608bf527-d06d-46d9-9dfe-361eaab17b3e
+      block uuid                cFSn46-ikvV-zich-kMTQ-EdQe-D8dv-6hr9KJ
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_1
+      db uuid                   LxXjvC-dBoF-cqkb-s5mn-hndT-sZvS-iUlt3O
+      encrypted                 0
+      osd fsid                  608bf527-d06d-46d9-9dfe-361eaab17b3e
+      osd id                    5
+      osdspec affinity          node1_hdd_cluster
+      type                      block
+      vdo                       0
+      devices                   /dev/sdq
+
+  [db]          /dev/vg_osd_db_4t/lv_db_hdd_1
+
+      block device              /dev/ceph-901d9bc7-417d-4b7c-a40b-1f5c2dc9ae50/osd-block-608bf527-d06d-46d9-9dfe-361eaab17b3e
+      block uuid                cFSn46-ikvV-zich-kMTQ-EdQe-D8dv-6hr9KJ
+      cephx lockbox secret      
+      cluster fsid              eb07238a-ea0f-11f0-97ea-52540083ebf9
+      cluster name              ceph
+      crush device class        
+      db device                 /dev/vg_osd_db_4t/lv_db_hdd_1
+      db uuid                   LxXjvC-dBoF-cqkb-s5mn-hndT-sZvS-iUlt3O
+      encrypted                 0
+      osd fsid                  608bf527-d06d-46d9-9dfe-361eaab17b3e
+      osd id                    5
+      osdspec affinity          node1_hdd_cluster
+      type                      db
+      vdo                       0
+      devices                   /dev/md124
+[root@X9DR3-F-node1 ~]# 
 ```
