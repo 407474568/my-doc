@@ -681,10 +681,10 @@ ceph config set global cluster_network 10.10.10.0/24
 
 <h3 id="4">yaml方式创建OSD</h3>
 
-流程简要概述: 
-1) 先建好LV(不应有任何文件系统) 
-2) yaml 文件编辑 
-3) apply 应用 yaml
+流程简要概述:   
+1) 先建好LV(不应有任何文件系统)   
+2) yaml 文件编辑   
+3) apply 应用 yaml  
 
 补充说明: 为什么先建好LV?  
 适用于的场景:  
