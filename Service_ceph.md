@@ -699,7 +699,7 @@ HDD是OSD, SSD用作WAL/DB
 ```
 
 
-yaml 文件案例, OSD + db 一同创建
+yaml 文件--案例1, OSD + db 一同创建
 
 ```shell
 [ceph: root@ceph-mon-mgr-node1 /]# cat osd_spec.yaml 
@@ -979,4 +979,62 @@ ceph orch apply osd -i osd_spec.yaml
       vdo                       0
       devices                   /dev/md124
 [root@X9DR3-F-node1 ~]# 
+```
+
+
+示例2, 纯SSD的OSD
+
+```shell
+[root@X9DR3-F-node1 ~]# # 1. 创建 VG (每个分区给一个独立的 VG 比较清晰)
+vgcreate vg_osd_ssd_525G /dev/sdo3
+vgcreate vg_osd_ssd_244G /dev/sdr2
+
+# 2. 创建 LV (使用 100% 的剩余空间)
+lvcreate -l 100%FREE -n lv_osd_ssd_525G vg_osd_ssd_525G
+lvcreate -l 100%FREE -n lv_osd_ssd_244G vg_osd_ssd_244G
+  Physical volume "/dev/sdo3" successfully created.
+  Volume group "vg_osd_ssd_525G" successfully created
+  Physical volume "/dev/sdr2" successfully created.
+  Volume group "vg_osd_ssd_244G" successfully created
+  Logical volume "lv_osd_ssd_525G" created.
+  Logical volume "lv_osd_ssd_244G" created.
+[root@X9DR3-F-node1 ~]# lvs
+  LV                                             VG                                        Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  osd-block-ad5f7f5a-b3c2-4076-8082-91d8612803fa ceph-3654bcea-eba9-479d-b935-18fba19950d8 -wi-ao----   <3.64t                                                    
+  osd-block-8ebee487-4f0e-48bb-99ca-bee74d125854 ceph-52cc5018-4941-4e99-8d37-5ab14c12a4e4 -wi-ao----   12.73t                                                    
+  osd-block-d347816f-4739-447b-a397-514becac6a15 ceph-7a827d24-6777-497c-8b79-0461d765aed9 -wi-ao----   <3.64t                                                    
+  osd-block-3a5587b6-b0d6-4311-992c-7dde0daee0dd ceph-86a420d7-3a0c-469d-a96b-bb249d86c0b1 -wi-ao----   <3.64t                                                    
+  osd-block-608bf527-d06d-46d9-9dfe-361eaab17b3e ceph-901d9bc7-417d-4b7c-a40b-1f5c2dc9ae50 -wi-ao----   <3.64t                                                    
+  osd-block-bb402e14-92a9-4e5e-aa9b-e90b0c6474af ceph-d6e58dc4-7fb8-47ac-977f-8aa5de7fec77 -wi-ao----   <3.64t                                                    
+  lvroot                                         rootvg                                    -wi-ao----  210.39g                                                    
+  lv_db_14t                                      vg_osd_db_14t                             -wi-ao----  127.87g                                                    
+  lv_db_hdd_1                                    vg_osd_db_4t                              -wi-ao----   62.00g                                                    
+  lv_db_hdd_2                                    vg_osd_db_4t                              -wi-ao----   62.00g                                                    
+  lv_db_hdd_3                                    vg_osd_db_4t                              -wi-ao----   62.00g                                                    
+  lv_db_hdd_4                                    vg_osd_db_4t                              -wi-ao----   62.00g                                                    
+  lv_db_hdd_5                                    vg_osd_db_4t                              -wi-ao----   62.00g                                                    
+  lv_osd_ssd_244G                                vg_osd_ssd_244G                           -wi-a----- <244.61g                                                    
+  lv_osd_ssd_525G                                vg_osd_ssd_525G                           -wi-a----- <525.87g                                                    
+  lvdata                                         vgdata                                    -wi-ao----   <7.28t                                                    
+[root@X9DR3-F-node1 ~]# 
+
+
+
+
+[ceph: root@ceph-mon-mgr-node1 /]# cat osd_spec.yaml
+service_type: osd
+service_id: node1_ssd_osd
+placement:
+  hosts:
+    - X9DR3-F-node1
+spec:
+  data_devices:
+    paths:
+      - /dev/vg_osd_ssd_525G/lv_osd_ssd_525G
+      - /dev/vg_osd_ssd_244G/lv_osd_ssd_244G
+  # 强制指定 device class
+  crush_device_class: ssd
+  
+[ceph: root@ceph-mon-mgr-node1 /]# ceph orch apply osd -i osd_spec.yaml
+Scheduled osd.node1_ssd_osd update...
 ```
