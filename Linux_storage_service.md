@@ -724,7 +724,7 @@ https://zhuanlan.zhihu.com/p/63990027
 - --homehost=any 取决于应用场景, 如果是希望该磁盘更换了主机反而是不希望mdadm自动去组装, 则不应添加该参数
 
 ```
-创建 RAID 阵列
+# 创建 RAID 阵列
 mdadm --create \
 /dev/md/<用户定义名称> \
 --level=<阵列级别> \
