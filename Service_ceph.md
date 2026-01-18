@@ -1,8 +1,9 @@
 * [目录](#0)
   * [Ceph 常用命令](#1)
   * [初始化一个3节点的ceph mon/mgr集群](#2)
-  * [使用cephadm(容器方式)部署reef(v18)环境](#3)
-  * [yaml方式创建OSD](#4)
+  * [使用 cephadm (容器方式)部署 reef (v18)环境](#3)
+  * [yaml 方式创建OSD](#4)
+  * [我的 Ceph 环境专有信息](#99)
 
 
 <h3 id="1">Ceph 常用命令</h3>
@@ -1037,4 +1038,85 @@ spec:
   
 [ceph: root@ceph-mon-mgr-node1 /]# ceph orch apply osd -i osd_spec.yaml
 Scheduled osd.node1_ssd_osd update...
+```
+
+
+<h3 id="99">我的 Ceph 环境专有信息</h3>
+
+开关机操作
+
+创建了单独匹配 SSD 和 HDD 的各自的 rule
+
+```shell
+[ceph: root@ceph-mon-mgr-node1 /]# ceph osd crush rule create-replicated ssd-only default host ssd
+[ceph: root@ceph-mon-mgr-node1 /]# ceph osd crush rule create-replicated hdd-only default host hdd
+[ceph: root@ceph-mon-mgr-node1 /]# ceph osd crush rule ls
+replicated_rule
+ssd-only
+hdd-only
+[ceph: root@ceph-mon-mgr-node1 /]# ceph osd crush rule dump
+[
+    {
+        "rule_id": 0,
+        "rule_name": "replicated_rule",
+        "type": 1,
+        "steps": [
+            {
+                "op": "take",
+                "item": -1,
+                "item_name": "default"
+            },
+            {
+                "op": "chooseleaf_firstn",
+                "num": 0,
+                "type": "host"
+            },
+            {
+                "op": "emit"
+            }
+        ]
+    },
+    {
+        "rule_id": 1,
+        "rule_name": "ssd-only",
+        "type": 1,
+        "steps": [
+            {
+                "op": "take",
+                "item": -6,
+                "item_name": "default~ssd"
+            },
+            {
+                "op": "chooseleaf_firstn",
+                "num": 0,
+                "type": "host"
+            },
+            {
+                "op": "emit"
+            }
+        ]
+    },
+    {
+        "rule_id": 2,
+        "rule_name": "hdd-only",
+        "type": 1,
+        "steps": [
+            {
+                "op": "take",
+                "item": -2,
+                "item_name": "default~hdd"
+            },
+            {
+                "op": "chooseleaf_firstn",
+                "num": 0,
+                "type": "host"
+            },
+            {
+                "op": "emit"
+            }
+        ]
+    }
+]
+
+[ceph: root@ceph-mon-mgr-node1 /]# 
 ```
