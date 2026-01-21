@@ -74,6 +74,32 @@ ceph 集群整体日志
 查看 OSD 列表  
 ```ceph osd tree```
 
+查看 OSD 绑定的网络接口信息
+```
+ceph osd dump --format=json | jq -r '.osds[] | "osd.\(.osd):  Public -> \(.public_addrs.addrvec[0].addr) | Cluster -> \(.cluster_addrs.addrvec[0].addr)"'
+```
+
+```shell
+[ceph: root@ceph-mon-mgr-node1 /]# ceph osd dump --format=json | jq -r '.osds[] | "osd.\(.osd):  Public -> \(.public_addrs.addrvec[0].addr) | Cluster -> \(.cluster_addrs.addrvec[0].addr)"'
+osd.0:  Public -> 192.168.100.101:6810 | Cluster -> 172.16.0.101:6811
+osd.1:  Public -> 192.168.100.101:6808 | Cluster -> 172.16.0.101:6809
+osd.2:  Public -> 192.168.100.101:6809 | Cluster -> 172.16.0.101:6808
+osd.3:  Public -> 192.168.100.101:6820 | Cluster -> 172.16.0.101:6820
+osd.4:  Public -> 192.168.100.101:6828 | Cluster -> 172.16.0.101:6828
+osd.5:  Public -> 192.168.100.101:6822 | Cluster -> 172.16.0.101:6822
+osd.6:  Public -> 192.168.100.101:6804 | Cluster -> 172.16.0.101:6804
+osd.7:  Public -> 192.168.100.101:6800 | Cluster -> 172.16.0.101:6800
+osd.8:  Public -> 192.168.100.102:6840 | Cluster -> 192.168.100.102:6842
+osd.9:  Public -> 192.168.100.102:6824 | Cluster -> 192.168.100.102:6828
+osd.10:  Public -> 192.168.100.102:6816 | Cluster -> 192.168.100.102:6818
+osd.11:  Public -> 192.168.100.102:6856 | Cluster -> 192.168.100.102:6858
+osd.12:  Public -> 192.168.100.102:6825 | Cluster -> 192.168.100.102:6829
+osd.13:  Public -> 192.168.100.102:6843 | Cluster -> 192.168.100.102:6847
+osd.14:  Public -> 192.168.100.102:6800 | Cluster -> 192.168.100.102:6803
+osd.15:  Public -> 192.168.100.102:6802 | Cluster -> 192.168.100.102:6806
+[ceph: root@ceph-mon-mgr-node1 /]# 
+```
+
 添加 label 标签  
 ```ceph orch host label add <节点名称> <标签>```  
 ```ceph orch host label add X9DR3-F-node1 osd```
