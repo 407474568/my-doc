@@ -8,6 +8,7 @@ https://openzfs.org/wiki/Main_Page
 
 
 * [目录](#0)
+  * [常用命令](#9)
   * [dataset数据集的recordsize大小](#7)
   * [基础命令](#6)
   * [两种安装方式](#1)
@@ -16,6 +17,24 @@ https://openzfs.org/wiki/Main_Page
   * [如果开机没有自动导入池](#4)
   * [限制ARC对内存的消耗大小](#5)
   * [参数调优/修改](#8)
+
+<h3 id="9">常用命令</h3>
+
+在有不同 record-size 的 dataset 上一次性查出 record-size 和 容量使用情况
+
+```
+zfs list -o name,used,avail,refer,recordsize,compressratio,mountpoint
+```
+
+```shell
+[root@X9DR3-F ~]# zfs list -o name,used,avail,refer,recordsize,compressratio,mountpoint
+NAME                    USED  AVAIL  REFER  RECSIZE  RATIO  MOUNTPOINT
+SATA-16T               51.1T  65.1T  63.9K     128K  1.01x  /SATA-16T
+SATA-16T/big_files     31.1T  65.1T  31.1T       1M  1.02x  /SATA-16T/big_files
+SATA-16T/hidden_files   410G  65.1T   410G       1M  1.00x  /SATA-16T/hidden_files
+SATA-16T/mix_files     19.6T  65.1T  19.6T     128K  1.00x  /SATA-16T/mix_files
+[root@X9DR3-F ~]# 
+```
 
 <h3 id="7">dataset数据集的recordsize大小</h3>
 
