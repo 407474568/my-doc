@@ -1146,3 +1146,16 @@ hdd-only
 
 [ceph: root@ceph-mon-mgr-node1 /]# 
 ```
+
+设置 OSD 使用内存的限额
+
+```shell
+# 设置 node1 上所有 OSD 的内存目标为 12GB
+ceph config set osd/host:X9DR3-F-node1 osd_memory_target 12884901888
+# 设置 node2 上所有 OSD 的内存目标为 8GB
+ceph config set osd/host:X9DR3-F-node2 osd_memory_target 8589934592
+
+
+# 关闭 ceph 自动调优, 否则会覆盖我的手动OSD限额设置
+ceph config set osd osd_memory_target_autotune false
+```
