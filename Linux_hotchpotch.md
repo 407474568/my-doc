@@ -19,6 +19,7 @@
   * [grub2-mkconfig 的生成失败](#18)
   * [查看ssl证书信息](#19)
   * [关于nc与nmap的比较说明, 及nmap常用选项](#20)
+  * [Systemd 清理残留的无效service](#21)
 
 
 <h3 id="1">ASCII对照表</h3>  
@@ -197,6 +198,79 @@ https://stromasys.atlassian.net/wiki/spaces/KBP/pages/151158785/How+to+prevent+L
 OOMScoreAdjust=-1000
 Type=forking
 ...
+```
+
+<h3 id="21">Systemd 清理残留的无效service</h3>  
+
+正确清理已经失效的 ```Systemd``` 的 ```service``` 对象的步骤
+
+```shell
+# 两项都要得到清理, 任一依旧保留在的情况下, 会让后续步骤无效
+systemctl stop <待清理的无效服务>
+systemctl disable <待清理的无效服务>
+
+# 在前面步骤已执行的前提下, 后两步才能成功清理无效条目
+systemctl daemon-reload
+systemctl reset-failed <待清理的无效服务>
+```
+
+操作案例
+
+```shell
+# 清理前
+[root@infrastructure-linux-node1 ~]# ll
+total 32K
+-rw-------. 1 root root 1.3K Feb  5  2025 anaconda-ks.cfg
+-rw-r--r--  1 root root 4.0K Sep 16 16:47 clash_auto_operation.py
+drwxr-xr-x  7 root root 4.0K Feb  2 17:37 clashctl
+drwxr-xr-x  6 root root  152 Sep 13 23:12 clash-for-linux-install
+drwxr-xr-x  6 root root   94 Jan 31 20:33 clash_old_bak
+-rw-r--r--  1 root root 1.8K Oct 16 12:25 ftp.conf_anonymous_access_v1
+-rw-r--r--  1 root root 1.6K Oct 16 11:53 ftp.conf.before_add_anonymous_access
+-rw-r--r--  1 root root 2.4K Aug  4 14:55 git_init_and_sync.sh
+lrwxrwxrwx  1 root root   40 Dec  4 16:30 iostat.sh -> /Code/private/dev/my_it_assets/iostat.sh
+-rw-r--r--  1 root root  416 Dec 22 09:46 test.sh
+-rw-r--r--  1 root root   60 Dec 17 15:19 wget-log
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_
+mihomo_fastlink.service    mihomo_fscloud.service     mihomo_kaochang.service    mihomo_tsmeow.service      mihomo_zhilianyun.service  
+[root@infrastructure-linux-node1 ~]# systemctl reset-failed 
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_
+mihomo_fastlink.service    mihomo_fscloud.service     mihomo_kaochang.service    mihomo_tsmeow.service      mihomo_zhilianyun.service  
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_^C
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_zhilianyun
+Unit mihomo_zhilianyun.service could not be found.
+# 虽然尝试了 reset-failed , 但因为没移除开机自启动, 所以是无效操作
+[root@infrastructure-linux-node1 ~]# systemctl reset-failed
+[root@infrastructure-linux-node1 ~]# systemctl daemon-reload 
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_
+mihomo_fastlink.service    mihomo_fscloud.service     mihomo_kaochang.service    mihomo_tsmeow.service      mihomo_zhilianyun.service  
+[root@infrastructure-linux-node1 ~]# systemctl daemon-reload 
+[root@infrastructure-linux-node1 ~]# systemctl reset-failed
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_
+mihomo_fastlink.service    mihomo_fscloud.service     mihomo_kaochang.service    mihomo_tsmeow.service      mihomo_zhilianyun.service  
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_^C
+[root@infrastructure-linux-node1 ~]# ls -ld /etc/systemd/system/mihomo*
+-rw-r--r-- 1 root root 287 Jan 31 20:38 /etc/systemd/system/mihomo_fastlink.service
+-rw-r--r-- 1 root root 282 Jan 31 20:58 /etc/systemd/system/mihomo_fscloud.service
+-rw-r--r-- 1 root root 287 Jan 31 20:38 /etc/systemd/system/mihomo_kaochang.service
+-rw-r--r-- 1 root root 207 Sep 13 23:14 /etc/systemd/system/mihomo.service
+-rw-r--r-- 1 root root 277 Jan 31 20:37 /etc/systemd/system/mihomo_tsmeow.service
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_zhilianyun.service
+Unit mihomo_zhilianyun.service could not be found.
+
+
+
+# 正确的操作
+[root@infrastructure-linux-node1 ~]# systemctl stop mihomo_zhilianyun.service
+Failed to stop mihomo_zhilianyun.service: Unit mihomo_zhilianyun.service not loaded.
+[root@infrastructure-linux-node1 ~]# systemctl disable mihomo_zhilianyun.service
+Removed /etc/systemd/system/multi-user.target.wants/mihomo_zhilianyun.service.
+[root@infrastructure-linux-node1 ~]# systemctl daemon-reload
+[root@infrastructure-linux-node1 ~]# systemctl reset-failed mihomo_zhilianyun.service
+Failed to reset failed state of unit mihomo_zhilianyun.service: Unit mihomo_zhilianyun.service not loaded.
+[root@infrastructure-linux-node1 ~]# systemctl status mihomo_
+mihomo_fastlink.service  mihomo_fscloud.service   mihomo_kaochang.service  mihomo_tsmeow.service    
+[root@infrastructure-linux-node1 ~]# 
 ```
 
 <h3 id="18">grub2-mkconfig 的生成失败</h3>  
