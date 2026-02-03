@@ -28,7 +28,42 @@ http://www.garfielder.com/post/990cc2cb.html
   * [误报存储满的问题](#12)
   * [nextcloud 版本号](#13)
   * [nextcloud 默认打开"应用"而不是"仪表盘"](#14)
+  * [版本常规升级](#15)
 
+
+<h3 id="15">版本常规升级</h3>
+
+以容器部署方式为例:  
+容器版本升级 --> 浏览器提示 "config.php 已禁用浏览器方式升级" --> 需要通过命令行操作
+
+```
+# 我的容器名称, nextcloud
+docker exec --user www-data nextcloud php occ upgrade
+```
+
+升级结束后,如果未能正常关闭维护模式, 则还需要:
+
+```shell
+docker exec --user www-data nextcloud php occ maintenance:mode --off
+```
+
+常规输出
+
+```shell
+[root@docker-node1 ~]# docker exec --user www-data nextcloud php occ upgrade
+Nextcloud or one of the apps require upgrade - only a limited number of commands are available
+You may use your browser or the occ upgrade command to do the upgrade
+Setting log level to debug
+Turned on maintenance mode
+Updating database schema
+Updated database
+Starting code integrity check...
+Finished code integrity check
+Update successful
+Turned off maintenance mode
+Resetting log level
+[root@docker-node1 ~]# 
+```
 
 <h3 id="14">nextcloud 默认打开"应用"而不是"仪表盘"</h3>
 
