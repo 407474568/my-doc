@@ -39,6 +39,7 @@
 * [容器](category_3_Container.md)
     * [kubernetes 之 etcd](Container_etcd.md)
     * [docker 单机日常事务](Container_docker_routing_work.md)
+    * [我的 home-lab 特有信息](Container_my_home_lab_specific_info.md)
 * [服务应用](category_3_service_application.md)
     * [AI大模型](Service_ai_models.md)
     * [Ceph](Service_ceph.md)
