@@ -74,4 +74,7 @@ nmcli con modify br0 +ipv4.routes "10.100.0.0/16 192.168.111.254"
 
 # DC-2 (业务段 10.200.x.x 走 1G 口 192.168.112.254)
 nmcli con modify br0 +ipv4.routes "10.200.0.0/16 192.168.112.254"
+
+# 使其生效
+nmcli con up br0;nmcli con up br1
 ```
