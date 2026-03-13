@@ -1,3 +1,99 @@
+* [目录](#0)
+  * [K8S external etcd](#1)
+  * [早期文档](#99)
+
+<h3 id="1">K8S external etcd</h3>
+
+即 etcd 独立于 K8S 集群之外, 不在 K8S 集群内部
+
+#### 看 endpoint status
+
+格式
+
+```shell
+export ETCDCTL_API=3;  # 指定API版本
+/usr/local/bin/etcdctl \ # etcdctl 所在位置
+--endpoints=https://10.100.0.201:2379,https://10.100.0.202:2379,https://10.100.0.203:2379 \  # 集群所有的节点的信息
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \  # CA证书位置
+--cert=/etc/kubernetes/pki/etcd/server.crt \ # server公钥位置
+--key=/etc/kubernetes/pki/etcd/server.key \  # server私钥位置
+endpoint status --write-out=table   # 显示 endpoint 状态, 并以表格形式输出
+```
+
+```shell
+[root@docker-node4 ~]# ansible dc-1-kube-master-01 -m shell -a 'export ETCDCTL_API=3; \
+> /usr/local/bin/etcdctl --endpoints=https://10.100.0.201:2379,https://10.100.0.202:2379,https://10.100.0.203:2379 \
+> --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+> endpoint status --write-out=table'
+dc-1-kube-master-01 | CHANGED | rc=0 >>
++---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+|         ENDPOINT          |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
++---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+| https://10.100.0.201:2379 | 9a8c2903ac5cc983 |  3.5.27 |   20 kB |     false |      false |         2 |          8 |                  8 |        |
+| https://10.100.0.202:2379 | 9f95291795863ef7 |  3.5.27 |   20 kB |      true |      false |         2 |          8 |                  8 |        |
+| https://10.100.0.203:2379 | cfac6b1599e45a38 |  3.5.27 |   20 kB |     false |      false |         2 |          8 |                  8 |        |
++---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+[root@docker-node4 ~]# 
+
+[root@docker-node4 ~]# ansible dc-2-kube-master-01 -m shell -a 'export ETCDCTL_API=3; \
+> /usr/local/bin/etcdctl --endpoints=https://10.200.0.201:2379,https://10.200.0.202:2379,https://10.200.0.203:2379 \
+> --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+> endpoint status --write-out=table'
+dc-2-kube-master-01 | CHANGED | rc=0 >>
++---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+|         ENDPOINT          |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
++---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+| https://10.200.0.201:2379 | 7e254504d1812858 |  3.5.27 |   20 kB |      true |      false |         2 |          8 |                  8 |        |
+| https://10.200.0.202:2379 | f1adbd3faed715f4 |  3.5.27 |   20 kB |     false |      false |         2 |          8 |                  8 |        |
+| https://10.200.0.203:2379 | e001a6118958ccab |  3.5.27 |   20 kB |     false |      false |         2 |          8 |                  8 |        |
++---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+```
+
+#### 看 member list
+
+格式
+
+```shell
+export ETCDCTL_API=3; \ # 指定API版本
+/usr/local/bin/etcdctl \ # etcdctl 所在位置
+--endpoints=https://10.100.0.201:2379,https://10.100.0.202:2379,https://10.100.0.203:2379 \ # 集群所有的节点的信息
+--cacert=/etc/kubernetes/pki/etcd/ca.crt \ # CA证书位置
+--cert=/etc/kubernetes/pki/etcd/server.crt \ # server公钥位置
+--key=/etc/kubernetes/pki/etcd/server.key \  # server私钥位置
+member list -w table    # 显示成员列表, 并以表格形式输出
+```
+
+
+```shell
+[root@docker-node4 ~]# ansible dc-1-kube-master-01 -m shell -a 'export ETCDCTL_API=3; \
+> /usr/local/bin/etcdctl --endpoints=https://10.100.0.201:2379,https://10.100.0.202:2379,https://10.100.0.203:2379 \
+> --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+> member list -w table'
+dc-1-kube-master-01 | CHANGED | rc=0 >>
++------------------+---------+---------------------+---------------------------+---------------------------+------------+
+|        ID        | STATUS  |        NAME         |        PEER ADDRS         |       CLIENT ADDRS        | IS LEARNER |
++------------------+---------+---------------------+---------------------------+---------------------------+------------+
+| 9a8c2903ac5cc983 | started | dc-1-kube-master-01 | https://10.100.0.201:2380 | https://10.100.0.201:2379 |      false |
+| 9f95291795863ef7 | started | dc-1-kube-master-02 | https://10.100.0.202:2380 | https://10.100.0.202:2379 |      false |
+| cfac6b1599e45a38 | started | dc-1-kube-master-03 | https://10.100.0.203:2380 | https://10.100.0.203:2379 |      false |
++------------------+---------+---------------------+---------------------------+---------------------------+------------+
+
+[root@docker-node4 ~]# ansible dc-2-kube-master-01 -m shell -a 'export ETCDCTL_API=3; \
+> /usr/local/bin/etcdctl --endpoints=https://10.200.0.201:2379,https://10.200.0.202:2379,https://10.200.0.203:2379 \
+> --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+> member list -w table'
+dc-2-kube-master-01 | CHANGED | rc=0 >>
++------------------+---------+---------------------+---------------------------+---------------------------+------------+
+|        ID        | STATUS  |        NAME         |        PEER ADDRS         |       CLIENT ADDRS        | IS LEARNER |
++------------------+---------+---------------------+---------------------------+---------------------------+------------+
+| 7e254504d1812858 | started | dc-2-kube-master-01 | https://10.200.0.201:2380 | https://10.200.0.201:2379 |      false |
+| e001a6118958ccab | started | dc-2-kube-master-03 | https://10.200.0.203:2380 | https://10.200.0.203:2379 |      false |
+| f1adbd3faed715f4 | started | dc-2-kube-master-02 | https://10.200.0.202:2380 | https://10.200.0.202:2379 |      false |
++------------------+---------+---------------------+---------------------------+---------------------------+------------+
+```
+
+<h3 id="99">早期文档</h3>
+
 #### etcd集群初始化出现cluster ID mismatch的情况
 
 ![](/images/lcf2aAz4XQ3EH0YPoOdjrq6eGIFN1CSm.png)
